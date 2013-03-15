@@ -45,8 +45,8 @@ Every response is contained by an envelope. That is, each response has a predict
 Routes
 ------
 
-POST /register
-# register a user
+### POST /register
+register a user
 
     params
         name*
@@ -60,8 +60,8 @@ POST /register
           user: {}
         }
 
-POST /session
-# get an access token
+### POST /session
+get an access token
 
     params
         email*
@@ -73,8 +73,8 @@ POST /session
           user: {}
         }
 
-GET /me
-# get a users info
+### GET /me
+get a users info
 
     params
         access_token*     string
@@ -88,8 +88,8 @@ GET /me
         }
 
 
-POST /me/conversations
-# create a conversation
+### POST /me/conversations
+create a conversation
 
     params
         access_token*     string
@@ -108,8 +108,8 @@ POST /me/conversations
           }
         }
 
-GET /me/conversations/:id
-# get info about a conversation
+### GET /me/conversations/:id
+get info about a conversation
 
     params
         access_token*     string
@@ -128,8 +128,8 @@ GET /me/conversations/:id
           }
         }
 
-POST /me/conversations/:id/videos
-# get info about a conversation
+### POST /me/conversations/:id/videos
+get info about a conversation
 
     params
         access_token*     string
