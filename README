@@ -1,2 +1,14 @@
-THIS IS THE SPOTIFY HACK FOR JAM TOAST
+Web API for HollerbackApp
+
+
+Routes
+------
+
+# /register
+
+# /session
+
+# /me
+
+# /me/conversations
 

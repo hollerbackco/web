@@ -2,11 +2,9 @@ require File.expand_path('./config/environment')
 
 module HollerbackApp
   class Session < BaseApp
-    before do
-      logger.info "[params] #{params.inspect}"
-    end
-
     post '/' do
+      authenticate
+      {access_token: current_user.access_token}.to_json
     end
   end
 end

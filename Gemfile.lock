@@ -14,15 +14,25 @@ GEM
       i18n (~> 0.6)
       multi_json (~> 1.0)
     arel (3.0.2)
+    aws-s3 (0.6.3)
+      builder
+      mime-types
+      xml-simple
     backports (3.1.1)
+    bcrypt-ruby (3.0.1)
     bond (0.4.3)
     builder (3.0.4)
     daemons (1.1.9)
+    diff-lcs (1.2.1)
     eventmachine (1.0.3)
     i18n (0.6.4)
+    jwt (0.1.8)
+      multi_json (>= 1.5)
     listen (0.7.3)
+    mime-types (1.21)
     multi_json (1.6.1)
     pg (0.14.1)
+    phone (1.1)
     postgres (0.8.1)
       pg (~> 0)
     rack (1.5.2)
@@ -42,6 +52,14 @@ GEM
       rack (>= 1.0)
       rack-test (>= 0.5)
       ripl (>= 0.3.5)
+    rspec (2.13.0)
+      rspec-core (~> 2.13.0)
+      rspec-expectations (~> 2.13.0)
+      rspec-mocks (~> 2.13.0)
+    rspec-core (2.13.1)
+    rspec-expectations (2.13.0)
+      diff-lcs (>= 1.1.3, < 2.0)
+    rspec-mocks (2.13.0)
     sinatra (1.3.5)
       rack (~> 1.4)
       rack-protection (~> 1.3)
@@ -62,28 +80,40 @@ GEM
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
     tilt (1.3.5)
+    time-lord (1.0.1)
     tux (0.3.0)
       ripl (>= 0.3.5)
       ripl-multi_line (>= 0.2.4)
       ripl-rack (>= 0.2.0)
       sinatra (>= 1.2.1)
+    twilio-ruby (3.9.0)
+      builder (>= 2.1.2)
+      jwt (>= 0.1.2)
+      multi_json (>= 1.3.0)
     tzinfo (0.3.37)
     warden (1.2.1)
       rack (>= 1.0)
+    xml-simple (1.1.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   activerecord
+  aws-s3
+  bcrypt-ruby
+  phone
   postgres
   rake
   rb-fsevent
   rerun
+  rspec
   sinatra
   sinatra-activerecord
   sinatra-contrib
   sqlite3
   thin
+  time-lord
   tux
+  twilio-ruby
   warden
