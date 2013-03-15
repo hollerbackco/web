@@ -41,7 +41,7 @@ Dir.open("./config/initializers").each do |file|
   require File.expand_path("./config/initializers/#{file}")
 end
 
-set :database, ENV["database_url"] || "postgres:///hollerback_dev"
+set :database, ENV["DATABASE_URL"] || "postgres:///hollerback_dev"
 
 Dir.open("./app/models").each do |file|
   next if file =~ /^\./
