@@ -29,7 +29,7 @@ module HollerbackApp
     post '/me/conversations' do
       status = Conversation.transaction do
         conversation = current_user.conversations.create(creator: current_user)
-        inviter = Hollerback::ConversationInviter.new current_user, conversation, params[:invites])
+        inviter = Hollerback::ConversationInviter.new(current_user, conversation, params[:invites])
 
         inviter.invite
       end
