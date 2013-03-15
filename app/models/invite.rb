@@ -5,7 +5,7 @@ class Invite < ActiveRecord::Base
   belongs_to :conversation
 
   scope :pending, where(accepted: false)
-  scope :pending_for_user, lamda {|user| pending.where(phone: user.phone_normalized)}
+  scope :pending_for_user, lambda {|user| pending.where(phone: user.phone_normalized)}
 
   def accept!
     update_attribute! :accepted, true
