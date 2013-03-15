@@ -11,7 +11,7 @@ module HollerbackApp
     end
 
     get '/me' do
-      current_user.as_json.merge(conversations: current_user.conversations).to_json
+      { data: {current_user.as_json.merge(conversations: current_user.conversations)}}.to_json
     end
 
 
@@ -21,7 +21,7 @@ module HollerbackApp
 
     get '/me/conversations' do
       authenticate(:api_token)
-      { conversations: current_user.conversations }.to_json
+      { data: {conversations: current_user.conversations} }.to_json
     end
 
     # params
@@ -35,7 +35,13 @@ module HollerbackApp
       end
 
       if status
-        conversation.to_json
+        {
+          data: {
+            members: conversation.members,
+            invites: conversation.invites,
+            videos: conversation.videos
+          }
+        }.to_json
       else
         {errors: "the conversation could not be created"}.to_json
       end
@@ -45,7 +51,7 @@ module HollerbackApp
       begin
         conversation = current_user.conversations.find(params[:id])
         {
-          conversations: {
+          data: {
             members: conversation.members,
             invites: conversation.invites,
             videos: conversation.videos

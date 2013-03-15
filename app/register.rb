@@ -10,9 +10,17 @@ module HollerbackApp
       })
 
       if user.save
-        {access_token: user.access_token}.to_json
+        {
+          access_token: user.access_token,
+          user: current_user
+        }.to_json
       else
-        {errors: user.errors.full_messages}.to_json
+        {
+          meta: {
+            code: 400,
+            errors: user.errors
+          }
+        }.to_json
       end
     end
   end

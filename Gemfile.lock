@@ -23,6 +23,7 @@ GEM
     bond (0.4.3)
     builder (3.0.4)
     daemons (1.1.9)
+    database_cleaner (0.9.1)
     diff-lcs (1.2.1)
     eventmachine (1.0.3)
     i18n (0.6.4)
@@ -74,6 +75,8 @@ GEM
       rack-test
       sinatra (~> 1.3.0)
       tilt (~> 1.3)
+    sms-spec (0.1.6)
+      rspec
     sqlite3 (1.3.7)
     thin (1.5.0)
       daemons (>= 1.0.9)
@@ -102,6 +105,7 @@ DEPENDENCIES
   activerecord
   aws-s3
   bcrypt-ruby
+  database_cleaner
   phone
   postgres
   rake
@@ -111,6 +115,7 @@ DEPENDENCIES
   sinatra
   sinatra-activerecord
   sinatra-contrib
+  sms-spec
   sqlite3
   thin
   time-lord
