@@ -1,0 +1,5 @@
+.DS_STORE
+*.swp
+*.rbc
+*.sass-cache
+.rvmrc
