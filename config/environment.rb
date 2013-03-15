@@ -10,8 +10,10 @@ ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
 require 'bundler/setup' if File.exists?(ENV['BUNDLE_GEMFILE'])
 
 # Setup lib
-Dir[File.join("./lib", "**/*.rb")].each do |f|
-  require f
+%w[lib config/initializers].each do |dir|
+  Dir.glob("./#{dir}/**/*.rb").each do |relative_path|
+    require relative_path
+  end
 end
 
 # require apps
@@ -34,12 +36,6 @@ require File.expand_path('./app/app')
 require File.expand_path('./app/session')
 require File.expand_path('./app/register')
 
-
-# Setup initializers
-Dir.open("./config/initializers").each do |file|
-  next if file =~ /^\./
-  require File.expand_path("./config/initializers/#{file}")
-end
 
 set :database, ENV["DATABASE_URL"] || "postgres:///hollerback_dev"
 
