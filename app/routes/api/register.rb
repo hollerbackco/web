@@ -1,6 +1,7 @@
+# register routes
 module HollerbackApp
-  class Register < BaseApp
-    post '/' do
+  class ApiApp < BaseApp
+    post '/register' do
       user = User.new({
         email:    params[:email],
         name:     params[:name],
@@ -21,6 +22,18 @@ module HollerbackApp
             errors: user.errors
           }
         }.to_json
+      end
+    end
+
+    post '/waitlist' do
+      waitlister = Waitlister.new(email: params[:email])
+
+      if waitlister.save
+        {
+          data: waitlister.to_json
+        }
+      else
+        error_json 400, waitlister.errors
       end
     end
   end

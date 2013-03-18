@@ -1,75 +1,17 @@
-module HollerbackApp
-  class Main < BaseApp
-    before do
-      authenticate(:api_token)
-    end
+# load all the necessary files for the app to run
 
-    get '/' do
-      {
-        msg: "Hollerback App Api v1"
-      }.to_json
-    end
+require File.expand_path('./app/routes/base')
 
-    get '/me' do
-      { data: current_user.as_json.merge(conversations: current_user.conversations)}.to_json
-    end
+# load models
+Dir.open("./app/models").each do |file|
+  next if file =~ /^\./
+  require File.expand_path("./app/models/#{file}")
+end
 
-
-    ########################################
-    # conversations
-    ########################################
-
-    get '/me/conversations' do
-      authenticate(:api_token)
-      { data: {conversations: current_user.conversations} }.to_json
-    end
-
-    # params
-    #   invites: array of phone numbers
-    post '/me/conversations' do
-      status = Conversation.transaction do
-        conversation = current_user.conversations.create(creator: current_user)
-        inviter = Hollerback::ConversationInviter.new(current_user, conversation, params[:invites])
-
-        inviter.invite
-      end
-
-      if status
-        {
-          data: {
-            members: conversation.members,
-            invites: conversation.invites,
-            videos: conversation.videos
-          }
-        }.to_json
-      else
-        {errors: "the conversation could not be created"}.to_json
-      end
-    end
-
-    get '/me/conversations/:id' do
-      begin
-        conversation = current_user.conversations.find(params[:id])
-        {
-          data: {
-            members: conversation.members,
-            invites: conversation.invites,
-            videos: conversation.videos
-          }
-        }.to_json
-      rescue
-        not_found
-      end
-    end
-
-
-    ########################################
-    # videos
-    ########################################
-
-    post '/me/conversations/:id/video' do
-      {
-      }
-    end
+# load routes
+%w[api web].each do |app|
+  require File.expand_path("./app/routes/#{app}")
+  Dir.glob("./app/routes/#{app}/*.rb").each do |relative_path|
+    require relative_path
   end
 end

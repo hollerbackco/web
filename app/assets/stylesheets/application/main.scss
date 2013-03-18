@@ -1,0 +1,88 @@
+@import 'compass';
+$border: #eee;
+
+@font-face {
+  font-family: MuseoSans;
+  src: font_url('MuseoSans_500.otf');
+  font-weight: 500;
+}
+
+body {
+  font-family: MuseoSans, Times, serif;
+}
+
+h1, h2, h3, h4, h5, h6, .button {
+  font-family: MuseoSans, Times, serif;
+  font-weight: normal;
+}
+
+header {
+  text-align: center;
+  border-bottom: 1px solid $border;
+
+  h1 {
+    padding: 20px 5px 0;
+    margin-bottom: 0;
+
+    img {
+      display: inline-block;
+    }
+
+    .subtitle {
+      display: inline-block;
+      font-size: 14px;
+    }
+  }
+}
+
+.content {
+  text-align: center;
+
+  h2 {
+    font-size: 1.8em;
+    padding: 10px 0;
+    border-bottom: 1px solid $border;
+    margin-bottom: 0;
+  }
+
+  .video-container {
+    background: #000;
+    color: #fff;
+
+    video {
+      display: block;
+      margin: 0;
+      padding: 0;
+    }
+  }
+
+  .caption {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 15px 0;
+  }
+
+  .actions {
+    position: relative;
+    margin: 0 10px;
+  }
+
+  .button {
+    margin-left: -1px;
+    width: 100%;
+    padding: 20px 0;
+    font-size: 20px;
+    margin-bottom: 0;
+    background-image: linear-gradient(top left, #333, #0c0),
+              radial-gradient(#c00, #fff 100px);
+  }
+
+  .secondary-action {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 15px 0;
+    color: #999;
+  }
+}
+

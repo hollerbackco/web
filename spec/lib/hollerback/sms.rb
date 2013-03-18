@@ -10,7 +10,7 @@ describe Hollerback::SMS do
     )
   end
 
-  it "send a message" do
+  it "sends a message" do
     Hollerback::SMS.send_message user.phone, "hello"
     open_last_text_message_for user.phone
     current_text_message.should have_body "hello"

@@ -6,20 +6,21 @@ use Rack::MethodOverride
 use Rack::Session::Cookie, :secret => 'change_me'
 
 use Warden::Manager do |config|
+  config.failure_app = HollerbackApp::ApiApp
+
   config.scope_defaults :default,
     strategies: [:password, :api_token],
-    action: 'session/unauthenticated'
-  config.failure_app = self
+    action: '/unauthenticated'
 end
 
-map '/session' do
-  run HollerbackApp::Session
+map '/api' do
+  run HollerbackApp::ApiApp
 end
 
-map '/register' do
-  run HollerbackApp::Register
+map HollerbackApp::WebApp.settings.assets_prefix do
+  run HollerbackApp::WebApp.sprockets
 end
 
 map '/' do
-  run HollerbackApp::Main
+  run HollerbackApp::WebApp
 end

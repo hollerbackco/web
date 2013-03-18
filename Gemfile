@@ -11,7 +11,10 @@ gem 'sinatra-contrib'
 #database
 gem 'activerecord'
 gem 'sinatra-activerecord'
-gem 'postgres'
+gem 'pg'
+
+#views
+gem 'haml'
 
 #authentication
 gem 'warden'
@@ -27,10 +30,20 @@ gem 'twilio-ruby'
 gem 'bcrypt-ruby'
 gem 'time-lord'
 
+#assets
+gem 'sprockets'
+gem 'sprockets-helpers'
+gem 'sprockets-sass'
+gem 'coffee-script'
+gem 'compass'
+
 group :development do
   gem 'rerun'
   gem 'rb-fsevent'
-  gem "tux"
+  gem 'tux'
+  gem 'guard-sprockets2'
+  gem 'yui-compressor'
+  gem 'uglifier'
 end
 
 group :test do

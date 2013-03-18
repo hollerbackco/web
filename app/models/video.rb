@@ -1,5 +1,5 @@
 class Video < ActiveRecord::Base
-  BUCKET_NAME = "hollerback-dev"
+  BUCKET_NAME = "hollerback-app-dev"
   attr_accessible :filename, :user, :conversation
 
   belongs_to :user
