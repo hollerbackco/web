@@ -4,8 +4,18 @@ module HollerbackApp
       haml :index
     end
 
-    get '/wait' do
-      haml :index
+    get '/waitlist' do
+      haml :waitlist
+    end
+
+    post '/waitlist' do
+      waitlister = Waitlister.new(email: params[:email])
+      if waitlister.save
+        haml :thanks
+      else
+        @errors = waitlister.errors
+        haml :waitlist
+      end
     end
   end
 end

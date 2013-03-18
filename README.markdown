@@ -133,18 +133,13 @@ get info about a conversation
 
     params
         access_token*     string
-        s3_key*           string
+        filename*           string
 
     response
         {
           data: {
             id: 18,
-            members: [{},...],
-            invites: [{phone: "+18885558888"}],
-            videos: [{
-              created_at: timestamp,
-              url: "http://url",
-              meta: {}
-            }]
+            user: {..},
+            url: ""
           }
         }
