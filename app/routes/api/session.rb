@@ -2,11 +2,11 @@
 module HollerbackApp
   class ApiApp < BaseApp
     post '/session' do
-      authenticate
+      authenticate(:password)
       {access_token: current_user.access_token, user: current_user}.to_json
     end
 
-    post '/session/unauthenticated' do
+    post '/unauthenticated' do
       {
         meta: {
           error_type: "AuthException",
