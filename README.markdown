@@ -101,6 +101,7 @@ create a conversation
             members: [list of users],
             invites: [{phone: "+18885558888"}],
             videos: [{
+              id: 1,
               created_at: timestamp,
               url: "http://url",
               meta: {}
@@ -137,9 +138,9 @@ get info about a conversation
 
     response
         {
-          data: {
+          data: [{
             id: 18,
             user: {..},
             url: ""
-          }
+          }]
         }
