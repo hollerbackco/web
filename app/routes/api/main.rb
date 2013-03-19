@@ -27,6 +27,8 @@ module HollerbackApp
     # params
     #   invites: array of phone numbers
     post '/me/conversations' do
+      conversation = nil
+
       status = Conversation.transaction do
         conversation = current_user.conversations.create(creator: current_user)
         inviter = Hollerback::ConversationInviter.new(current_user, conversation, params[:invites])
