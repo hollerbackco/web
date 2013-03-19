@@ -13,7 +13,7 @@ module HollerbackApp
       if user.save
         {
           access_token: user.access_token,
-          user: current_user
+          user: user
         }.to_json
       else
         {
