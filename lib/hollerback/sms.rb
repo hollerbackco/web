@@ -10,11 +10,15 @@ module Hollerback
       end
 
       def send_message(recipient, msg)
-        @client.account.sms.messages.create(
-          from: @phone,
-          to: recipient,
-          body: msg
-        )
+        begin
+          @client.account.sms.messages.create(
+            from: @phone,
+            to: recipient,
+            body: msg
+          )
+        rescue
+          true
+        end
       end
 
       def client(sid,token)

@@ -23,10 +23,9 @@ module Hollerback
       end
     end
 
-    private
 
     def parsed_phones
-      phones.map do |phone|
+      self.phones.map do |phone|
         Phoner::Phone.parse(phone, country_code: inviter.phone_country_code, area_code: inviter.phone_area_code).to_s
       end.compact
     end

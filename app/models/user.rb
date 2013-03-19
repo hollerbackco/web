@@ -10,6 +10,7 @@ class User < ActiveRecord::Base
 
   validates :name, presence: true
   validates :email, presence: true, uniqueness: true
+  validates_format_of :email, with: /.+@.+\..+/i
   validates :phone, presence: true, uniqueness: true
   validates :phone_normalized, presence: true, uniqueness: true
 
@@ -27,11 +28,11 @@ class User < ActiveRecord::Base
   end
 
   def phone_area_code
-    phoner.area_code
+    phoner.present? ? phoner.area_code : "858"
   end
 
   def phone_country_code
-    phoner.country_code
+    phoner.present? ? phoner.country_code : "1"
   end
 
   def phoner
