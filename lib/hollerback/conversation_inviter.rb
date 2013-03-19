@@ -1,6 +1,6 @@
 module Hollerback
   class ConversationInviter
-    attr_accessor :inviter, :conversation, :invites
+    attr_accessor :inviter, :conversation, :phones
 
     def initialize(user,convo,numbers)
       self.inviter = user
