@@ -20,8 +20,16 @@ module HollerbackApp
     ########################################
 
     get '/me/conversations' do
-      authenticate(:api_token)
-      { data: {conversations: current_user.conversations} }.to_json
+
+      conversations = current_user.conversations.map do |conversation|
+        {
+          members: conversation.members,
+          invites: conversation.invites,
+          videos: conversation.videos
+        }
+      end
+
+      { data: {conversations: conversations} }.to_json
     end
 
     # params
