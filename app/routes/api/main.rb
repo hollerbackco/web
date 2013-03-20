@@ -22,7 +22,7 @@ module HollerbackApp
     get '/me/conversations' do
 
       conversations = current_user.conversations.map do |conversation|
-        conversation.as_json.merge(
+        conversation.as_json(root: false).merge(
           members: conversation.members,
           invites: conversation.invites,
           videos: conversation.videos
@@ -46,7 +46,7 @@ module HollerbackApp
 
       if status
         {
-          data: conversation.as_json.merge(
+          data: conversation.as_json(root: false).merge(
             members: conversation.members,
             invites: conversation.invites,
             videos: conversation.videos
@@ -61,7 +61,7 @@ module HollerbackApp
       begin
         conversation = current_user.conversations.find(params[:id])
         {
-          data: conversation.as_json.merge(
+          data: conversation.as_json(root: false).merge(
             members: conversation.members,
             invites: conversation.invites,
             videos: conversation.videos
