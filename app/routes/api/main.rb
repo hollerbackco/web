@@ -22,11 +22,11 @@ module HollerbackApp
     get '/me/conversations' do
 
       conversations = current_user.conversations.map do |conversation|
-        {
+        conversation.as_json.merge(
           members: conversation.members,
           invites: conversation.invites,
           videos: conversation.videos
-        }
+        )
       end
 
       { data: {conversations: conversations} }.to_json
@@ -46,11 +46,11 @@ module HollerbackApp
 
       if status
         {
-          data: {
+          data: conversation.as_json.merge(
             members: conversation.members,
             invites: conversation.invites,
             videos: conversation.videos
-          }
+          )
         }.to_json
       else
         {errors: "the conversation could not be created"}.to_json
@@ -61,11 +61,11 @@ module HollerbackApp
       begin
         conversation = current_user.conversations.find(params[:id])
         {
-          data: {
+          data: conversation.as_json.merge(
             members: conversation.members,
             invites: conversation.invites,
             videos: conversation.videos
-          }
+          )
         }.to_json
       rescue ActiveRecord::RecordNotFound
         not_found
