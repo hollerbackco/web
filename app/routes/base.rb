@@ -6,6 +6,8 @@ module HollerbackApp
 
     configure :development do
       enable :logging, :dump_errors, :raise_errors
+
+      ActiveRecord::Base.include_root_in_json = false
     end
 
     before do
