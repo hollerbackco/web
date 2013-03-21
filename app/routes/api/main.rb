@@ -72,6 +72,17 @@ module HollerbackApp
       end
     end
 
+    get '/me/conversations/:conversation_id/invites/:id' do
+      begin
+        conversation = current_user.conversations.find(params[:conversation_id])
+        invite = conversation.invites.find(params[:id])
+        {
+          data: invite
+        }.to_json
+      rescue ActiveRecord::RecordNotFound
+        not_found
+      end
+    end
 
     ########################################
     # videos
