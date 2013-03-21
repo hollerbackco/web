@@ -83,11 +83,46 @@ module HollerbackApp
       end
     end
 
+    get '/me/conversations/:conversation_id/members' do
+      begin
+        conversation = current_user.conversations.find(params[:conversation_id])
+        {
+          data: conversation.members
+        }.to_json
+      rescue ActiveRecord::RecordNotFound
+        not_found
+      end
+    end
+
+    get '/me/conversations/:conversation_id/videos' do
+      begin
+        conversation = current_user.conversations.find(params[:conversation_id])
+        {
+          data: conversation.videos
+        }.to_json
+      rescue ActiveRecord::RecordNotFound
+        not_found
+      end
+    end
+
+
     ########################################
     # videos
     ########################################
 
-    post '/me/conversations/:id/video' do
+    get '/me/conversations/:conversation_id/videos/:id/user' do
+      begin
+        conversation = current_user.conversations.find(params[:conversation_id])
+        video = conversation.videos.find params[:id]
+        {
+          data: video.user
+        }.to_json
+      rescue ActiveRecord::RecordNotFound
+        not_found
+      end
+    end
+
+    post '/me/conversations/:id/videos' do
       if ensure_params(:id, :filename)
         begin
           conversation = current_user.conversations.find(params[:id])
