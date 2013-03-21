@@ -123,7 +123,7 @@ module HollerbackApp
     end
 
     post '/me/conversations/:id/videos' do
-      if ensure_params(:id, :filename)
+      #if ensure_params(:id, :filename)
         begin
           conversation = current_user.conversations.find(params[:id])
 
@@ -138,9 +138,9 @@ module HollerbackApp
         rescue ActiveRecord::RecordNotFound
           not_found
         end
-      else
-        error_json 400, "please specify filename: where the file is located"
-      end
+      #else
+        #error_json 400, "please specify filename: where the file is located"
+      #end
     end
   end
 end
