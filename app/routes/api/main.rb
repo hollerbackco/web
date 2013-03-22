@@ -127,7 +127,7 @@ module HollerbackApp
         begin
           conversation = current_user.conversations.find(params[:id])
 
-          conversation.videos.create(
+          video = conversation.videos.create(
             user: current_user,
             filename: params[:filename]
           )
