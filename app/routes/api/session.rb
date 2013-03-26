@@ -2,6 +2,7 @@
 module HollerbackApp
   class ApiApp < BaseApp
     post '/session' do
+      logout
       authenticate(:password)
       {
         params: params,
