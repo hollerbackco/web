@@ -4,9 +4,10 @@ module HollerbackApp
     post '/session' do
       authenticate(:password)
       {
+        params: params,
         access_token: current_user.access_token,
         user: current_user,
-        session: session.to_json
+        session: session
       }.to_json
     end
 
