@@ -3,7 +3,11 @@ module HollerbackApp
   class ApiApp < BaseApp
     post '/session' do
       authenticate(:password)
-      {access_token: current_user.access_token, user: current_user}.to_json
+      {
+        access_token: current_user.access_token,
+        user: current_user,
+        session: session.to_json
+      }.to_json
     end
 
     post '/unauthenticated' do
