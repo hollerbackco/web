@@ -1,5 +1,5 @@
 class Conversation < ActiveRecord::Base
-  attr_accessible :creator, :invites
+  attr_accessible :creator, :invites, :name
 
   has_many :videos, order: "videos.created_at DESC"
   has_many :memberships
@@ -8,4 +8,9 @@ class Conversation < ActiveRecord::Base
 
   belongs_to :creator, class_name: "User"
 
+  def name
+    member_names = members.map {|member| member.name }
+    auto_name = member_names.join(", ")
+    self[:name] || auto_name
+  end
 end

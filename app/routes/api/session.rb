@@ -5,10 +5,8 @@ module HollerbackApp
       logout
       authenticate(:password)
       {
-        params: params,
         access_token: current_user.access_token,
-        user: current_user,
-        session: session
+        user: current_user
       }.to_json
     end
 
