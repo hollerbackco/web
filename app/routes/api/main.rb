@@ -127,14 +127,25 @@ module HollerbackApp
         begin
           conversation = current_user.conversations.find(params[:id])
 
-          video = conversation.videos.create(
+          video = conversation.videos.build(
             user: current_user,
             filename: params[:filename]
           )
 
-          {
-            data: video
-          }.to_json
+          if video.save
+            people = conversation.members - [current_user]
+
+            people.each do |person|
+              Hollerback::SMS.send_message person.phone_normalized, "#{current_user.name} has sent a message"
+            end
+
+            {
+              data: video
+            }.to_json
+          else
+            error_json 400, "please specify filename: where the file is located"
+          end
+
         rescue ActiveRecord::RecordNotFound
           not_found
         end
