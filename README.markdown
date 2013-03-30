@@ -73,20 +73,27 @@ get an access token
           user: {}
         }
 
-### GET /me
-get a users info
+### GET /me/conversations
+list of conversations
 
     params
         access_token*     string
 
     response
         {
-          name: 'name of user',
-          email: 'email of user',
-          phone: '+18885558888',
-          conversation_ids: []
+          data: [{
+            unread_count: 10,
+            members: [list of users],
+            invites: [{phone: "+18885558888"}],
+            videos: [{
+              isRead: false,
+              id: 1,
+              created_at: timestamp,
+              url: "http://url",
+              meta: {}
+            }]
+          }]
         }
-
 
 ### POST /me/conversations
 create a conversation
@@ -98,9 +105,12 @@ create a conversation
     response
         {
           conversation: {
+            id: 1,
+            unread_count: 10,
             members: [list of users],
             invites: [{phone: "+18885558888"}],
             videos: [{
+              isRead: false,
               id: 1,
               created_at: timestamp,
               url: "http://url",
@@ -135,6 +145,18 @@ get info about a conversation
     params
         access_token*     string
         filename*           string
+
+    response
+        {
+          data: [{
+            id: 18,
+            user: {..},
+            url: ""
+          }]
+        }
+
+### POST /me/videos/:id/read
+mark a video as read
 
     response
         {
