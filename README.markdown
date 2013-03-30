@@ -104,7 +104,7 @@ create a conversation
 
     response
         {
-          conversation: {
+          data: {
             id: 1,
             unread_count: 10,
             members: [list of users],
@@ -132,6 +132,8 @@ get info about a conversation
             members: [list of users],
             invites: [{phone: "+18885558888"}],
             videos: [{
+              isRead: false,
+              id: 1,
               created_at: timestamp,
               url: "http://url",
               meta: {}
@@ -163,10 +165,12 @@ mark a video as read
 
     response
         {
-          data: [{
+          data: {
+            conversation_id: 1,
             id: 18,
+            created_at: timestamp,
             isRead: true,
             user: {..},
             url: ""
-          }]
+          }
         }
