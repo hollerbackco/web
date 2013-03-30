@@ -2,6 +2,8 @@ class Video < ActiveRecord::Base
   BUCKET_NAME = "hollerback-app-dev"
   attr_accessible :filename, :user, :conversation
 
+  acts_as_readable :on => :created_at
+
   belongs_to :user
   belongs_to :conversation
 
@@ -15,6 +17,15 @@ class Video < ActiveRecord::Base
 
   def self.video_urls
     bucket_objects.map {|o| o.url}
+  end
+
+  def read?
+    self[:read_mark_id].present? and read_mark_id.present?
+  end
+
+  def as_json(options={})
+    options = options.merge(:methods => :read?)
+    super(options)
   end
 
   private

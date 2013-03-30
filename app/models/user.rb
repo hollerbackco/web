@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
   attr_accessible :name, :email, :phone,
     :password, :password_confirmation, :phone_normalized
 
+  acts_as_reader
+
   has_many :memberships
   has_many :conversations, through: :memberships
 

@@ -1,7 +1,7 @@
 API for HollerbackApp
 =====================
 
-Api for Hollerback.  Users can register, read and create conversations, and read and add videos
+Users can register, read and create conversations, and read and add videos
 
 
 Server

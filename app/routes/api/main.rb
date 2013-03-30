@@ -20,13 +20,8 @@ module HollerbackApp
     ########################################
 
     get '/me/conversations' do
-
       conversations = current_user.conversations.map do |conversation|
-        conversation.as_json(root: false).merge(
-          members: conversation.members,
-          invites: conversation.invites,
-          videos: conversation.videos
-        )
+        conversation_json conversation
       end
 
       { data: {conversations: conversations} }.to_json
@@ -46,11 +41,7 @@ module HollerbackApp
 
       if status
         {
-          data: conversation.as_json(root: false).merge(
-            members: conversation.members,
-            invites: conversation.invites,
-            videos: conversation.videos
-          )
+          data: conversation_json(conversation)
         }.to_json
       else
         {errors: "the conversation could not be created"}.to_json
@@ -61,11 +52,7 @@ module HollerbackApp
       begin
         conversation = current_user.conversations.find(params[:id])
         {
-          data: conversation.as_json(root: false).merge(
-            members: conversation.members,
-            invites: conversation.invites,
-            videos: conversation.videos
-          )
+          data: conversation_json(conversation)
         }.to_json
       rescue ActiveRecord::RecordNotFound
         not_found
@@ -98,7 +85,7 @@ module HollerbackApp
       begin
         conversation = current_user.conversations.find(params[:conversation_id])
         {
-          data: conversation.videos
+          data: conversation.videos.with_read_marks_for(current_user)
         }.to_json
       rescue ActiveRecord::RecordNotFound
         not_found
@@ -122,36 +109,46 @@ module HollerbackApp
       end
     end
 
+    post '/me/videos/:id/read' do
+      video = Video.find(params[:id])
+
+      if video.mark_as_read! for: current_user
+        {
+          data: video.with_read_marks_for(current_user)
+        }.to_json
+      else
+        error_json 400, "could not mark as read"
+      end
+    end
+
     post '/me/conversations/:id/videos' do
-      #if ensure_params(:id, :filename)
-        begin
-          conversation = current_user.conversations.find(params[:id])
+      begin
+        conversation = current_user.conversations.find(params[:id])
 
-          video = conversation.videos.build(
-            user: current_user,
-            filename: params[:filename]
-          )
+        video = conversation.videos.build(
+          user: current_user,
+          filename: params[:filename]
+        )
 
-          if video.save
-            people = conversation.members - [current_user]
+        if video.save
+          video.mark_as_read! for: current_user
 
-            people.each do |person|
-              Hollerback::SMS.send_message person.phone_normalized, "#{current_user.name} has sent a message"
-            end
+          people = conversation.members - [current_user]
 
-            {
-              data: video
-            }.to_json
-          else
-            error_json 400, "please specify filename: where the file is located"
+          people.each do |person|
+            Hollerback::SMS.send_message person.phone_normalized, "#{current_user.name} has sent a message"
           end
 
-        rescue ActiveRecord::RecordNotFound
-          not_found
+          {
+            data: video
+          }.to_json
+        else
+          error_json 400, "please specify filename: where the file is located"
         end
-      #else
-        #error_json 400, "please specify filename: where the file is located"
-      #end
+
+      rescue ActiveRecord::RecordNotFound
+        not_found
+      end
     end
   end
 end

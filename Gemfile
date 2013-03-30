@@ -13,6 +13,7 @@ gem 'sinatra-contrib'
 gem 'activerecord'
 gem 'sinatra-activerecord'
 gem 'pg'
+gem 'unread'
 
 #views
 gem 'haml'

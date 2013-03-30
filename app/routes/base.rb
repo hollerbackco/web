@@ -2,6 +2,7 @@ module HollerbackApp
   class BaseApp < ::Sinatra::Base
     set :app_root, File.expand_path(".")
     helpers ::Sinatra::Warden::Helpers
+    helpers ::Sinatra::CoreHelpers
     register ::Sinatra::ActiveRecordExtension
 
     configure :development do
