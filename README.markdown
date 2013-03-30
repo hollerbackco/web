@@ -144,7 +144,7 @@ get info about a conversation
 
     params
         access_token*     string
-        filename*           string
+        filename*         string
 
     response
         {
@@ -158,10 +158,14 @@ get info about a conversation
 ### POST /me/videos/:id/read
 mark a video as read
 
+    params
+        access_token*     string
+
     response
         {
           data: [{
             id: 18,
+            isRead: true,
             user: {..},
             url: ""
           }]
