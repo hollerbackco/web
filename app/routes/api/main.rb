@@ -14,6 +14,20 @@ module HollerbackApp
       { data: current_user.as_json.merge(conversations: current_user.conversations)}.to_json
     end
 
+    post '/me' do
+      obj = {}
+      obj[:email] = params[:email] if params.key? :email
+      obj[:name]  = params[:name] if params.key? :name
+      obj[:device_token]  = params[:device_token] if params.key? :device_token
+      obj[:phone]  = params[:phone] if params.key? :phone
+
+      if current_user.update_attributes obj
+        { data: current_user.as_json.merge(conversations: current_user.conversations)}.to_json
+      else
+        error_json 400, "problem updating"
+      end
+    end
+
     ########################################
     # conversations
     ########################################
@@ -135,6 +149,11 @@ module HollerbackApp
           people = conversation.members - [current_user]
 
           people.each do |person|
+            if person.device_token?
+              APNS.send_notification(person.device_token, alert: "#{current_user.name} sent a message", other: {hb: {conversation_id: conversation.id}})
+            else
+              puts "what the heck"
+            end
             Hollerback::SMS.send_message person.phone_normalized, "#{current_user.name} has sent a message"
           end
 

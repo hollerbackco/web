@@ -11,6 +11,12 @@ module HollerbackApp
       ActiveRecord::Base.include_root_in_json = false
     end
 
+    configure do
+      ::APNS.pem = File.join(app_root, 'config', 'apns', 'dev.pem')
+      # this is the file you just created
+      ::APNS.port = 2195
+    end
+
     before do
       logger.info "[params] #{params.inspect}"
     end

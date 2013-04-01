@@ -29,6 +29,7 @@ gem 'phone'
 gem 'twilio-ruby'
 
 #utils
+gem 'apns'
 gem 'bcrypt-ruby'
 gem 'time-lord'
 

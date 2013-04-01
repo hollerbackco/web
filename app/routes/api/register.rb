@@ -7,7 +7,8 @@ module HollerbackApp
         name:     params[:name],
         password: params[:password],
         password_confirmation: params[:password],
-        phone: params[:phone]
+        phone: params[:phone],
+        device_token: params[:device_token]
       })
 
       if user.save
