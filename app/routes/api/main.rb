@@ -14,7 +14,6 @@ module HollerbackApp
       { data: current_user.as_json.merge(conversations: current_user.conversations)}.to_json
     end
 
-
     ########################################
     # conversations
     ########################################
