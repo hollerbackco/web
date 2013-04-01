@@ -149,7 +149,7 @@ module HollerbackApp
           people = conversation.members - [current_user]
 
           people.each do |person|
-            if person.device_token?
+            if person.device_token.present?
               APNS.send_notification(person.device_token, alert: "#{current_user.name} sent a message", other: {hb: {conversation_id: conversation.id}})
             else
               puts "what the heck"
