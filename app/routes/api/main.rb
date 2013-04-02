@@ -154,7 +154,7 @@ module HollerbackApp
             else
               puts "what the heck"
             end
-            Hollerback::SMS.send_message person.phone_normalized, "#{current_user.name} has sent a message"
+            #Hollerback::SMS.send_message person.phone_normalized, "#{current_user.name} has sent a message"
           end
 
           {
