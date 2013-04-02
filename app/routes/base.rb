@@ -18,7 +18,7 @@ module HollerbackApp
     end
 
     configure :production do
-      ::APNS.pem = File.join(app_root, 'config', 'apns', 'apns_dev.pem')
+      ::APNS.pem = File.join(app_root, 'config', 'apns', 'apns_prod.pem')
     end
 
     before do
