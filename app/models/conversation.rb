@@ -13,4 +13,13 @@ class Conversation < ActiveRecord::Base
     auto_name = member_names.join(", ")
     self[:name] || auto_name
   end
+
+  def self.find_by_phone_numbers(user, invites)
+    parsed = Hollerback::ConversationInviter.parse(user,invites)
+    query = Conversation.joins(:invites)
+      .joins(:members)
+      .group("conversations.id")
+      .where("users.phone_normalized IN (?) or invites.phone IN (?)", parsed, parsed)
+      .having("(count(invites.id) + count(users.id)) = ?", parsed.count)
+  end
 end

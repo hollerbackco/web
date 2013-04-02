@@ -43,13 +43,19 @@ module HollerbackApp
     # params
     #   invites: array of phone numbers
     post '/me/conversations' do
-      conversation = nil
+      conversation = Conversation.find_by_phone_numbers(current_user, params[:invites])
 
       status = Conversation.transaction do
-        conversation = current_user.conversations.create(creator: current_user)
-        inviter = Hollerback::ConversationInviter.new(current_user, conversation, params[:invites])
+        if conversation.blank?
+          conversation = current_user.conversations.create(creator: current_user)
+          conversation.members << current_user
 
-        inviter.invite
+          inviter = Hollerback::ConversationInviter.new(current_user, conversation, params[:invites])
+
+          inviter.invite
+        else
+          true
+        end
       end
 
       if status
