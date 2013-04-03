@@ -20,7 +20,8 @@ class Conversation < ActiveRecord::Base
     query = Conversation.joins(:invites)
       .joins(:members)
       .group("conversations.id")
-      .where("users.phone_normalized IN (?) and invites.phone IN (?)", parsed_numbers, parsed_numbers)
+      .where("users.phone_normalized" => parsed_numbers)
+      .where("invites.phone" => parsed_numbers)
       .having("(count(invites.id) + count(users.id)) = ?", parsed_numbers.count).first
   end
 end

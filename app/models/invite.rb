@@ -7,6 +7,8 @@ class Invite < ActiveRecord::Base
   scope :pending, where(accepted: false)
   scope :pending_for_user, lambda {|user| pending.where(phone: user.phone_normalized)}
 
+  validates :phone, presence: true
+
   def accept!
     update_attribute! :accepted, true
   end
