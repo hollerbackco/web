@@ -15,12 +15,12 @@ class Conversation < ActiveRecord::Base
   end
 
   def self.find_by_phone_numbers(user, invites)
-    parsed = Hollerback::ConversationInviter.parse(user,invites)
-    parsed = parsed + [user.phone_normalized]
+    parsed_numbers = Hollerback::ConversationInviter.parse(user,invites)
+    parsed_numbers = parsed_numbers + [user.phone_normalized]
     query = Conversation.joins(:invites)
       .joins(:members)
       .group("conversations.id")
-      .where("users.phone_normalized IN (?) or invites.phone IN (?)", parsed, parsed)
-      .having("(count(invites.id) + count(users.id)) = ?", parsed.count).first
+      .where("users.phone_normalized IN (?) and invites.phone IN (?)", parsed_numbers, parsed_numbers)
+      .having("(count(invites.id) + count(users.id)) = ?", parsed_numbers.count).first
   end
 end
