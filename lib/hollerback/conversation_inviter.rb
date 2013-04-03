@@ -18,7 +18,7 @@ module Hollerback
             inviter: inviter,
             conversation: conversation
           )
-          Hollerback::SMS.send_message phone, "#{inviter.name} has invited you to Hollerback"
+          #Hollerback::SMS.send_message phone, "#{inviter.name} has invited you to Hollerback"
         end
       end
     end
