@@ -45,6 +45,8 @@ module HollerbackApp
     post '/me/conversations' do
       #conversation = Conversation.find_by_phone_numbers(current_user, params[:invites])
 
+      conversation = nil
+
       status = Conversation.transaction do
         unless conversation
           puts conversation
