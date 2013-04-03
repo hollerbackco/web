@@ -20,6 +20,6 @@ class Conversation < ActiveRecord::Base
       .joins(:members)
       .group("conversations.id")
       .where("users.phone_normalized IN (?) or invites.phone IN (?)", parsed, parsed)
-      .having("(count(invites.id) + count(users.id)) = ?", parsed.count)
+      .having("(count(invites.id) + count(users.id)) = ?", parsed.count).first
   end
 end
