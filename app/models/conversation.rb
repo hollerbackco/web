@@ -15,7 +15,8 @@ class Conversation < ActiveRecord::Base
   end
 
   def self.find_by_phone_numbers(user, invites)
-    parsed = Hollerback::ConversationInviter.parse(user,invites)
+    parsed = Hollerback::ConversationInviter.parse(user,invites) 
+    parsed = parsed + [user.phone_normalized]
     query = Conversation.joins(:invites)
       .joins(:members)
       .group("conversations.id")
