@@ -19,6 +19,7 @@ module HollerbackApp
 
     configure :production do
       ::APNS.pem = File.join(app_root, 'config', 'apns', 'apns_prod.pem')
+      ::APNS.host = 'gateway.push.apple.com'
     end
 
     before do
