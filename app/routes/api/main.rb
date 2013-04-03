@@ -43,7 +43,7 @@ module HollerbackApp
     # params
     #   invites: array of phone numbers
     post '/me/conversations' do
-      conversation = Conversation.find_by_phone_numbers(current_user, params[:invites])
+      #conversation = Conversation.find_by_phone_numbers(current_user, params[:invites])
 
       status = Conversation.transaction do
         unless conversation
