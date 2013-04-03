@@ -46,7 +46,7 @@ module HollerbackApp
       conversation = Conversation.find_by_phone_numbers(current_user, params[:invites])
 
       status = Conversation.transaction do
-        if conversation.blank?
+        unless conversation
           conversation = current_user.conversations.create(creator: current_user)
           #conversation.members << current_user
 
