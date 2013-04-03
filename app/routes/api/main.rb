@@ -47,6 +47,7 @@ module HollerbackApp
 
       status = Conversation.transaction do
         unless conversation
+          puts conversation
           conversation = current_user.conversations.create(creator: current_user)
           #conversation.members << current_user
 
