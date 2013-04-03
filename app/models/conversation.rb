@@ -15,8 +15,9 @@ class Conversation < ActiveRecord::Base
   end
 
   def self.find_by_phone_numbers(user, invites)
+    #todo clean this sql up
     parsed_numbers = Hollerback::ConversationInviter.parse(user,invites)
-    parsed_numbers = parsed_numbers + [user.phone_normalized, nil]
+    parsed_numbers = parsed_numbers + [user.phone_normalized]
     query = Conversation
       .joins("LEFT OUTER JOIN invites ON conversations.id = invites.conversation_id")
       .joins("LEFT OUTER JOIN memberships ON memberships.conversation_id = conversations.id")
