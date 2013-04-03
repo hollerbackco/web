@@ -48,7 +48,7 @@ module HollerbackApp
       status = Conversation.transaction do
         if conversation.blank?
           conversation = current_user.conversations.create(creator: current_user)
-          conversation.members << current_user
+          #conversation.members << current_user
 
           inviter = Hollerback::ConversationInviter.new(current_user, conversation, params[:invites])
 
