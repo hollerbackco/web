@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
 
   has_many :memberships
   has_many :conversations, through: :memberships
+  has_many :videos, through: :conversations
 
   before_create :set_access_token
 
@@ -16,6 +17,10 @@ class User < ActiveRecord::Base
   validates_format_of :email, with: /.+@.+\..+/i
   validates :phone, presence: true, uniqueness: true
   validates :phone_normalized, presence: true, uniqueness: true
+
+  def unread_videos
+    videos.unread_by(self)
+  end
 
   def self.authenticate(email, password)
     User.find_by_email(email).try(:authenticate, password)

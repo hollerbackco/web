@@ -156,11 +156,15 @@ module HollerbackApp
 
           people.each do |person|
             if person.device_token.present?
-              APNS.send_notification(person.device_token, alert: "#{current_user.name} sent a message", other: {hb: {conversation_id: conversation.id}})
+              badge_count = person.unread_videos.count
+              APNS.send_notification(person.device_token, alert: "#{current_user.name} sent a message", 
+                                     badge: badge_count,
+                                     sound: "default",
+                                     other: {hb: {conversation_id: conversation.id}})
             else
+              #Hollerback::SMS.send_message person.phone_normalized, "#{current_user.name} has sent a message"
               puts "what the heck"
             end
-            #Hollerback::SMS.send_message person.phone_normalized, "#{current_user.name} has sent a message"
           end
 
           {
