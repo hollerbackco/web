@@ -22,6 +22,10 @@ class User < ActiveRecord::Base
     videos.unread_by(self)
   end
 
+  def member_of
+    Conversation.joins(:members).where("users.id" => [self])
+  end
+
   def self.authenticate(email, password)
     User.find_by_email(email).try(:authenticate, password)
   end
