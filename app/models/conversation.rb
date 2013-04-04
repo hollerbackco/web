@@ -19,7 +19,7 @@ class Conversation < ActiveRecord::Base
   end
 
   def self.find_by_phone_numbers(user, invites)
-    #todo clean this sql up
+    #todo do this with sql
     parsed_numbers = Hollerback::ConversationInviter.parse(user,invites)
     parsed_numbers = parsed_numbers + [user.phone_normalized]
 
