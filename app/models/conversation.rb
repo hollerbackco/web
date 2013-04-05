@@ -24,8 +24,8 @@ class Conversation < ActiveRecord::Base
     parsed_numbers = parsed_numbers + [user.phone_normalized]
 
     user.member_of.keep_if do |conversation|
-      numbers = conversation.members
-      (parsed_numbers - conversation.involved_phones).empty?
+      numbers = conversation.involved_phones
+      parsed_numbers.count == numbers.count && (parsed_numbers - conversation.involved_phones).empty?
     end.first
   end
 end
