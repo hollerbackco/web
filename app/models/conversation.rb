@@ -8,7 +8,7 @@ class Conversation < ActiveRecord::Base
 
   belongs_to :creator, class_name: "User"
 
-  default_scope, order("updated_at DESC")
+  default_scope order("updated_at DESC")
 
   def name
     member_names = members.map {|member| member.name }
