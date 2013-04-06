@@ -78,6 +78,23 @@ module HollerbackApp
       end
     end
 
+    post '/me/conversations/:id/leave' do
+      membership = current_user.memberships.where({
+        conversation_id: params[:id]
+      }).first
+
+      if membership.destroy
+        {
+          meta: {
+            code: 200
+          },
+          data: nil
+        }
+      else
+        error_json 400, "conversation could not be deleted"
+      end
+    end
+
     get '/me/conversations/:conversation_id/invites' do
       begin
         conversation = current_user.conversations.find(params[:conversation_id])
@@ -139,6 +156,7 @@ module HollerbackApp
         error_json 400, "could not mark as read"
       end
     end
+
 
     post '/me/conversations/:id/videos' do
       begin
