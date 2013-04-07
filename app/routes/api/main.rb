@@ -150,7 +150,7 @@ module HollerbackApp
 
       if video.mark_as_read! for: current_user
         {
-          data: video.with_read_marks_for(current_user)
+          data: video
         }.to_json
       else
         error_json 400, "could not mark as read"
