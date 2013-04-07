@@ -89,7 +89,7 @@ module HollerbackApp
             code: 200
           },
           data: nil
-        }
+        }.to_json
       else
         error_json 400, "conversation could not be deleted"
       end
