@@ -32,6 +32,7 @@ gem 'twilio-ruby'
 gem 'apns'
 gem 'bcrypt-ruby'
 gem 'time-lord'
+gem 'i18n'
 
 #assets
 gem 'sprockets'
@@ -39,6 +40,7 @@ gem 'sprockets-helpers'
 gem 'sprockets-sass'
 gem 'coffee-script'
 gem 'compass'
+gem 'handlebars_assets'
 
 group :development do
   gem 'rerun'

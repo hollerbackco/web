@@ -1,7 +1,11 @@
 module HollerbackApp
   class WebApp < BaseApp
     get '/' do
-      haml :index
+      haml :index, layout: false
+    end
+
+    get '/video' do
+      haml :video
     end
 
     get '/waitlist' do
@@ -16,6 +20,10 @@ module HollerbackApp
         @errors = waitlister.errors
         haml :waitlist
       end
+    end
+
+    get '/client' do
+      haml :client, layout: false
     end
   end
 end

@@ -15,22 +15,13 @@
 
     %title= "testing"
     %meta{ :name => "description", :content => "" }/
-    %meta{ :name => "keywords", :content => t("meta.description") }/
+    %meta{ :name => "keywords", :content => "" }/
     %meta{ :name => "viewport", :content => "width=device-width, initial-scale=1, maximum-scale=1.0" }/
     %meta{ :name => "apple-mobile-web-app-capable", :content => "yes"}
     %meta{ :name => "apple-mobile-web-app-status-bar-style", :content => "black"}
 
-    = stylesheet_tag "landing"
-    = javascript_tag "landing"
-
-    :javascript
-      window.addEventListener("load",function() {
-        // Set a timeout...
-        setTimeout(function(){
-          // Hide the address bar!
-          window.scrollTo(0, 1);
-        }, 0);
-      });
+    = stylesheet_tag "web"
+    = javascript_tag "web"
 
   %body
     .container
@@ -38,10 +29,10 @@
         %h1.title.clearfix
           = image_tag "hollerback-logo.png"
           .subtitle free video messaging
+      %section#main
 
-    -#  asynchronous google analytics: mathiasbynens.be/notes/async-analytics-snippet
     :javascript
-      var _gaq=[["_setAccount","UA-XXXXX-X"],["_trackPageview"],["_trackPageLoadTime"]];
-      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
-      g.src=("https:"==location.protocol?"//ssl":"//www")+".google-analytics.com/ga.js";
-      s.parentNode.insertBefore(g,s)}(document,"script"));
+      $(document).ready(function() {
+        var mainView = new MainView({el: "#main"})
+      });
+

@@ -5,8 +5,17 @@ module HollerbackApp
     helpers ::Sinatra::CoreHelpers
     register ::Sinatra::ActiveRecordExtension
 
+    helpers do
+      def t(*args)
+        I18n.t(*args)
+      end
+    end
+
     configure do
       ActiveRecord::Base.include_root_in_json = false
+      I18n.load_path = Dir[File.join(settings.app_root, 'config', 'locales', '*.yml')]
+      #I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
+      #I18n.backend.load_translations
     end
 
     configure :development do

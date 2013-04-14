@@ -22,6 +22,8 @@ module HollerbackApp
         sprockets.append_path(File.join(settings.vendors_path, directory))
       end
 
+      #sprockets.append_path HandlebarsAssets.path
+
       sprockets.context_class.instance_eval do
         include ::Sinatra::Assets::Helpers
       end
@@ -70,7 +72,7 @@ module HollerbackApp
       require 'yui/compressor'
       require 'uglifier'
       sprockets.css_compressor = YUI::CssCompressor.new
-      sprockets.js_compressor  = Uglifier.new(mangle: true)
+      #sprockets.js_compressor  = Uglifier.new(mangle: true)
     end
 
     helpers ::Sinatra::Assets::Helpers
