@@ -35,7 +35,10 @@
   %body#welcome-splash
     .container
       %section
-        %h1.logo=image_tag "welcome-hollerback-logo.png"
+        %h1.logo
+          =image_tag "banana-logo.png"
+        %h2.logo
+          =image_tag "welcome-hollerback-logo.png"
         %h2= t("meta.description")
         %a.button.primary{:href => "#invite-modal", "data-toggle" => "modal"}= t("splash.primary")
     %footer= image_tag "iphone.png"

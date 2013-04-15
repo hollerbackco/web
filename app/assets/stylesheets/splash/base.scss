@@ -17,10 +17,7 @@ form {
 
 #welcome-splash {
   text-align: center;
-  background: image_url('splash-bg.jpg') no-repeat center center fixed;
-  -webkit-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
+  background: #10a6e9;
 
   h1 {
     margin-bottom: 0;
@@ -73,17 +70,17 @@ form {
     font-weight: 400;
     font-family: "helvetica neue", helvetica, sans-serif;
     font-size: 24px;
-    border: 1px solid #1282ba;
+    border: 1px solid #ecd70e;
     -webkit-box-shadow: inset 0 1px 1px rgba(255,255,255,0.8);
     -moz-box-shadow: inset 0 1px 1px rgba(255,255,255,0.8);
     box-shadow: inset 0 1px 1px rgba(255,255,255,0.8);
-    color: #FFF;
-    background-color: #3995c3;
-    background-image: -moz-linear-gradient(top, #009eed, #08c);
-    background-image: -ms-linear-gradient(top, #009eed, #08c);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#009eed), to(#08c));
-    background-image: -webkit-linear-gradient(top, #009eed, #08c);
-    background-image: -o-linear-gradient(top, #009eed, #08c);
+    color: #333;
+    background-color: #ffeb29;
+    background-image: -moz-linear-gradient(top, #ffeb29, #ecd70e);
+    background-image: -ms-linear-gradient(top, #ffeb29, #ecd70e);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffeb29), to(#ecd70e));
+    background-image: -webkit-linear-gradient(top, #ffeb29, #ecd70e);
+    background-image: -o-linear-gradient(top, #ffeb29, #ecd70e);
     background-image: linear-gradient(top, #009eed, #08c);
     background-repeat: repeat-x;
     -ms-filter: "progid:DXImageTransform.Microsoft.gradient( startColorstr=#ff009eed, endColorstr=#ff88bd32, GradientType=0 )";
