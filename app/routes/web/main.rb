@@ -22,6 +22,21 @@ module HollerbackApp
       end
     end
 
+    post '/waitlist.json' do
+      waitlister = Waitlister.new(email: params[:email])
+      if waitlister.save
+        {
+          :success => true
+        }.to_json
+      else
+        @errors = waitlister.errors
+        {
+          :success => false,
+          :msg => waitlister.errors.first
+        }.to_json
+      end
+    end
+
     get '/client' do
       haml :client, layout: false
     end

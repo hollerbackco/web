@@ -21,7 +21,7 @@
     %meta{ :name => "apple-mobile-web-app-status-bar-style", :content => "black"}
 
     = stylesheet_tag "splash"
-    -#= javascript_tag "splash"
+    = javascript_tag "web"
 
     :javascript
       window.addEventListener("load",function() {
@@ -37,10 +37,66 @@
       %section
         %h1.logo=image_tag "welcome-hollerback-logo.png"
         %h2= t("meta.description")
-        .button.primary= t("splash.primary")
+        %a.button.primary{:href => "#invite-modal", "data-toggle" => "modal"}= t("splash.primary")
     %footer= image_tag "iphone.png"
+    #invite-modal.modal
+      .modal-header
+        %h3 let me know when hollerback is ready
+      .modal-body
+        %form#invite-form{method: "POST", action: "/waitlist.json"}
+          %ul.error-messages
+          %input{type: "text", name: "email", placeholder: "email"}
+          %input.button.primary{type: "submit", value: "get an invite"}
 
     :javascript
+      $(".modal").modal().modal("hide");
+
+      var errorDiv = $(".error-messages");
+      var addErrorMessage = function(msg,cssClass) {
+        errorDiv.html("");
+        var li = $("<li />");
+        li.addClass(cssClass);
+        li.html(msg);
+        errorDiv.append(li);
+      };
+
+      var sendInvite = function(event) {
+        event.preventDefault();
+
+        var url = $(this).attr("action");
+        var email = $("input[name=email]").val()
+
+        if(email !== "") {
+
+          var promise = $.ajax({
+            url: url,
+            method: "post",
+            dataType: "json",
+            data: {
+              email: email
+            }
+          });
+
+          promise.done(function(message) {
+            if(message.success) {
+              addErrorMessage(message.msg[1], "success");
+            } else {
+              addErrorMessage(message.msg[1], "success");
+            };
+          });
+
+          promise.error(function() {
+            addErrorMessage("could not add your email", "error");
+          });
+
+        } else {
+          addErrorMessage("please enter an email", "error");
+        }
+
+      }
+
+      $("#invite-modal form").submit(sendInvite);
+
       var _gaq=[["_setAccount","UA-XXXXX-X"],["_trackPageview"],["_trackPageLoadTime"]];
       (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
       g.src=("https:"==location.protocol?"//ssl":"//www")+".google-analytics.com/ga.js";
