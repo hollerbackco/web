@@ -112,6 +112,7 @@ form {
     margin: 0;
     width: 50%;
     min-width: 400px;
+    min-height: 638px;
     height: 100%;
     bottom: 0;
     right: 0;
@@ -122,12 +123,11 @@ form {
       display: block;
       position: absolute;
       width: 60%;
-      padding: 20% 20% 0;
+      padding: 120px 20% 0;
       top: 0;
     }
   }
 }
-
 
 .modal-backdrop {
   position: fixed;
