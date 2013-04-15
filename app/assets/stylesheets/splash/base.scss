@@ -70,21 +70,21 @@ form {
     font-weight: 400;
     font-family: "helvetica neue", helvetica, sans-serif;
     font-size: 24px;
-    border: 1px solid #ecd70e;
+    border: 1px solid #f9e200;
     -webkit-box-shadow: inset 0 1px 1px rgba(255,255,255,0.8);
     -moz-box-shadow: inset 0 1px 1px rgba(255,255,255,0.8);
     box-shadow: inset 0 1px 1px rgba(255,255,255,0.8);
-    color: #333;
-    background-color: #ffeb29;
-    background-image: -moz-linear-gradient(top, #ffeb29, #ecd70e);
-    background-image: -ms-linear-gradient(top, #ffeb29, #ecd70e);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffeb29), to(#ecd70e));
-    background-image: -webkit-linear-gradient(top, #ffeb29, #ecd70e);
-    background-image: -o-linear-gradient(top, #ffeb29, #ecd70e);
-    background-image: linear-gradient(top, #009eed, #08c);
+    color: #222;
+    background-color: #f9e200;
+    background-image: -moz-linear-gradient(top, #ffeb29, #f9e200);
+    background-image: -ms-linear-gradient(top, #feef63, #f9e200);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#feef63), to(#f9e200));
+    background-image: -webkit-linear-gradient(top, #feef63, #f9e200);
+    background-image: -o-linear-gradient(top, #feef63, #f9e200);
+    background-image: linear-gradient(top, #feef63, #ffeb29);
     background-repeat: repeat-x;
     -ms-filter: "progid:DXImageTransform.Microsoft.gradient( startColorstr=#ff009eed, endColorstr=#ff88bd32, GradientType=0 )";
-    text-shadow: 0 1px 0 #256c90;
+    text-shadow: 0 1px 0 #999;
     padding: 13px 60px 18px 60px;
     border-radius: 10px;
 
@@ -95,9 +95,12 @@ form {
 
   section {
     float: left;
-    padding-top: 150px;
+    padding-top: 120px;
     width: 50%;
 
+    h2 img {
+      width: 100%;
+    }
     .button {
       margin-top: 50px;
     }

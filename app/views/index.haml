@@ -37,6 +37,7 @@
       %section
         %h1.logo
           =image_tag "banana-logo.png"
+
         %h2.logo
           =image_tag "welcome-hollerback-logo.png"
         %h2= t("meta.description")
@@ -44,12 +45,12 @@
     %footer= image_tag "iphone.png"
     #invite-modal.modal
       .modal-header
-        %h3 let me know when hollerback is ready
+        %h3 hollerback will be ready soon
       .modal-body
         %form#invite-form{method: "POST", action: "/waitlist.json"}
           %ul.error-messages
-          %input{type: "text", name: "email", placeholder: "email"}
-          %input.button.primary{type: "submit", value: "get an invite"}
+          %input{type: "text", name: "email", placeholder: "enter your email"}
+          %input.button.primary{type: "submit", value: "let me know"}
 
     :javascript
       $(".modal").modal().modal("hide");
