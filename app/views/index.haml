@@ -13,7 +13,7 @@
     -# Remove this if you use the .htaccess
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "IE=edge,chrome=1" }/
 
-    %title= "Hollerback: Video Messaging App"
+    %title= t("meta.title")
     %meta{ :name => "description", :content => t("meta.description") }/
     %meta{ :name => "keywords", :content => t("meta.keywords") }/
     %meta{ :name => "viewport", :content => "width=device-width, initial-scale=1, maximum-scale=1.0" }/
@@ -38,12 +38,11 @@
       %section
         %h1.logo
           =image_tag "banana-logo.png"
-
         %h2.logo
           =image_tag "welcome-hollerback-logo.png"
         %h2= t("meta.description")
         %a.button.primary{:href => "#invite-modal", "data-toggle" => "modal"}= t("splash.primary")
-    %footer= image_tag "iphone.png"
+    -#%footer= image_tag "iphone.png"
     #invite-modal.modal
       .modal-header
         %h3 hollerback will be ready soon

@@ -94,9 +94,11 @@ form {
   }
 
   section {
-    float: left;
+    /*float: left;*/
+    /*width: 50%;*/
     padding-top: 120px;
-    width: 50%;
+    margin: 0 auto;
+    max-width: 500px;
 
     h2 img {
       width: 100%;
