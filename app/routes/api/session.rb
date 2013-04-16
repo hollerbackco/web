@@ -14,6 +14,7 @@ module HollerbackApp
     end
 
     post '/unauthenticated' do
+      status 403
       {
         meta: {
           error_type: "AuthException",

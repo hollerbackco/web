@@ -15,13 +15,19 @@ set :logging, false
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods
+  config.include Warden::Test::Helpers
   config.include SmsSpec::Helpers
   config.include SmsSpec::Matchers
+
+  config.after(:each) do
+    Warden.test_reset!
+  end
 
   config.before(:suite) do
     ActiveRecord::Migrator.migrate(
       'db/migrate', nil
     )
+    ActiveRecord::Base.logger = nil
 
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)

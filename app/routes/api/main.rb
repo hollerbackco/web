@@ -15,19 +15,17 @@ module HollerbackApp
     end
 
     post '/me' do
-      puts "start me"
       obj = {}
       obj[:email] = params["email"] if params.key? "email"
       obj[:name]  = params["name"] if params.key? "name"
       obj[:device_token]  = params["device_token"] if params.key? "device_token"
       obj[:phone]  = params["phone"] if params.key? "phone"
 
-      puts "obj: %s" % obj
       if current_user.update_attributes obj
-        puts "current_user: %s" % current_user
+        puts "current_user: %s" % current_user.inspect
         { data: current_user.as_json.merge(conversations: current_user.conversations)}.to_json
       else
-        p current_user.errors
+        status 400
         error_json 400, "problem updating"
       end
     end
