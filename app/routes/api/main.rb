@@ -22,7 +22,6 @@ module HollerbackApp
       obj[:phone]  = params["phone"] if params.key? "phone"
 
       if current_user.update_attributes obj
-        puts "current_user: %s" % current_user.inspect
         { data: current_user.as_json.merge(conversations: current_user.conversations)}.to_json
       else
         status 400
@@ -48,7 +47,6 @@ module HollerbackApp
       conversation = Conversation.find_by_phone_numbers(current_user, params[:invites])
       status = Conversation.transaction do
         unless conversation
-          puts conversation
           conversation = current_user.conversations.create(creator: current_user)
           #conversation.members << current_user
 
@@ -151,10 +149,12 @@ module HollerbackApp
       video = Video.find(params[:id])
 
       if video.mark_as_read! for: current_user
+        p video
         {
           data: video
         }.to_json
       else
+        p "error"
         error_json 400, "could not mark as read"
       end
     end

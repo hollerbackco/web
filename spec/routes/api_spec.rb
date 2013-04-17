@@ -29,10 +29,21 @@ describe 'API ROUTES |' do
       password: "testtest",
       phone: "+18886664444"
     )
+
+    @user.conversations.create()
+
+    @second_user ||= User.create!(
+      name: "second user",
+      email: "second@test.com",
+      password: "secondtest",
+      phone: "+18886668888"
+    )
   end
 
   let(:subject) { @user }
+  let(:secondary_subject) { @second_user }
   let(:access_token) { @user.access_token }
+  let(:second_token) { @second_user.access_token }
 
   it 'shows an index' do
     get ''
@@ -70,12 +81,53 @@ describe 'API ROUTES |' do
 
 
   it 'GET me/conversations | gets users conversations' do
-    post '/me/conversations', :access_token => access_token
-    result = JSON.parse(last_response.body)
+    get '/me/conversations', :access_token => access_token
 
-    conversations == result['data']['conversations']
+    result = JSON.parse(last_response.body)
+    conversations = result['data']['conversations']
 
     last_response.should be_ok
     conversations.should be_a_kind_of(Array)
+  end
+
+  it 'POST me/conversations | create a conversation' do
+    post '/me/conversations', :access_token => access_token, "invites[]" => "+18886668888"
+
+    result = JSON.parse(last_response.body)
+
+    last_response.should be_ok
+    subject.conversations.reload.count.should == 2
+  end
+
+  it 'GET me/conversations/:id | get a specific conversation' do
+    get '/me/conversations/1', :access_token => access_token
+
+    result = JSON.parse(last_response.body)
+    last_response.should be_ok
+    result['data']['name'].should == subject.conversations.find(1).name
+  end
+
+  it 'post me/conversations/:id/leave | leave a group' do
+    expect{subject.conversations.find(1)}.to_not raise_error(::ActiveRecord::RecordNotFound)
+    post '/me/conversations/1/leave', access_token: access_token
+
+    expect{subject.conversations.reload.find(1)}.to raise_error(::ActiveRecord::RecordNotFound)
+  end
+
+  it 'post me/conversations/:id/videos | sends a video' do
+    post '/me/conversations/2/videos', access_token: access_token, filename: 'video1.mp4'
+
+    last_response.should be_ok
+    subject.conversations.find(2).videos.first.filename.should == "video1.mp4"
+  end
+
+  it 'post me/videos/:id/read | user reads a video' do
+    post '/me/conversations/2/videos', access_token: second_token, filename: 'video2.mp4'
+    video = subject.conversations.find(2).videos.first
+    video.unread?(subject).should be_true
+
+    post "/me/videos/#{video.id}/read", access_token: access_token
+    last_response.should be_ok
+    video.reload.unread?(subject).should be_false
   end
 end

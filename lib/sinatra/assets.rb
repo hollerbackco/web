@@ -4,14 +4,13 @@ module Sinatra
   module Assets
     module Helpers
       def stylesheet_tag(source)
-        source = production? ? "#{source}.min.css" : "#{source}.css"
-
-        "<link href=\"#{stylesheet_path(source)}\" rel=\"stylesheet\" />"
+        source_name = source_name_for(source, "css")
+        "<link href=\"#{stylesheet_path(source_name)}\" rel=\"stylesheet\" />"
       end
 
       def javascript_tag(source)
-        source = production? ? "#{source}.min.js" : "#{source}.js"
-        "<script src=\"#{javascript_path(source)}\"></script>"
+        source_name = source_name_for(source, "js")
+        "<script src=\"#{javascript_path(source_name)}\"></script>"
       end
 
       def image_tag(source)
@@ -22,6 +21,12 @@ module Sinatra
 
       def video_tag(source)
         "<video width=100% controls><source src=\"#{source}\" type=\"video/mp4\"/></video>"
+      end
+
+      private
+
+      def source_name_for(source, ext)
+        source = production? ? "#{source}.min.#{ext}" : "#{source}.#{ext}"
       end
     end
   end

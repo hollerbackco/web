@@ -49,6 +49,8 @@ group :development do
   gem 'guard-sprockets2'
   gem 'yui-compressor'
   gem 'uglifier'
+  gem 'reek'
+  gem 'flay'
 end
 
 group :test do
