@@ -128,7 +128,6 @@ module HollerbackApp
       end
     end
 
-
     ########################################
     # videos
     ########################################
@@ -158,7 +157,6 @@ module HollerbackApp
         error_json 400, "could not mark as read"
       end
     end
-
 
     post '/me/conversations/:id/videos' do
       begin
