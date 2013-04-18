@@ -7,6 +7,8 @@ class Video < ActiveRecord::Base
   belongs_to :user
   belongs_to :conversation
 
+  default_scope order("created_at DESC")
+
   def url
     video_object.url
   end

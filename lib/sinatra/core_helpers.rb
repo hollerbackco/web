@@ -17,12 +17,13 @@ module Sinatra
     end
 
     def conversation_json(conversation)
-      conversation.as_json(root: false).merge(
-        unread_count: conversation.videos.unread_by(current_user).count,
-        members: conversation.members,
-        invites: conversation.invites,
-        videos: conversation.videos.with_read_marks_for(current_user)
-      )
+      obj = conversation.as_json(root: false).merge({
+        "unread_count" => conversation.videos.unread_by(current_user).count,
+        "name" => conversation.name(current_user),
+        "members" => conversation.members,
+        "invites" => conversation.invites,
+        "videos" => conversation.videos.with_read_marks_for(current_user)
+      })
     end
 
     def error_json(error_code, msg)

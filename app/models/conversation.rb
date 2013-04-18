@@ -10,8 +10,11 @@ class Conversation < ActiveRecord::Base
 
   default_scope order("updated_at DESC")
 
-  def name
+  def name(disclude_user=nil)
     member_names = members.map {|member| member.name }
+    if disclude_user.present?
+      member_names = member_names - [disclude_user.name]
+    end
     auto_name = member_names.join(", ")
     self[:name] || auto_name
   end

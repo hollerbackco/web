@@ -30,7 +30,7 @@ describe 'API ROUTES |' do
       phone: "+18886664444"
     )
 
-    @user.conversations.create()
+    @conversation = @user.conversations.create
 
     @second_user ||= User.create!(
       name: "second user",
@@ -42,6 +42,7 @@ describe 'API ROUTES |' do
 
   let(:subject) { @user }
   let(:secondary_subject) { @second_user }
+  let(:conversation) { @conversation }
   let(:access_token) { @user.access_token }
   let(:second_token) { @second_user.access_token }
 
@@ -100,11 +101,11 @@ describe 'API ROUTES |' do
   end
 
   it 'GET me/conversations/:id | get a specific conversation' do
-    get '/me/conversations/1', :access_token => access_token
+    get "/me/conversations/#{conversation.id}", :access_token => access_token
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
-    result['data']['name'].should == subject.conversations.find(1).name
+    result['data']['name'].should == subject.conversations.find(1).name(subject)
   end
 
   it 'post me/conversations/:id/leave | leave a group' do
@@ -115,14 +116,13 @@ describe 'API ROUTES |' do
   end
 
   it 'post me/conversations/:id/videos | sends a video' do
-    post '/me/conversations/2/videos', access_token: access_token, filename: 'video1.mp4'
+    post '/me/conversations/2/videos', access_token: second_token, filename: 'video1.mp4'
 
     last_response.should be_ok
-    subject.conversations.find(2).videos.first.filename.should == "video1.mp4"
+    secondary_subject.conversations.find(2).videos.first.filename.should == "video1.mp4"
   end
 
   it 'post me/videos/:id/read | user reads a video' do
-    post '/me/conversations/2/videos', access_token: second_token, filename: 'video2.mp4'
     video = subject.conversations.find(2).videos.first
     video.unread?(subject).should be_true
 
