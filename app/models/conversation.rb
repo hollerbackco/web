@@ -15,7 +15,7 @@ class Conversation < ActiveRecord::Base
     if disclude_user.present?
       member_names = member_names - [disclude_user.name]
     end
-    auto_name = member_names.join(", ")
+    auto_name = member_names.any? ? member_names.join(", ") : "(#{invites.count}) Invited"
     self[:name] || auto_name
   end
 
