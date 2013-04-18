@@ -13,7 +13,7 @@ class Conversation < ActiveRecord::Base
   def name(disclude_user=nil)
     member_names = members.map {|member| name = member.name.split(" ");  name.first }
     if disclude_user.present?
-      member_names = member_names - [disclude_user.name]
+      member_names = member_names - [disclude_user.name.split(" ").first]
     end
     auto_name = member_names.any? ? member_names.join(", ") : "(#{invites.count}) Invited"
     self[:name] || auto_name
