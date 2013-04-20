@@ -18,21 +18,13 @@ module HollerbackApp
       #I18n.backend.load_translations
     end
 
-    configure :development do
-      enable :logging, :dump_errors, :raise_errors
-    end
-
-    configure :development do
+    configure :development, :staging do
       ::APNS.pem = File.join(app_root, 'config', 'apns', 'apns_dev.pem')
     end
 
     configure :production do
       ::APNS.pem = File.join(app_root, 'config', 'apns', 'apns_prod.pem')
       ::APNS.host = 'gateway.push.apple.com'
-    end
-
-    before do
-      logger.info "[params] #{params.inspect}"
     end
   end
 end

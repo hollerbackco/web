@@ -1,5 +1,10 @@
 class Video < ActiveRecord::Base
-  BUCKET_NAME = "hollerback-app-dev"
+  if production?
+    BUCKET_NAME = "hollerback-app"
+  else
+    BUCKET_NAME = "hollerback-app-dev"
+  end
+
   attr_accessible :filename, :user, :conversation
 
   acts_as_readable :on => :created_at
