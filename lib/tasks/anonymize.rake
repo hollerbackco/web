@@ -47,7 +47,8 @@ namespace :db do
         puts "Anonymizing all name and email records in the #{Rails.env} database."
 
         User.find(:all).each do |user|
-          #user.email = Anonymizer.random_email(user.username)
+          #user.username = Anonymizer.random_username
+          user.email = Anonymizer.random_email(user.name)
           user.device_token = nil
           puts "Saving #{user.email}"
           user.save
