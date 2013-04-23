@@ -64,6 +64,10 @@ module HollerbackApp
         # write the digested files out to public/assets (makes it so Nginx can serve them directly)
         config.manifest.compile(%w(style.css) | javascript_files | images)
       end
+
+      use OmniAuth::Builder do
+        provider :twitter, ENV['TWITTER_KEY'], ENV['TWITTER_SECRET']
+      end
     end
 
     # we are deploying to heroku, which does not have a JVM, which YUI needs, so let's

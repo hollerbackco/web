@@ -1,5 +1,12 @@
 module HollerbackApp
   class WebApp < BaseApp
+
+    helpers do
+      def omniauth
+        @omniauth ||= request.env["omniauth.auth"] 
+      end
+    end
+
     get '/' do
       haml :index, layout: false
     end
@@ -10,6 +17,40 @@ module HollerbackApp
 
     get '/waitlist' do
       haml :waitlist
+    end
+
+    ['/glass', '/glass/:from_name'].each do |path|
+      get path do
+        if params.key? "from_name"
+          session[:from] = params[:from_name]
+        end
+
+        haml :glass, layout: :pledge
+      end
+    end
+
+    get '/auth/:provider/callback' do
+      pledger = Pledger.where(username: omniauth[:info][:nickname]).first_or_create do |p|
+        p.name = omniauth[:info][:name]
+        p.username = omniauth[:info][:nickname]
+        p.auth_token = omniauth[:credentials][:token]
+        p.auth_secret = omniauth[:credentials][:secret]
+        p.meta =  omniauth[:extra][:raw_info].as_json
+
+        if session.key? :from
+          if from = Pledger.where(username: session[:from]).first
+            p.parent_id = from.id
+          end
+        end
+      end
+      redirect to("/pledge/#{pledger.username}")
+    end
+
+    get "/pledge/:username" do
+
+      @pledger = Pledger.where(username: params[:username]).first
+
+      haml :entries, layout: :pledge
     end
 
     post '/waitlist' do

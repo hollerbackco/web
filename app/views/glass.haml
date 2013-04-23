@@ -1,0 +1,13 @@
+%section.description
+  %h2.smaller= t("glass.description")
+%section.clearfix
+  .steps
+    .step1.step
+      %h3 step 1
+      %a.button.primary{:href => "/auth/twitter"}= t("glass.primary")
+    .step2.step
+      %h3 step 2
+      %p.explanation= t "glass.step2.description"
+  .example.tweet-sample
+    = image_tag "tweet.png"
+

@@ -4,3 +4,14 @@ en:
     description:  this is going to be fun
   splash:
     primary: tell me more
+  glass:
+    description: will you help us launch Hollerback to the world?
+    primary: Log In with Twitter
+    step2:
+      description: We'll send a single tweet from your account on the day of the launch
+    thanks: Thanks from your friends on the Hollerback Team
+  entries:
+    explanation_html: |
+      Share this unique link to earn more entries.
+      <br />
+      Friends and the people they invite both count as an entry.

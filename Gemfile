@@ -13,13 +13,18 @@ gem 'sinatra-contrib'
 gem 'activerecord'
 gem 'sinatra-activerecord'
 gem 'pg'
+
+#model
 gem 'unread'
+gem 'awesome_nested_set'
 
 #views
 gem 'haml'
 
 #authentication
 gem 'warden'
+gem 'omniauth'
+gem 'omniauth-twitter'
 
 #storage
 gem 'aws-s3'
