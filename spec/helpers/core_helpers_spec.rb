@@ -36,6 +36,6 @@ describe 'Core helpers' do
   it "creates the correct json object" do
     obj = subject.conversation_json(@conversation)
 
-    obj["name"].should == ""
+    obj["name"].should == "(0) Invited"
   end
 end

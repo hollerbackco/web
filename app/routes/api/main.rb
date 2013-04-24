@@ -29,6 +29,15 @@ module HollerbackApp
       end
     end
 
+    post '/me/verify' do
+      if current_user.verify! params["code"]
+        { data: current_user.as_json.merge(conversations: current_user.conversations)}.to_json
+      else
+        status 400
+        error_json 400, "incorrect code"
+      end
+    end
+
     ########################################
     # conversations
     ########################################
@@ -148,7 +157,6 @@ module HollerbackApp
       video = Video.find(params[:id])
 
       if video.mark_as_read! for: current_user
-        p video
         {
           data: video
         }.to_json

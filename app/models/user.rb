@@ -11,6 +11,7 @@ class User < ActiveRecord::Base
   has_many :videos, through: :conversations
 
   before_create :set_access_token
+  before_create :set_verification_code
 
   validates :name, presence: true
   validates :email, presence: true, uniqueness: true
@@ -51,6 +52,24 @@ class User < ActiveRecord::Base
     @phoner ||= Phoner::Phone.parse(phone_normalized)
   end
 
+  def verified?
+    self.verification_code.blank?
+  end
+  alias_method :isVerified, :verified?
+
+  def verify!(code)
+    if self.verification_code == code
+      self.verification_code = nil
+      save!
+    end
+    verified?
+  end
+
+  def as_json(options={})
+    options = options.merge(:methods => :isVerified)
+    super(options)
+  end
+
   private
 
   def set_access_token
@@ -58,6 +77,10 @@ class User < ActiveRecord::Base
       access_token = ::Hollerback::Random.friendly_token(40)
       break access_token unless User.find_by_access_token(access_token)
     end
+  end
+
+  def set_verification_code
+    self.verification_code = SecureRandom.hex(3)
   end
 
 end
