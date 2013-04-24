@@ -5,7 +5,9 @@ en:
   splash:
     primary: tell me more
   glass:
-    description: will you help us launch Hollerback to the world?
+    description: |
+      Help us launch Hollerback.
+      Win Google Glass.
     primary: Log In with Twitter
     step2:
       description: We'll send a single tweet from your account on the day of the launch

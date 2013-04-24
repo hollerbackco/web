@@ -1,5 +1,12 @@
+%section.sharing
+  %h3= t "entries.explanation_html"
+  %input{type: "text", value: "hollerback.co/glass/#{@pledger.username}"}
+  .share-buttons
+    %a{href: "http://twitter.com/share?text=Win a pair of glass&url=http://www.hollerback.co/glass/#{@pledger.username}"}= image_tag "share-tw.png"
+    %a{href: "http://www.facebook.com/dialog/feed?app_id=401561826617889&link=http://www.hollerback.co/glass/#{@pledger.username}&redirect_uri=http://hollerback.co/pledge/#{@pledger.username}"}
+      = image_tag "share-fb.png"
 %section.entries
-  %h2.smaller Thanks! Below are your entries to win.
+  %h2.smaller Below are your entries to win.
   .entries-summary
     .row.entries-count
       %span.count= @pledger.entries_count
@@ -13,10 +20,3 @@
     .row.total-entries
       %span.label Total Entries:
       %span.count= @pledger.total_count
-
-%section.sharing
-  %h3= t "entries.explanation_html"
-  %input{type: "text", value: "hollerback.co/glass/#{@pledger.username}"}
-  .share-buttons
-    = image_tag "share-tw.png"
-    = image_tag "share-fb.png"

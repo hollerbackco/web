@@ -1,12 +1,15 @@
-%section.description
-  %h2.smaller= t("glass.description")
 %section.participate.clearfix
-  .steps
-    .step1.step
-      %h3 step 1
-      %a.button.primary{:href => "/auth/twitter"}= t("glass.primary")
-    .step2.step
-      %h3 step 2
-      %p.explanation= t "glass.step2.description"
-  .example.tweet-sample
-    = image_tag "tweet.png"
+  .right-box
+    %h2.box.smaller= t("glass.description")
+    .steps.box
+      .step1.step
+        %h3 step 1
+        %a.button.blue.primary{:href => "/auth/twitter"}
+          %span.twitter-bird
+          %span.text= t("glass.primary")
+      .step2.step
+        %h3 step 2
+        %p.explanation= t "glass.step2.description"
+    .example.box.tweet-sample
+      %h4 Your tweet will look like this:
+      = image_tag "tweet.png"
