@@ -12,7 +12,7 @@ module HollerbackApp
       })
 
       if user.save
-        Hollerback::SMS.send_message user.phone_normalized, "Verification Code: #{user.verification_code}"
+        #Hollerback::SMS.send_message user.phone_normalized, "Verification Code: #{user.verification_code}"
         {
           access_token: user.access_token,
           user: user
