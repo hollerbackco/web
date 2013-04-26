@@ -2,9 +2,13 @@ en:
   meta:
     title: Hollerback
     description:  this is going to be fun
+    keywords:  app
   splash:
     primary: tell me more
   promotion:
+    meta:
+      title: Hollerback - Help us Launch
+      description: help launch this start up for a chance to win two plane tickets!
     a:
       description: |
         Help us launch Hollerback.
