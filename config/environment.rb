@@ -8,7 +8,7 @@ Bundler.require
 #
 # Setup db
 set :database, ENV["DATABASE_URL"] || "postgres:///hollerback_dev"
-set :database, ENV["REDISTOGO_URL"] || "redis://localhost:6789"
+set :redis, ENV["REDISTOGO_URL"] || "redis://localhost:6789"
 
 # Setup lib
 %w[lib config/initializers].each do |dir|

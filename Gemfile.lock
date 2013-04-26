@@ -218,6 +218,7 @@ DEPENDENCIES
   phone
   rake
   rb-fsevent
+  redis
   reek
   rerun
   rspec
