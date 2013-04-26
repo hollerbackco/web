@@ -19,6 +19,10 @@ module HollerbackApp
       haml :waitlist
     end
 
+    get '/beta' do
+      haml :test, layout: false
+    end
+
     ['/fly', '/fly/:from_name'].each do |path|
       get path do
         @signup_test = ab_test("signup_waitlist", 'twitter', 'email')

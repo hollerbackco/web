@@ -38,19 +38,6 @@ textarea {
     }
   }
 
-  header {
-    float: left;
-    width: 200px;
-    margin: 40px 0 0 30px;
-
-    .wordmark {
-      margin-top: 10px;
-    }
-    .wordmark img {
-      width: 100%;
-    }
-  }
-
   .participate {
     background: image-url("girl2.jpg") left bottom no-repeat;
     margin-top: 0;
@@ -209,6 +196,15 @@ textarea {
     &.wordmark {
       margin-top: 40px;
     }
+  }
+
+  .wordmark {
+    margin-top: 10px;
+    padding: 10px;
+  }
+
+  .wordmark img {
+    width: 100%;
   }
 
   h2 {

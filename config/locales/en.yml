@@ -3,6 +3,14 @@ en:
     title: Hollerback
     description:  this is going to be fun
     keywords:  app
+  pages:
+    test:
+      meta:
+        title: Test Hollerback
+        description: help us test Hollerback
+        description: help us test Hollerback
+      primary: Download Hollerback
+
   splash:
     primary: tell me more
   promotion:
