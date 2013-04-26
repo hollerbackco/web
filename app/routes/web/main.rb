@@ -3,7 +3,7 @@ module HollerbackApp
 
     helpers do
       def omniauth
-        @omniauth ||= request.env["omniauth.auth"] 
+        @omniauth ||= request.env["omniauth.auth"]
       end
     end
 
@@ -19,8 +19,9 @@ module HollerbackApp
       haml :waitlist
     end
 
-    ['/glass', '/glass/:from_name'].each do |path|
+    ['/fly', '/fly/:from_name'].each do |path|
       get path do
+        @signup_test = ab_test("signup_waitlist", 'twitter', 'email')
         if params.key? "from_name"
           session[:from] = params[:from_name]
         end
@@ -46,8 +47,13 @@ module HollerbackApp
       redirect to("/pledge/#{pledger.username}")
     end
 
-    get "/pledge/:username" do
+    get "/thanks" do
+      finished("signup_waitlist")
+      haml :entries, layout: :pledge
+    end
 
+    get "/pledge/:username" do
+      finished("signup_waitlist")
       @pledger = Pledger.where(username: params[:username]).first
 
       haml :entries, layout: :pledge

@@ -34,6 +34,8 @@ gem 'phone'
 gem 'twilio-ruby'
 
 #utils
+gem 'split', :require => 'split/dashboard'
+gem 'split-analytics', :require => 'split/analytics'
 gem 'apns'
 gem 'bcrypt-ruby'
 gem 'time-lord'

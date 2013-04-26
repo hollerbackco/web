@@ -17,6 +17,10 @@ map '/api' do
   run HollerbackApp::ApiApp
 end
 
+map '/split' do
+  run ::Split::Dashboard
+end
+
 map HollerbackApp::WebApp.settings.assets_prefix do
   run HollerbackApp::WebApp.sprockets
 end

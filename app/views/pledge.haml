@@ -23,6 +23,7 @@
 
     = stylesheet_tag "splash"
     = javascript_tag "web"
+    = tracking_code(:account => settings.google_analytics_key)
 
     :javascript
       window.addEventListener("load",function() {
@@ -39,7 +40,7 @@
       %h1.wordmark=image_tag "welcome-hollerback-logo.png"
     = yield
     %footer
-      %h3= t "glass.thanks"
+      %h3= t "thanks"
       .faces.clearfix
         .face
           = image_tag "faces-will.png"
