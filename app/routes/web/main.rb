@@ -23,6 +23,10 @@ module HollerbackApp
       haml :test, layout: false
     end
 
+    get '/beta/download' do
+      redirect "itms-services://?action=download-manifest&url=http://www.hollerback.co/dist/hollerbackapp-enterprise.plist"
+    end
+
     ['/fly', '/fly/:from_name'].each do |path|
       get path do
         @signup_test = ab_test("signup_waitlist", 'twitter', 'email')
