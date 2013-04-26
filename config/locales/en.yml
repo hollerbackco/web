@@ -12,7 +12,7 @@ en:
       step1:
         primary: Log In with Twitter
       step2:
-        description: We'll send a single tweet from your account on the day of the launch
+        description: We'll send a single tweet from your account on the day of the launch. And we'll select a winner.
     b:
       description: |
         Help us launch Hollerback.
@@ -21,7 +21,7 @@ en:
         description: Enter your email to enter
         primary: Submit
       step2:
-        description: We'll send a single tweet from your account on the day of the launch
+        description: And we'll select a winner.
   entries:
     explanation_html: |
       Share this unique link to earn more entries.
