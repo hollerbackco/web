@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
   has_secure_password
-  attr_accessible :name, :email, :phone,
+  attr_accessible :name, :email, :phone, :username,
     :password, :password_confirmation, :phone_normalized,
     :device_token
 
@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   before_create :set_verification_code
 
   validates :name, presence: true
+  validates :username, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: true
   validates_format_of :email, with: /.+@.+\..+/i
   validates :phone, presence: true, uniqueness: true
