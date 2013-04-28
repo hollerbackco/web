@@ -10,14 +10,16 @@ module Hollerback
 
     def invite
       parsed_phones.each do |phone|
-        if user = User.find_by_phone_normalized(phone)
-          conversation.members << user
+        if users = User.where(phone_normalized: phone) and users.any?
+          conversation.members << users.first
+          puts "hello"
         else
           Invite.create(
-            phone: phone,
+            phone: phone.first,
             inviter: inviter,
             conversation: conversation
           )
+          #todo: send a text message to non users
           #Hollerback::SMS.send_message phone, "#{inviter.name} has invited you to Hollerback"
         end
       end

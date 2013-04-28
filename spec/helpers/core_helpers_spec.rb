@@ -17,6 +17,7 @@ describe 'Core helpers' do
   before do
     @user ||= User.create!(
       name: "helpers",
+      username: "helpers",
       email: "helpers@test.com",
       password: "helpers",
       phone: "+18886669999"

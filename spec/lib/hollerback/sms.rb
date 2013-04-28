@@ -4,6 +4,7 @@ describe Hollerback::SMS do
   let(:user) do
     User.create(
       email: "tester@test.com",
+      username: "tester",
       password: "password",
       name: "Tester",
       phone: "+18587614144"

@@ -25,6 +25,7 @@ describe 'API ROUTES |' do
   before(:all) do
     @user ||= User.create!(
       name: "test user",
+      username: "test",
       email: "test@test.com",
       password: "testtest",
       phone: "+18886664444"
@@ -34,6 +35,7 @@ describe 'API ROUTES |' do
 
     @second_user ||= User.create!(
       name: "second user",
+      username: "second",
       email: "second@test.com",
       password: "secondtest",
       phone: "+18886668888"
@@ -99,12 +101,13 @@ describe 'API ROUTES |' do
   end
 
   it 'POST me/conversations | create a conversation' do
-    post '/me/conversations', :access_token => access_token, "invites[]" => "+18886668888"
+    post '/me/conversations', :access_token => access_token, "invites[]" => ["+18886668888","+18888888888"]
 
     result = JSON.parse(last_response.body)
 
     last_response.should be_ok
     subject.conversations.reload.count.should == 2
+    subject.conversations.find(result["data"]["id"]).invites.count.should == 1
   end
 
   it 'GET me/conversations/:id | get a specific conversation' do

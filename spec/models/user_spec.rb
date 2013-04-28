@@ -5,6 +5,7 @@ describe User do
   before(:all) do
     @user ||= User.create(
       :name => "test2",
+      :username => "test2",
       :email    => "test2@example.com",
       :password => "password",
       :phone => "+18588886666"
@@ -16,6 +17,7 @@ describe User do
   it "should create a new instance given valid attributes" do
     User.create!(
       :name => "username",
+      :username => "username",
       :email    => "user@example.com",
       :password => "password",
       :phone => "+18587614144"
