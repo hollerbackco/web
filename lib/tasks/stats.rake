@@ -12,7 +12,7 @@ namespace :stats do
     conversations = Conversation.all
 
     conversations.map do |conversation|
-      conversation.members.count * conversation.videos.count
+      (conversation.members.count - 1) * conversation.videos.count
     end.flatten.sum
   end
 end
