@@ -3,10 +3,21 @@ module HollerbackApp
     before '/me*' do
       authenticate(:api_token)
     end
+    before '/contacts*' do
+      authenticate(:api_token)
+    end
 
     get '/' do
       {
         msg: "Hollerback App Api v1"
+      }.to_json
+    end
+
+    get '/contacts/check' do
+      numbers = params[:numbers]
+      contact_checker =  Hollerback::ContactChecker.new(numbers, current_user)
+      {
+        data: contact_checker.contacts
       }.to_json
     end
 
