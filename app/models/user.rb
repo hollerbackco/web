@@ -12,6 +12,8 @@ class User < ActiveRecord::Base
 
   before_create :set_access_token
   before_create :set_verification_code
+  #todo: remove this
+  before_validation :set_username, on: :create
 
   validates :name, presence: true
   validates :username, presence: true, uniqueness: true
@@ -22,6 +24,12 @@ class User < ActiveRecord::Base
 
   def unread_videos
     videos.unread_by(self)
+  end
+
+  def set_username
+    if self.username.blank? and self.email.present?
+      self.username = self.email.split("@").first
+    end
   end
 
   def member_of

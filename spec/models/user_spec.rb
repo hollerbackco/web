@@ -5,7 +5,6 @@ describe User do
   before(:all) do
     @user ||= User.create(
       :name => "test2",
-      :username => "test2",
       :email    => "test2@example.com",
       :password => "password",
       :phone => "+18588886666"
