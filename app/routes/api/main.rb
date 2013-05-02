@@ -14,7 +14,9 @@ module HollerbackApp
     end
 
     get '/contacts/check' do
-      numbers = params[:numbers]
+      p params
+      numbers = params["numbers"]
+      p numbers
       contact_checker =  Hollerback::ContactChecker.new(numbers, current_user)
       {
         data: contact_checker.contacts
@@ -168,6 +170,7 @@ module HollerbackApp
       video = Video.find(params[:id])
 
       if video.mark_as_read! for: current_user
+        #http = Keen.publish_async("video:watch", { :user => {id: current_user.id, username: current_user.username} })
         {
           data: video
         }.to_json

@@ -42,6 +42,9 @@ gem 'bcrypt-ruby'
 gem 'time-lord'
 gem 'i18n'
 
+#analytics
+gem 'keen'
+
 #assets
 gem 'sprockets'
 gem 'sprockets-helpers'

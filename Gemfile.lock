@@ -69,6 +69,8 @@ GEM
     i18n (0.6.4)
     jwt (0.1.8)
       multi_json (>= 1.5)
+    keen (0.7.1)
+      multi_json (~> 1.0)
     listen (0.7.3)
     lumberjack (1.0.2)
     method_source (0.8.1)
@@ -212,6 +214,7 @@ DEPENDENCIES
   haml
   handlebars_assets
   i18n
+  keen
   omniauth
   omniauth-twitter
   pg
