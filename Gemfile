@@ -41,6 +41,7 @@ gem 'apns'
 gem 'bcrypt-ruby'
 gem 'time-lord'
 gem 'i18n'
+gem "em-http-request", "~> 1.0"
 
 #analytics
 gem 'keen'
@@ -69,4 +70,8 @@ group :test do
   gem 'sqlite3'
   gem 'database_cleaner'
   gem 'sms-spec'
+end
+
+group :test, :development do
+  gem 'em-rspec'
 end

@@ -56,6 +56,15 @@ module HollerbackApp
     ########################################
 
     get '/me/conversations' do
+      Fiber.new {
+        Keen.publish_async("conversations:list", {
+          user: {
+            id: current_user.id,
+            username: current_user.username
+          }
+        })
+      }
+
       conversations = current_user.conversations.map do |conversation|
         conversation_json conversation
       end
@@ -68,9 +77,20 @@ module HollerbackApp
     post '/me/conversations' do
       conversation = Conversation.find_by_phone_numbers(current_user, params[:invites])
       status = Conversation.transaction do
+
         unless conversation
           conversation = current_user.conversations.create(creator: current_user)
-          #conversation.members << current_user
+
+          Fiber.new {
+            Keen.publish("conversations:create", {
+              :user => {
+                id: current_user.id,
+                username: current_user.username
+              },
+              :total_invited_count => params[:invites].count,
+              :already_users_count => conversation.members.count
+            })
+          }
 
           inviter = Hollerback::ConversationInviter.new(current_user, conversation, params[:invites])
 
@@ -170,7 +190,11 @@ module HollerbackApp
       video = Video.find(params[:id])
 
       if video.mark_as_read! for: current_user
-        #http = Keen.publish_async("video:watch", { :user => {id: current_user.id, username: current_user.username} })
+        Fiber.new {
+          Keen.publish("video:watch", {
+            id: video.id,
+            user: {id: current_user.id, username: current_user.username} })
+        }
         {
           data: video
         }.to_json
@@ -190,6 +214,16 @@ module HollerbackApp
         )
 
         if video.save
+          Fiber.new {
+            Keen.publish("video:create", { 
+              id: video.id,
+              conversation: {
+                id: conversation.id,
+                videos_count: conversation.videos.count
+              },
+              user: {id: current_user.id, username: current_user.username}
+            })
+          }
           conversation.touch
           video.mark_as_read! for: current_user
 
@@ -204,7 +238,7 @@ module HollerbackApp
                                      other: {hb: {conversation_id: conversation.id}})
             else
               #Hollerback::SMS.send_message person.phone_normalized, "#{current_user.name} has sent a message"
-              puts "what the heck"
+              puts "SMS is currently turned off"
             end
           end
 

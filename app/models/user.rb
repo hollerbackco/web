@@ -76,8 +76,8 @@ class User < ActiveRecord::Base
 
   def as_json(options={})
     #todo: uncomment when we add this to the signup flow
-    #options = options.merge(:methods => :isVerified)
-    options = options.merge(:except => [:verification_code, :username])
+    options = options.merge(:methods => :isVerified)
+    options = options.merge(:except => [:verification_code])
     super(options)
   end
 

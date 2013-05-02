@@ -1,12 +1,14 @@
 ENV['RACK_ENV'] = "test"
 ENV['DATABASE_URL'] = "postgres:///hollerback_test"
 
+
 require File.join(File.dirname(__FILE__), "..", "config", "environment.rb")
 
 #utils
 require 'rack/test'
 require 'database_cleaner'
 require 'sms_spec'
+require 'em-rspec'
 
 set :environment, :test
 set :run, false
@@ -31,6 +33,7 @@ RSpec.configure do |config|
 
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
+
   end
 end
 
