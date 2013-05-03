@@ -3,7 +3,7 @@ module HollerbackApp
     set :views, File.join(app_root, 'app', 'views')
 
     # google analytics
-    set :google_analytics_key, ENV["GOOGLE_ANALYTICS"] || "UA-27201002-5"
+    set :google_analytics_key, ENV["GOOGLE_ANALYTICS"]
 
     # assets
     set :public_folder, File.join(app_root, 'public')

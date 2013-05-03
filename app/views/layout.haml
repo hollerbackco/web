@@ -22,7 +22,7 @@
 
     = stylesheet_tag "landing"
     = javascript_tag "landing"
-    = tracking_code(:account => google_analytics_key)
+    = tracking_code(:account => settings.google_analytics_key)
 
     :javascript
       window.addEventListener("load",function() {

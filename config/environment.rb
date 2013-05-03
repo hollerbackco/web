@@ -2,13 +2,15 @@ require 'rubygems'
 require 'bundler'
 Bundler.require
 
-# Set up gems listed in the Gemfile.
-#ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __FILE__)
-#require 'bundler/setup' if File.exists?(ENV['BUNDLE_GEMFILE'])
-#
+# setup config vars
+env_file = File.join('config', 'local_env.yml')
+YAML.load(File.open(env_file)).each do |key, value|
+  ENV[key.to_s] ||= value
+end if File.exists?(env_file)
+
 # Setup db
-set :database, ENV["DATABASE_URL"] || "postgres:///hollerback_dev"
-set :redis, ENV["REDISTOGO_URL"] || "redis://localhost:6789"
+set :database, ENV["DATABASE_URL"]
+set :redis,    ENV["REDISTOGO_URL"]
 
 # Setup lib
 %w[lib config/initializers].each do |dir|
