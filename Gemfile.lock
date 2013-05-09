@@ -22,10 +22,10 @@ GEM
     arel (3.0.2)
     awesome_nested_set (2.1.6)
       activerecord (>= 3.0.0)
-    aws-s3 (0.6.3)
-      builder
-      mime-types
-      xml-simple
+    aws-sdk (1.9.5)
+      json (~> 1.4)
+      nokogiri (>= 1.4.4)
+      uuidtools (~> 2.1)
     backports (3.1.1)
     bcrypt-ruby (3.0.1)
     bond (0.4.3)
@@ -83,6 +83,7 @@ GEM
     hike (1.2.1)
     http_parser.rb (0.5.3)
     i18n (0.6.4)
+    json (1.7.7)
     jwt (0.1.8)
       multi_json (>= 1.5)
     keen (0.7.1)
@@ -90,8 +91,8 @@ GEM
     listen (0.7.3)
     lumberjack (1.0.2)
     method_source (0.8.1)
-    mime-types (1.21)
     multi_json (1.6.1)
+    nokogiri (1.5.9)
     oauth (0.4.7)
     omniauth (1.1.4)
       hashie (>= 1.2, < 3)
@@ -214,9 +215,9 @@ GEM
       multi_json (~> 1.0, >= 1.0.2)
     unread (0.3.0)
       activerecord (>= 3)
+    uuidtools (2.1.4)
     warden (1.2.1)
       rack (>= 1.0)
-    xml-simple (1.1.2)
     yui-compressor (0.9.6)
       POpen4 (>= 0.1.4)
 
@@ -227,7 +228,7 @@ DEPENDENCIES
   activerecord
   apns
   awesome_nested_set
-  aws-s3
+  aws-sdk
   bcrypt-ruby
   coffee-script
   compass

@@ -15,7 +15,7 @@ class Video < ActiveRecord::Base
   default_scope order("created_at DESC")
 
   def url
-    video_object.url
+    video_object.url_for(:read)
   end
 
   def metadata
@@ -23,7 +23,7 @@ class Video < ActiveRecord::Base
   end
 
   def self.video_urls
-    bucket_objects.map {|o| o.url}
+    bucket.objects.map {|o| o.url_for(:read)}
   end
 
   def isRead
@@ -35,13 +35,13 @@ class Video < ActiveRecord::Base
     super(options)
   end
 
-  private
-
-  def self.bucket_objects
-    ::AWS::S3::Bucket.objects BUCKET_NAME
+  def self.bucket
+    @bucket ||= AWS::S3.new.buckets[BUCKET_NAME]
   end
 
+  private
+
   def video_object
-    ::AWS::S3::S3Object.find filename, BUCKET_NAME
+    self.bucket.objects[filename]
   end
 end
