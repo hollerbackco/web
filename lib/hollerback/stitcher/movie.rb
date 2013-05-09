@@ -28,7 +28,7 @@ module Hollerback
       end
 
       def random_filename
-        "#{SecureRandom.hex(1).upcase}/#{SecureRandom.uuid.upcase}.mp4"
+        @random_filename ||= "#{SecureRandom.hex(1).upcase}/#{SecureRandom.uuid.upcase}.mp4"
       end
     end
   end

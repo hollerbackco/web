@@ -7,6 +7,7 @@ class VideoStitchAndSend
 
     if user and conversation
       video_path = Hollerback::S3Stitcher.new(files, Video::BUCKET_NAME).run
+      puts "saved to #{video_path}"
 
       video = conversation.videos.build(
         user: user,
@@ -14,7 +15,7 @@ class VideoStitchAndSend
       )
 
       if video.save
-        conversation.touch!
+        conversation.touch
         video.mark_as_read! for: user
 
         people = conversation.members - [user]
