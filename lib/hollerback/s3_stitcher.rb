@@ -25,13 +25,17 @@ module Hollerback
     end
 
     def output_s3_path(movie)
-      File.join(@output_prefix, movie.random_filename)
+      str = ""
+      str << "#{@output_prefix}/" if @output_prefix != ""
+      str << "#{movie.random_filename}"
     end
 
     def send_movie_to_s3(movie)
-      obj = bucket.objects[output_s3_path(movie)]
+      outpath = output_s3_path(movie)
+      obj = bucket.objects[outpath]
       obj.write(file: movie.path)
-      output_s3_path(movie)
+      puts "upload to #{outpath}"
+      outpath
     end
   end
 end
