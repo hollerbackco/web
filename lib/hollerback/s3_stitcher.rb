@@ -9,7 +9,7 @@ module Hollerback
     def run
       Dir.mktmpdir do |dir|
         files = S3Cacher.get(@files, @bucketname, dir)
-        movie = Stitcher.stitch(files, output_path, dir)
+        movie = Stitcher.stitch(files, output_path(dir, files), dir)
         send_movie_to_s3(movie)
       end
     end
@@ -17,7 +17,7 @@ module Hollerback
     private
 
     def bucket
-      @bucket ||= AWS::S3.new.buckets[@bucket_name]
+      @bucket ||= AWS::S3.new.buckets[@bucketname]
     end
 
     def output_path(dir, files)

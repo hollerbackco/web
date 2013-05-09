@@ -146,7 +146,7 @@ describe 'API ROUTES |' do
       "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.6.mp4"
     ]
 
-    post '/me/conversations/2/videos/parts', access_token: second_token, files: TEST_VIDEOS
+    post '/me/conversations/2/videos/parts', access_token: second_token, parts: TEST_VIDEOS
     #VideoStitchAndSend.should have_queued_job(1)
     last_response.should be_ok
   end
