@@ -43,6 +43,9 @@ gem 'time-lord'
 gem 'i18n'
 gem "em-http-request", "~> 1.0"
 
+#background
+gem 'sidekiq'
+
 #analytics
 gem 'keen'
 

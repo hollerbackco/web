@@ -204,6 +204,17 @@ module HollerbackApp
       end
     end
 
+    post '/me/conversations/:id/videos/parts' do
+      VideoStitchAndSend.perform_async(params[:parts], params[:id], current_user.id)
+
+      {
+        meta: {
+          code: 200
+        },
+        data: nil
+      }.to_json
+    end
+
     post '/me/conversations/:id/videos' do
       begin
         conversation = current_user.conversations.find(params[:id])
@@ -232,19 +243,14 @@ module HollerbackApp
           people.each do |person|
             if person.device_token.present?
               badge_count = person.unread_videos.count
-              APNS.send_notification(person.device_token, alert: "#{current_user.name} sent a message", 
+              APNS.send_notification(person.device_token, alert: "#{current_user.name}", 
                                      badge: badge_count,
                                      sound: "default",
                                      other: {hb: {conversation_id: conversation.id}})
-            else
-              #Hollerback::SMS.send_message person.phone_normalized, "#{current_user.name} has sent a message"
-              puts "SMS is currently turned off"
             end
           end
 
-          {
-            data: video
-          }.to_json
+          { data: video }.to_json
         else
           error_json 400, "please specify filename: where the file is located"
         end

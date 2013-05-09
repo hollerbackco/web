@@ -3,6 +3,7 @@ ENV['DATABASE_URL'] = "postgres:///hollerback_test"
 
 
 require File.join(File.dirname(__FILE__), "..", "config", "environment.rb")
+Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f}
 
 #utils
 require 'rack/test'
