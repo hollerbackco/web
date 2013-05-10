@@ -10,7 +10,7 @@ module Hollerback
     def contacts
       parsed_phones.map do |phone|
         User.where(phone_normalized: phone)
-      end.flatten
+      end.flatten.uniq - [self.inviter]
     end
 
     def parsed_phones
