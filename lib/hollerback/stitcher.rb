@@ -25,9 +25,6 @@ module Hollerback
       @ffmpeg_binary || 'ffmpeg'
     end
 
-    # Get the path to the ffmpeg binary, defaulting to 'ffmpeg'
-    #
-    # @return [Movie] get path to get the location of the output file
     def self.stitch(files, output_file, output_dir)
       prepared = files.map { |file| Movie.new(file).prepare_for_stitch(output_dir).path }
       command = "ffmpeg -i \"concat:"
@@ -38,6 +35,9 @@ module Hollerback
       Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
 
       Movie.new(output_file)
+    end
+
+    def self.screengrab(movie, output_dir)
     end
   end
 end

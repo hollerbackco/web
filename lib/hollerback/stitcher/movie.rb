@@ -27,8 +27,14 @@ module Hollerback
         t.run
       end
 
-      def random_filename
-        @random_filename ||= "#{SecureRandom.hex(1).upcase}/#{SecureRandom.uuid.upcase}.mp4"
+      def screengrab(prefix="tmp")
+        output_file = "#{prefix}/#{label}.png"
+        t = Hollerback::Stitcher::ScreenGrabber.new(self, output_file)
+        t.run
+      end
+
+      def self.random_label
+        @random_filename ||= "#{SecureRandom.hex(1).upcase}/#{SecureRandom.uuid.upcase}"
       end
     end
   end

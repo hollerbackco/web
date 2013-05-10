@@ -10,7 +10,15 @@ module Hollerback
       Dir.mktmpdir do |dir|
         files = S3Cacher.get(@files, @bucketname, dir)
         movie = Stitcher.stitch(files, output_path(dir, files), dir)
-        send_movie_to_s3(movie)
+
+        random_label = Hollerback::Stitcher::Movie.random_label
+
+        image = movie.screengrab(dir)
+
+        send_file_to_s3(image, "#{random_label}-thumb.png")
+        video_path = send_file_to_s3(movie.path, "#{random_label}.mp4")
+
+        video_path
       end
     end
 
@@ -24,18 +32,10 @@ module Hollerback
       "#{dir}/#{File.basename(files.first).split(".").first}.mp4"
     end
 
-    def output_s3_path(movie)
-      str = ""
-      str << "#{@output_prefix}/" if @output_prefix != ""
-      str << "#{movie.random_filename}"
-    end
-
-    def send_movie_to_s3(movie)
-      outpath = output_s3_path(movie)
-      obj = bucket.objects[outpath]
-      obj.write(file: movie.path)
-      puts "upload to #{outpath}"
-      outpath
+    def send_file_to_s3(file, s3path)
+      obj = bucket.objects[s3path]
+      obj.write(file: file)
+      s3path
     end
   end
 end

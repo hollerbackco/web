@@ -1,18 +1,17 @@
 module Hollerback
   module Stitcher
-    class Transcoder
+    class ScreenGrabber
       def initialize(movie, output_file)
         @movie = movie
         @output_file = output_file
-        @ffmpeg_options = "-c copy -bsf:v h264_mp4toannexb -f mpegts -vf \"transpose=1\""
       end
 
       def run
         ffmpeg_movie = ::FFMPEG::Movie.new(@movie.path)
 
-        ffmpeg_movie.transcode @output_file, @ffmpeg_options
+        ffmpeg_movie.screenshot @output_file
 
-        Movie.new(@output_file)
+        @output_file
       end
     end
   end
