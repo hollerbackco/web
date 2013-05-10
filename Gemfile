@@ -28,7 +28,7 @@ gem 'omniauth'
 gem 'omniauth-twitter'
 
 #storage
-gem 'aws-s3'
+gem 'aws-sdk'
 
 #messaging
 gem 'phone'
