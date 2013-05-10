@@ -29,7 +29,7 @@ module Hollerback
       prepared = files.map { |file| Movie.new(file).prepare_for_stitch(output_dir).path }
       command = "ffmpeg -i \"concat:"
       command << prepared.join("|")
-      command << "\" -c copy -bsf:a aac_adtstoasc "
+      command << "\" -c copy -vf \"transpose=1\" -bsf:a aac_adtstoasc "
       command << output_file
 
       Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }

@@ -4,7 +4,7 @@ module Hollerback
       def initialize(movie, output_file)
         @movie = movie
         @output_file = output_file
-        @ffmpeg_options = "-c copy -bsf:v h264_mp4toannexb -f mpegts -vf \"transpose=1\""
+        @ffmpeg_options = "-c copy -bsf:v h264_mp4toannexb -f mpegts"
       end
 
       def run

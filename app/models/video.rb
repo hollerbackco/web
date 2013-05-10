@@ -18,6 +18,10 @@ class Video < ActiveRecord::Base
     video_object.url_for(:read)
   end
 
+  def thumb_url
+    thumb_object.url_for(:read)
+  end
+
   def metadata
     video_object.metadata
   end
@@ -31,7 +35,7 @@ class Video < ActiveRecord::Base
   end
 
   def as_json(options={})
-    options = options.merge(:methods => :isRead)
+    options = options.merge(:methods => [:isRead, :url, :thumb_url])
     super(options)
   end
 
@@ -43,5 +47,10 @@ class Video < ActiveRecord::Base
 
   def video_object
     self.bucket.objects[filename]
+  end
+
+  def thumb_object
+    thumb = filename.split(".").first << "-thumb.png"
+    self.bucket.objects[thumb]
   end
 end
