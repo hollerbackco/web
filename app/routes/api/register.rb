@@ -13,6 +13,9 @@ module HollerbackApp
 
       if user.save
         #Hollerback::SMS.send_message user.phone_normalized, "Verification Code: #{user.verification_code}"
+        if production?
+          Hollerback::SMS.send_message "+13033595357", "#{user.name} #{user.phone_normalized} signed up"
+        end
         {
           access_token: user.access_token,
           user: user

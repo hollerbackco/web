@@ -48,11 +48,24 @@ class Video < ActiveRecord::Base
 
   private
 
+<<<<<<< HEAD
   def video_object
     self.class.bucket.objects[filename]
   end
 
   def thumb_object
     self.class.bucket.objects[thumb]
+=======
+  def self.bucket
+    @bucket ||= AWS::S3.new.buckets[BUCKET_NAME]
+  end
+
+  def self.bucket_objects
+    bucket.objects
+  end
+
+  def video_object
+    self.class.bucket.objects[filename]
+>>>>>>> master
   end
 end
