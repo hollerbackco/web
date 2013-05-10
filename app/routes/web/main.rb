@@ -19,11 +19,15 @@ module HollerbackApp
       haml :waitlist
     end
 
-    get '/beta' do
-      haml :test, layout: false
-    end
+    #get '/beta' do
+      #haml :test, layout: false
+    #end
 
-    get '/beta/download' do
+    get '/beta/:party' do
+      if production? and ! params.key? :test
+        Hollerback::SMS.send_message "+13033595357", "#{params[:party]} visited the beta page"
+      end
+
       url = URI.escape("https://s3.amazonaws.com/hollerback-app-dev/distro/HollerbackAppEnterprise.plist")
       redirect "itms-services://?action=download-manifest&url=#{url}"
     end
