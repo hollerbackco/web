@@ -11,8 +11,18 @@ module Hollerback
 
         ffmpeg_movie.screenshot @output_file
 
+        resize(@output_file)
+
         @output_file
       end
+
+      private
+
+      def resize(filepath)
+        image = ::MiniMagick::Image.new(filepath)
+        image.resize "90x90"
+      end
+
     end
   end
 end

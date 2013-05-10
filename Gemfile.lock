@@ -91,6 +91,8 @@ GEM
     listen (0.7.3)
     lumberjack (1.0.2)
     method_source (0.8.1)
+    mini_magick (3.5.0)
+      subexec (~> 0.2.1)
     multi_json (1.6.1)
     nokogiri (1.5.9)
     oauth (0.4.7)
@@ -195,6 +197,7 @@ GEM
       tilt (~> 1.1)
     sqlite3 (1.3.7)
     streamio-ffmpeg (0.9.0)
+    subexec (0.2.3)
     temple (0.6.4)
     terminal-table (1.4.5)
     thin (1.5.0)
@@ -246,6 +249,7 @@ DEPENDENCIES
   handlebars_assets
   i18n
   keen
+  mini_magick
   omniauth
   omniauth-twitter
   pg

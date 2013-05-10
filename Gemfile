@@ -47,6 +47,7 @@ gem "em-http-request", "~> 1.0"
 gem 'slim'
 gem 'sidekiq'
 gem 'streamio-ffmpeg'
+gem 'mini_magick'
 
 #analytics
 gem 'keen'
