@@ -24,8 +24,7 @@ module HollerbackApp
     end
 
     get '/beta/download' do
-      url = AWS::S3.new.buckets["hollerback-app-dev"].objects["distro/HollerbackAppEnterprise.plist"].public_url.to_s
-      p url
+      url = "https://s3.amazonaws.com/hollerback-app-dev/distro/HollerbackAppEnterprise.plist"
       redirect "itms-services://?action=download-manifest&url=#{url}"
     end
 
