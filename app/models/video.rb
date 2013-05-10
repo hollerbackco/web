@@ -15,11 +15,14 @@ class Video < ActiveRecord::Base
   default_scope order("created_at DESC")
 
   def url
-    video_object.url_for(:read)
+    "http://s3.amazonaws.com/#{BUCKET_NAME}/#{filename}"
+    #video_object.url(:read)
   end
 
   def thumb_url
-    thumb_object.url_for(:read)
+    thumb = filename.split(".").first << "-thumb.png"
+    "http://s3.amazonaws.com/#{BUCKET_NAME}/#{thumb}"
+    #thumb_object.url(:read)
   end
 
   def metadata
@@ -46,11 +49,10 @@ class Video < ActiveRecord::Base
   private
 
   def video_object
-    self.bucket.objects[filename]
+    self.class.bucket.objects[filename]
   end
 
   def thumb_object
-    thumb = filename.split(".").first << "-thumb.png"
-    self.bucket.objects[thumb]
+    self.class.bucket.objects[thumb]
   end
 end
