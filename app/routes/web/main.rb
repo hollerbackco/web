@@ -24,7 +24,7 @@ module HollerbackApp
     end
 
     get '/beta/download' do
-      url = "https://s3.amazonaws.com/hollerback-app-dev/distro/HollerbackAppEnterprise.plist"
+      url = URI.escape("https://s3.amazonaws.com/hollerback-app-dev/distro/HollerbackAppEnterprise.plist")
       redirect "itms-services://?action=download-manifest&url=#{url}"
     end
 
