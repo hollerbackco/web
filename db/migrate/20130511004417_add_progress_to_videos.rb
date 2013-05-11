@@ -14,7 +14,11 @@ class AddProgressToVideos < ActiveRecord::Migration
   def up
     add_column :videos, :in_progress, :boolean, null: false, default: true
 
+    ActiveRecord::Base.record_timestamps = false
+
     Video.all.each {|v| v.ready!}
+
+    ActiveRecord::Base.record_timestamps = true
   end
 
   def down
