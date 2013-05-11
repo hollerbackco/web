@@ -1,29 +1,23 @@
 class VideoStitchAndSend
   include Sidekiq::Worker
 
-  def perform(files, conversation_id, sender_id)
-    conversation = Conversation.find(conversation_id)
-    user = User.find(sender_id)
+  def perform(files, video_id)
+    video = Video.find video_id
 
-    if user and conversation
+    if video
       video_path = Hollerback::S3Stitcher.new(files, Video::BUCKET_NAME).run
-      puts "saved to #{video_path}"
 
-      video = conversation.videos.build(
-        user: user,
-        filename: video_path
-      )
-
-      if video.save
+      if video.update_attributes(filename: video_path)
+        conversation = video.conversation
         conversation.touch
-        video.mark_as_read! for: user
+        video.mark_as_read! for: video.user
 
-        people = conversation.members - [user]
+        people = conversation.members - [video.user]
 
         people.each do |person|
           if person.device_token.present?
             badge_count = person.unread_videos.count
-            APNS.send_notification(person.device_token, alert: "#{user.name}", 
+            APNS.send_notification(person.device_token, alert: "#{video.user.name}", 
                                    badge: badge_count,
                                    sound: "default",
                                    other: {hb: {conversation_id: conversation.id}})

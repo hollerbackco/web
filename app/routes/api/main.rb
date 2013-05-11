@@ -203,13 +203,16 @@ module HollerbackApp
     end
 
     post '/me/conversations/:id/videos/parts' do
-      VideoStitchAndSend.perform_async(params[:parts], params[:id], current_user.id)
+      conversation = current_user.conversations.find(params[:id])
+      video = conversation.videos.create(user: current_user)
+
+      VideoStitchAndSend.perform_async(params[:parts], video.id)
 
       {
         meta: {
           code: 200
         },
-        data: nil
+        data: video.to_json
       }.to_json
     end
 
@@ -223,6 +226,7 @@ module HollerbackApp
         )
 
         if video.save
+          video.ready!
           Fiber.new {
             Keen.publish("video:create", { 
               id: video.id,

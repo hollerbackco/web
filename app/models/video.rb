@@ -5,14 +5,19 @@ class Video < ActiveRecord::Base
     BUCKET_NAME = "hollerback-app-dev"
   end
 
-  attr_accessible :filename, :user, :conversation
+  attr_accessible :filename, :user, :conversation, :in_progress
 
   acts_as_readable :on => :created_at
 
   belongs_to :user
   belongs_to :conversation
 
-  default_scope order("created_at DESC")
+  default_scope where(in_progress: false).order("created_at DESC")
+
+  def ready!
+    in_progress = false
+    save!
+  end
 
   def url
     "http://s3.amazonaws.com/#{BUCKET_NAME}/#{filename}"
