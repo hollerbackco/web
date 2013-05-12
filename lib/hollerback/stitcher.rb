@@ -25,19 +25,26 @@ module Hollerback
       @ffmpeg_binary || 'ffmpeg'
     end
 
-    def self.stitch(files, output_file, output_dir)
+    def self.stitch(files, output_file)
       prepared = files.map { |file| Movie.new(file).prepare_for_stitch(output_dir).path }
       command = "ffmpeg -i \"concat:"
       command << prepared.join("|")
-      command << "\" -c copy -vf \"transpose=1\" -bsf:a aac_adtstoasc "
+      command << "\" -c copy -bsf:a aac_adtstoasc "
       command << output_file
 
       Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
 
-      Movie.new(output_file)
+      self.rotate(Movie.new(output_file))
     end
 
-    def self.screengrab(movie, output_dir)
+    def self.rotate(movie)
+      final_path = "#{movie.path}.final"
+
+      command = "ffmpeg -i #{movie.path} -vf \"transpose=1\" -y -r 30 -qscale 0 -acodec copy #{final_path}"
+
+      Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
+
+      Movie.new("#{final_path}")
     end
   end
 end
