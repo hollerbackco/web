@@ -25,7 +25,7 @@ module Hollerback
       @ffmpeg_binary || 'ffmpeg'
     end
 
-    def self.stitch(files, output_file)
+    def self.stitch(files, output_file, output_dir)
       prepared = files.map { |file| Movie.new(file).prepare_for_stitch(output_dir).path }
       command = "ffmpeg -i \"concat:"
       command << prepared.join("|")

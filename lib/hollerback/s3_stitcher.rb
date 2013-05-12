@@ -9,7 +9,7 @@ module Hollerback
     def run
       Dir.mktmpdir do |dir|
         files = S3Cacher.get(@files, @bucketname, dir)
-        movie = Stitcher.stitch(files, output_path(dir, files))
+        movie = Stitcher.stitch(files, output_path(dir, files), dir)
 
         random_label = Hollerback::Stitcher::Movie.random_label
 
