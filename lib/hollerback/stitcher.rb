@@ -38,13 +38,13 @@ module Hollerback
     end
 
     def self.rotate(movie)
-      final_path = "#{movie.path}.final"
+      final_path = "#{movie.path}.final.mp4"
 
       command = "ffmpeg -i #{movie.path} -vf \"transpose=1\" -y -r 30 -qscale 0 -acodec copy #{final_path}"
 
       Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
 
-      Movie.new("#{final_path}")
+      Movie.new(final_path)
     end
   end
 end
