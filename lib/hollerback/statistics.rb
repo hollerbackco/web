@@ -29,7 +29,7 @@ module Hollerback
 
     def avg_videos_in_conversations_count
       if conversations_count > 0
-        videos_count.to_f / conversations_count.to_f
+        videos_sent_count.to_f / conversations_count.to_f
       else
         0
       end
