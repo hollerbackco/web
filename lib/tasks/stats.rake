@@ -1,18 +1,20 @@
 namespace :stats do
   desc "puts stats"
   task :get do
-    puts "total users: #{User.all.count}"
-    puts "total conversations: #{Conversation.all.count}"
+    ActiveRecord::Base.logger = nil
     puts "================================"
-    puts "total sent: #{Video.all.count}"
-    puts "total recieved: #{get_total_videos_received}"
+    puts "total users: #{stats.users_count}"
+    puts "total conversations: #{stats.conversations_count}"
+    puts "================================"
+    puts "total sent: #{stats.videos_sent_count}"
+    puts "total recieved: #{stats.videos_received_count}"
+    puts "================================"
+    puts "avg members per conversation: #{stats.avg_members_in_conversations_count}"
+    puts "avg videos per conversation: #{stats.avg_videos_in_conversations_count}"
+    puts "================================"
   end
 
-  def get_total_videos_received
-    conversations = Conversation.all
-
-    conversations.map do |conversation|
-      (conversation.members.count - 1) * conversation.videos.count
-    end.flatten.sum
+  def stats
+    @stats ||= Hollerback::Statistics.new
   end
 end
