@@ -67,11 +67,11 @@ describe 'API ROUTES |' do
   end
 
   it 'GET /contacts/check | return users from an array or phonenumbers' do
-    get '/contacts/check', :access_token => access_token, :numbers => [["+18587614144"], ["+18886664444"]]
+    get '/contacts/check', :access_token => access_token, :numbers => [[secondary_subject.phone_normalized]]
 
     result = JSON.parse(last_response.body)
 
-    subject.name.should == result['data'][1]["name"]
+    secondary_subject.name.should == result['data'][0]["name"]
 
     last_response.should be_ok
   end

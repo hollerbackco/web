@@ -11,3 +11,159 @@
 [05/12/13 17:25:23 -0700 poprot.local (93890)] INFO : Installing Sidekiq instrumentation
 [05/12/13 17:25:23 -0700 poprot.local (93890)] INFO : Installing Sinatra instrumentation
 [05/12/13 17:25:23 -0700 poprot.local (93890)] INFO : Finished instrumentation
+[05/12/13 17:31:15 -0700 poprot.local (96762)] INFO : Starting the New Relic agent in "development" environment.
+[05/12/13 17:31:15 -0700 poprot.local (96762)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "development" section of your newrelic.yml.
+[05/12/13 17:31:15 -0700 poprot.local (96762)] INFO : Reading configuration from config/newrelic.yml
+[05/12/13 17:31:15 -0700 poprot.local (96762)] INFO : Environment: development
+[05/12/13 17:31:15 -0700 poprot.local (96762)] INFO : Dispatcher: thin
+[05/12/13 17:31:15 -0700 poprot.local (96762)] ERROR : Unable to determine application name. Please set the application name in your newrelic.yml or in a NEW_RELIC_APP_NAME environment variable.
+[05/12/13 17:31:15 -0700 poprot.local (96762)] WARN : Agent configured not to send data in this environment.
+[05/12/13 17:31:15 -0700 poprot.local (96762)] INFO : Installing ActiveRecord instrumentation
+[05/12/13 17:31:15 -0700 poprot.local (96762)] INFO : Installing Net instrumentation
+[05/12/13 17:31:15 -0700 poprot.local (96762)] INFO : Installing Sidekiq instrumentation
+[05/12/13 17:31:15 -0700 poprot.local (96762)] INFO : Installing Sinatra instrumentation
+[05/12/13 17:31:15 -0700 poprot.local (96762)] INFO : Finished instrumentation
+[05/12/13 17:32:25 -0700 poprot.local (96917)] INFO : Starting the New Relic agent in "development" environment.
+[05/12/13 17:32:25 -0700 poprot.local (96917)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "development" section of your newrelic.yml.
+[05/12/13 17:32:25 -0700 poprot.local (96917)] INFO : Reading configuration from config/newrelic.yml
+[05/12/13 17:32:25 -0700 poprot.local (96917)] INFO : Environment: development
+[05/12/13 17:32:25 -0700 poprot.local (96917)] INFO : Dispatcher: thin
+[05/12/13 17:32:25 -0700 poprot.local (96917)] ERROR : Unable to determine application name. Please set the application name in your newrelic.yml or in a NEW_RELIC_APP_NAME environment variable.
+[05/12/13 17:32:25 -0700 poprot.local (96917)] WARN : Agent configured not to send data in this environment.
+[05/12/13 17:32:25 -0700 poprot.local (96917)] INFO : Installing ActiveRecord instrumentation
+[05/12/13 17:32:25 -0700 poprot.local (96917)] INFO : Installing Net instrumentation
+[05/12/13 17:32:25 -0700 poprot.local (96917)] INFO : Installing Sidekiq instrumentation
+[05/12/13 17:32:25 -0700 poprot.local (96917)] INFO : Installing Sinatra instrumentation
+[05/12/13 17:32:25 -0700 poprot.local (96917)] INFO : Finished instrumentation
+[05/12/13 17:33:11 -0700 poprot.local (97118)] INFO : Starting the New Relic agent in "development" environment.
+[05/12/13 17:33:11 -0700 poprot.local (97118)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "development" section of your newrelic.yml.
+[05/12/13 17:33:11 -0700 poprot.local (97118)] INFO : Reading configuration from config/newrelic.yml
+[05/12/13 17:33:11 -0700 poprot.local (97118)] INFO : Environment: development
+[05/12/13 17:33:11 -0700 poprot.local (97118)] INFO : Dispatcher: thin
+[05/12/13 17:33:11 -0700 poprot.local (97118)] ERROR : Unable to determine application name. Please set the application name in your newrelic.yml or in a NEW_RELIC_APP_NAME environment variable.
+[05/12/13 17:33:11 -0700 poprot.local (97118)] WARN : Agent configured not to send data in this environment.
+[05/12/13 17:33:11 -0700 poprot.local (97118)] INFO : Installing ActiveRecord instrumentation
+[05/12/13 17:33:11 -0700 poprot.local (97118)] INFO : Installing Net instrumentation
+[05/12/13 17:33:11 -0700 poprot.local (97118)] INFO : Installing Sidekiq instrumentation
+[05/12/13 17:33:11 -0700 poprot.local (97118)] INFO : Installing Sinatra instrumentation
+[05/12/13 17:33:11 -0700 poprot.local (97118)] INFO : Finished instrumentation
+[05/12/13 17:35:20 -0700 poprot.local (97389)] INFO : Starting the New Relic agent in "development" environment.
+[05/12/13 17:35:20 -0700 poprot.local (97389)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "development" section of your newrelic.yml.
+[05/12/13 17:35:20 -0700 poprot.local (97389)] INFO : Reading configuration from config/newrelic.yml
+[05/12/13 17:35:20 -0700 poprot.local (97389)] INFO : Environment: development
+[05/12/13 17:35:20 -0700 poprot.local (97389)] INFO : Dispatcher: thin
+[05/12/13 17:35:20 -0700 poprot.local (97389)] ERROR : Unable to determine application name. Please set the application name in your newrelic.yml or in a NEW_RELIC_APP_NAME environment variable.
+[05/12/13 17:35:20 -0700 poprot.local (97389)] WARN : Agent configured not to send data in this environment.
+[05/12/13 17:35:20 -0700 poprot.local (97389)] INFO : Installing ActiveRecord instrumentation
+[05/12/13 17:35:20 -0700 poprot.local (97389)] INFO : Installing Net instrumentation
+[05/12/13 17:35:20 -0700 poprot.local (97389)] INFO : Installing Sidekiq instrumentation
+[05/12/13 17:35:20 -0700 poprot.local (97389)] INFO : Installing Sinatra instrumentation
+[05/12/13 17:35:20 -0700 poprot.local (97389)] INFO : Finished instrumentation
+[05/12/13 17:35:28 -0700 poprot.local (97444)] INFO : Starting the New Relic agent in "development" environment.
+[05/12/13 17:35:28 -0700 poprot.local (97444)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "development" section of your newrelic.yml.
+[05/12/13 17:35:28 -0700 poprot.local (97444)] INFO : Reading configuration from config/newrelic.yml
+[05/12/13 17:35:28 -0700 poprot.local (97444)] INFO : Environment: development
+[05/12/13 17:35:28 -0700 poprot.local (97444)] INFO : Dispatcher: thin
+[05/12/13 17:35:28 -0700 poprot.local (97444)] ERROR : Unable to determine application name. Please set the application name in your newrelic.yml or in a NEW_RELIC_APP_NAME environment variable.
+[05/12/13 17:35:28 -0700 poprot.local (97444)] WARN : Agent configured not to send data in this environment.
+[05/12/13 17:35:28 -0700 poprot.local (97444)] INFO : Installing ActiveRecord instrumentation
+[05/12/13 17:35:28 -0700 poprot.local (97444)] INFO : Installing Net instrumentation
+[05/12/13 17:35:28 -0700 poprot.local (97444)] INFO : Installing Sidekiq instrumentation
+[05/12/13 17:35:28 -0700 poprot.local (97444)] INFO : Installing Sinatra instrumentation
+[05/12/13 17:35:28 -0700 poprot.local (97444)] INFO : Finished instrumentation
+[05/12/13 17:35:35 -0700 poprot.local (97494)] INFO : Starting the New Relic agent in "development" environment.
+[05/12/13 17:35:35 -0700 poprot.local (97494)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "development" section of your newrelic.yml.
+[05/12/13 17:35:35 -0700 poprot.local (97494)] INFO : Reading configuration from config/newrelic.yml
+[05/12/13 17:35:35 -0700 poprot.local (97494)] INFO : Environment: development
+[05/12/13 17:35:35 -0700 poprot.local (97494)] INFO : Dispatcher: thin
+[05/12/13 17:35:35 -0700 poprot.local (97494)] ERROR : Unable to determine application name. Please set the application name in your newrelic.yml or in a NEW_RELIC_APP_NAME environment variable.
+[05/12/13 17:35:35 -0700 poprot.local (97494)] WARN : Agent configured not to send data in this environment.
+[05/12/13 17:35:35 -0700 poprot.local (97494)] INFO : Installing ActiveRecord instrumentation
+[05/12/13 17:35:35 -0700 poprot.local (97494)] INFO : Installing Net instrumentation
+[05/12/13 17:35:35 -0700 poprot.local (97494)] INFO : Installing Sidekiq instrumentation
+[05/12/13 17:35:35 -0700 poprot.local (97494)] INFO : Installing Sinatra instrumentation
+[05/12/13 17:35:35 -0700 poprot.local (97494)] INFO : Finished instrumentation
+[05/12/13 17:40:01 -0700 poprot.local (98385)] INFO : Starting the New Relic agent in "development" environment.
+[05/12/13 17:40:01 -0700 poprot.local (98385)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "development" section of your newrelic.yml.
+[05/12/13 17:40:01 -0700 poprot.local (98385)] INFO : Reading configuration from config/newrelic.yml
+[05/12/13 17:40:01 -0700 poprot.local (98385)] INFO : Environment: development
+[05/12/13 17:40:01 -0700 poprot.local (98385)] INFO : Dispatcher: thin
+[05/12/13 17:40:01 -0700 poprot.local (98385)] ERROR : Unable to determine application name. Please set the application name in your newrelic.yml or in a NEW_RELIC_APP_NAME environment variable.
+[05/12/13 17:40:01 -0700 poprot.local (98385)] WARN : Agent configured not to send data in this environment.
+[05/12/13 17:40:01 -0700 poprot.local (98385)] INFO : Installing ActiveRecord instrumentation
+[05/12/13 17:40:01 -0700 poprot.local (98385)] INFO : Installing Net instrumentation
+[05/12/13 17:40:01 -0700 poprot.local (98385)] INFO : Installing Sidekiq instrumentation
+[05/12/13 17:40:01 -0700 poprot.local (98385)] INFO : Installing Sinatra instrumentation
+[05/12/13 17:40:01 -0700 poprot.local (98385)] INFO : Finished instrumentation
+[05/12/13 17:40:24 -0700 poprot.local (98536)] INFO : Starting the New Relic agent in "development" environment.
+[05/12/13 17:40:24 -0700 poprot.local (98536)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "development" section of your newrelic.yml.
+[05/12/13 17:40:24 -0700 poprot.local (98536)] INFO : Reading configuration from config/newrelic.yml
+[05/12/13 17:40:24 -0700 poprot.local (98536)] INFO : Environment: development
+[05/12/13 17:40:24 -0700 poprot.local (98536)] INFO : Dispatcher: thin
+[05/12/13 17:40:24 -0700 poprot.local (98536)] ERROR : Unable to determine application name. Please set the application name in your newrelic.yml or in a NEW_RELIC_APP_NAME environment variable.
+[05/12/13 17:40:24 -0700 poprot.local (98536)] WARN : Agent configured not to send data in this environment.
+[05/12/13 17:40:24 -0700 poprot.local (98536)] INFO : Installing ActiveRecord instrumentation
+[05/12/13 17:40:24 -0700 poprot.local (98536)] INFO : Installing Net instrumentation
+[05/12/13 17:40:24 -0700 poprot.local (98536)] INFO : Installing Sidekiq instrumentation
+[05/12/13 17:40:24 -0700 poprot.local (98536)] INFO : Installing Sinatra instrumentation
+[05/12/13 17:40:24 -0700 poprot.local (98536)] INFO : Finished instrumentation
+[05/12/13 17:40:34 -0700 poprot.local (98592)] INFO : Starting the New Relic agent in "development" environment.
+[05/12/13 17:40:34 -0700 poprot.local (98592)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "development" section of your newrelic.yml.
+[05/12/13 17:40:34 -0700 poprot.local (98592)] INFO : Reading configuration from config/newrelic.yml
+[05/12/13 17:40:34 -0700 poprot.local (98592)] INFO : Environment: development
+[05/12/13 17:40:34 -0700 poprot.local (98592)] INFO : Dispatcher: thin
+[05/12/13 17:40:34 -0700 poprot.local (98592)] ERROR : Unable to determine application name. Please set the application name in your newrelic.yml or in a NEW_RELIC_APP_NAME environment variable.
+[05/12/13 17:40:34 -0700 poprot.local (98592)] WARN : Agent configured not to send data in this environment.
+[05/12/13 17:40:34 -0700 poprot.local (98592)] INFO : Installing ActiveRecord instrumentation
+[05/12/13 17:40:34 -0700 poprot.local (98592)] INFO : Installing Net instrumentation
+[05/12/13 17:40:34 -0700 poprot.local (98592)] INFO : Installing Sidekiq instrumentation
+[05/12/13 17:40:34 -0700 poprot.local (98592)] INFO : Installing Sinatra instrumentation
+[05/12/13 17:40:34 -0700 poprot.local (98592)] INFO : Finished instrumentation
+[05/12/13 17:40:50 -0700 poprot.local (98663)] INFO : Starting the New Relic agent in "development" environment.
+[05/12/13 17:40:50 -0700 poprot.local (98663)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "development" section of your newrelic.yml.
+[05/12/13 17:40:50 -0700 poprot.local (98663)] INFO : Reading configuration from config/newrelic.yml
+[05/12/13 17:40:50 -0700 poprot.local (98663)] INFO : Environment: development
+[05/12/13 17:40:50 -0700 poprot.local (98663)] INFO : Dispatcher: thin
+[05/12/13 17:40:50 -0700 poprot.local (98663)] ERROR : Unable to determine application name. Please set the application name in your newrelic.yml or in a NEW_RELIC_APP_NAME environment variable.
+[05/12/13 17:40:50 -0700 poprot.local (98663)] WARN : Agent configured not to send data in this environment.
+[05/12/13 17:40:50 -0700 poprot.local (98663)] INFO : Installing ActiveRecord instrumentation
+[05/12/13 17:40:50 -0700 poprot.local (98663)] INFO : Installing Net instrumentation
+[05/12/13 17:40:50 -0700 poprot.local (98663)] INFO : Installing Sidekiq instrumentation
+[05/12/13 17:40:50 -0700 poprot.local (98663)] INFO : Installing Sinatra instrumentation
+[05/12/13 17:40:50 -0700 poprot.local (98663)] INFO : Finished instrumentation
+[05/12/13 17:42:38 -0700 poprot.local (99045)] INFO : Starting the New Relic agent in "development" environment.
+[05/12/13 17:42:38 -0700 poprot.local (99045)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "development" section of your newrelic.yml.
+[05/12/13 17:42:38 -0700 poprot.local (99045)] INFO : Reading configuration from config/newrelic.yml
+[05/12/13 17:42:38 -0700 poprot.local (99045)] INFO : Environment: development
+[05/12/13 17:42:38 -0700 poprot.local (99045)] INFO : Dispatcher: thin
+[05/12/13 17:42:38 -0700 poprot.local (99045)] ERROR : Unable to determine application name. Please set the application name in your newrelic.yml or in a NEW_RELIC_APP_NAME environment variable.
+[05/12/13 17:42:38 -0700 poprot.local (99045)] WARN : Agent configured not to send data in this environment.
+[05/12/13 17:42:38 -0700 poprot.local (99045)] INFO : Installing ActiveRecord instrumentation
+[05/12/13 17:42:38 -0700 poprot.local (99045)] INFO : Installing Net instrumentation
+[05/12/13 17:42:38 -0700 poprot.local (99045)] INFO : Installing Sidekiq instrumentation
+[05/12/13 17:42:38 -0700 poprot.local (99045)] INFO : Installing Sinatra instrumentation
+[05/12/13 17:42:38 -0700 poprot.local (99045)] INFO : Finished instrumentation
+[05/12/13 17:44:39 -0700 poprot.local (99425)] INFO : Starting the New Relic agent in "development" environment.
+[05/12/13 17:44:39 -0700 poprot.local (99425)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "development" section of your newrelic.yml.
+[05/12/13 17:44:39 -0700 poprot.local (99425)] INFO : Reading configuration from config/newrelic.yml
+[05/12/13 17:44:39 -0700 poprot.local (99425)] INFO : Environment: development
+[05/12/13 17:44:39 -0700 poprot.local (99425)] INFO : Dispatcher: thin
+[05/12/13 17:44:39 -0700 poprot.local (99425)] ERROR : Unable to determine application name. Please set the application name in your newrelic.yml or in a NEW_RELIC_APP_NAME environment variable.
+[05/12/13 17:44:39 -0700 poprot.local (99425)] WARN : Agent configured not to send data in this environment.
+[05/12/13 17:44:39 -0700 poprot.local (99425)] INFO : Installing ActiveRecord instrumentation
+[05/12/13 17:44:39 -0700 poprot.local (99425)] INFO : Installing Net instrumentation
+[05/12/13 17:44:39 -0700 poprot.local (99425)] INFO : Installing Sidekiq instrumentation
+[05/12/13 17:44:39 -0700 poprot.local (99425)] INFO : Installing Sinatra instrumentation
+[05/12/13 17:44:39 -0700 poprot.local (99425)] INFO : Finished instrumentation
+[05/12/13 17:45:33 -0700 poprot.local (99640)] INFO : Starting the New Relic agent in "development" environment.
+[05/12/13 17:45:33 -0700 poprot.local (99640)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "development" section of your newrelic.yml.
+[05/12/13 17:45:33 -0700 poprot.local (99640)] INFO : Reading configuration from config/newrelic.yml
+[05/12/13 17:45:33 -0700 poprot.local (99640)] INFO : Environment: development
+[05/12/13 17:45:33 -0700 poprot.local (99640)] INFO : Dispatcher: thin
+[05/12/13 17:45:33 -0700 poprot.local (99640)] ERROR : Unable to determine application name. Please set the application name in your newrelic.yml or in a NEW_RELIC_APP_NAME environment variable.
+[05/12/13 17:45:33 -0700 poprot.local (99640)] WARN : Agent configured not to send data in this environment.
+[05/12/13 17:45:33 -0700 poprot.local (99640)] INFO : Installing ActiveRecord instrumentation
+[05/12/13 17:45:33 -0700 poprot.local (99640)] INFO : Installing Net instrumentation
+[05/12/13 17:45:33 -0700 poprot.local (99640)] INFO : Installing Sidekiq instrumentation
+[05/12/13 17:45:33 -0700 poprot.local (99640)] INFO : Installing Sinatra instrumentation
+[05/12/13 17:45:33 -0700 poprot.local (99640)] INFO : Finished instrumentation

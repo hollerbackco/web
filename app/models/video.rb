@@ -1,5 +1,5 @@
 class Video < ActiveRecord::Base
-  if production?
+  if Sinatra::Base.production?
     BUCKET_NAME = "hollerback-app"
   else
     BUCKET_NAME = "hollerback-app-dev"
