@@ -3,3 +3,4 @@
 *.rbc
 *.sass-cache
 .rvmrc
+log/newrelic_agent.log
