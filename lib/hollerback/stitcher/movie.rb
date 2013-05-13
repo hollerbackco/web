@@ -34,7 +34,7 @@ module Hollerback
       end
 
       def self.random_label
-        @random_filename ||= "#{SecureRandom.hex(1).upcase}/#{SecureRandom.uuid.upcase}"
+        "#{SecureRandom.hex(1).upcase}/#{SecureRandom.uuid.upcase}"
       end
     end
   end
