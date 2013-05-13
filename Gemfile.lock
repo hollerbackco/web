@@ -74,6 +74,7 @@ GEM
     lumberjack (1.0.2)
     method_source (0.8.1)
     multi_json (1.6.1)
+    newrelic_rpm (3.6.2.96)
     nokogiri (1.5.9)
     oauth (0.4.7)
     omniauth (1.1.4)
@@ -213,6 +214,7 @@ DEPENDENCIES
   haml
   handlebars_assets
   i18n
+  newrelic_rpm
   omniauth
   omniauth-twitter
   pg
