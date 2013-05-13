@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   acts_as_reader
 
   has_many :memberships
-  has_many :conversations, through: :memberships
+  has_many :conversations, through: :memberships, include: [:videos, :members]
   has_many :videos, through: :conversations
 
   before_create :set_access_token

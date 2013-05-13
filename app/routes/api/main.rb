@@ -63,7 +63,7 @@ module HollerbackApp
         })
       }
 
-      conversations = current_user.includes(:conversations => [:videos, :members] ).conversations.map do |conversation|
+      conversations = current_user.conversations.map do |conversation|
         conversation_json conversation
       end
 
