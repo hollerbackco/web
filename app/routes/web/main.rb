@@ -1,6 +1,5 @@
 module HollerbackApp
   class WebApp < BaseApp
-
     helpers do
       def omniauth
         @omniauth ||= request.env["omniauth.auth"]

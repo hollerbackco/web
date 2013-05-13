@@ -22,7 +22,7 @@
 
     = stylesheet_tag "landing"
     = javascript_tag "landing"
-    = tracking_code(:account => google_analytics_key)
+    = tracking_code(:account => settings.google_analytics_key)
 
     :javascript
       window.addEventListener("load",function() {
@@ -39,6 +39,8 @@
         %h1.title.clearfix
           = image_tag "hollerback-logo.png"
           .subtitle free video messaging
+      %section
+        = yield
 
     -#  asynchronous google analytics: mathiasbynens.be/notes/async-analytics-snippet
     :javascript

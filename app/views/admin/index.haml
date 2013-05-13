@@ -1,0 +1,36 @@
+%h1 Videos
+%table.table.table-bordered
+  %thead
+    %tr
+      %td Sender
+      %td Members
+      %td Conversations
+      %td Filename
+      %td Created At
+  %tbody
+    - @videos.each do |video|
+      %tr
+        %td= video.user.name
+        %td= video.conversation.name
+        %td
+          = video.filename
+        %td= video.created_at
+
+%h1 Users
+%table.table.table-bordered
+  %thead
+    %tr
+      %td Name
+      %td Email
+      %td Phone
+      %td Conversations
+      %td Created At
+  %tbody
+    - @users.each do |user|
+      %tr
+        %td= user.name
+        %td= user.email
+        %td= user.phone_normalized
+        %td
+          = user.conversations.count
+        %td= user.created_at
