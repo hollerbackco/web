@@ -53,6 +53,9 @@ gem 'mini_magick'
 gem 'keen'
 gem 'newrelic_rpm'
 
+gem 'keen'
+gem 'newrelic_rpm'
+
 #assets
 gem 'sprockets'
 gem 'sprockets-helpers'

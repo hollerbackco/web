@@ -10,7 +10,7 @@ end if File.exists?(env_file)
 
 # Setup db
 set :database, ENV["DATABASE_URL"]
-set :redis,    ENV["REDISTOGO_URL"]
+set :redis, ENV["REDISTOGO_URL"]
 
 # Setup lib
 %w[lib config/initializers].each do |dir|

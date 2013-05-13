@@ -54,14 +54,12 @@ module HollerbackApp
     ########################################
 
     get '/me/conversations' do
-      Fiber.new {
-        Keen.publish_async("conversations:list", {
-          user: {
-            id: current_user.id,
-            username: current_user.username
-          }
-        })
-      }
+      Keen.publish_async("conversations:list", {
+        user: {
+          id: current_user.id,
+          username: current_user.username
+        }
+      })
 
       conversations = current_user.conversations.map do |conversation|
         conversation_json conversation
@@ -79,16 +77,15 @@ module HollerbackApp
         unless conversation
           conversation = current_user.conversations.create(creator: current_user)
 
-          Fiber.new {
-            Keen.publish("conversations:create", {
-              :user => {
-                id: current_user.id,
-                username: current_user.username
-              },
-              :total_invited_count => params[:invites].count,
-              :already_users_count => conversation.members.count
-            })
-          }
+          Keen.publish("conversations:create", {
+            :user => {
+              id: current_user.id,
+              username: current_user.username
+            },
+            :total_invited_count => params[:invites].count,
+            :already_users_count => conversation.members.count
+          })
+
 
           inviter = Hollerback::ConversationInviter.new(current_user, conversation, params[:invites])
 
@@ -188,11 +185,10 @@ module HollerbackApp
       video = Video.find(params[:id])
 
       if video.mark_as_read! for: current_user
-        Fiber.new {
-          Keen.publish("video:watch", {
-            id: video.id,
-            user: {id: current_user.id, username: current_user.username} })
-        }
+        Keen.publish("video:watch", {
+          id: video.id,
+          user: {id: current_user.id, username: current_user.username} })
+
         {
           data: video
         }.to_json
@@ -227,16 +223,16 @@ module HollerbackApp
 
         if video.save
           video.ready!
-          Fiber.new {
-            Keen.publish("video:create", { 
-              id: video.id,
-              conversation: {
-                id: conversation.id,
-                videos_count: conversation.videos.count
-              },
-              user: {id: current_user.id, username: current_user.username}
-            })
-          }
+
+          Keen.publish("video:create", { 
+            id: video.id,
+            conversation: {
+              id: conversation.id,
+              videos_count: conversation.videos.count
+            },
+            user: {id: current_user.id, username: current_user.username}
+          })
+
           conversation.touch
           video.mark_as_read! for: current_user
 
