@@ -94,6 +94,7 @@ GEM
     mini_magick (3.5.0)
       subexec (~> 0.2.1)
     multi_json (1.6.1)
+    newrelic_rpm (3.6.2.96)
     nokogiri (1.5.9)
     oauth (0.4.7)
     omniauth (1.1.4)
@@ -250,6 +251,7 @@ DEPENDENCIES
   i18n
   keen
   mini_magick
+  newrelic_rpm
   omniauth
   omniauth-twitter
   pg
