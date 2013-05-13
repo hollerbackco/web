@@ -23,6 +23,7 @@ module HollerbackApp
     end
 
     configure :production do
+      require 'newrelic_rpm'
       ::APNS.pem = File.join(app_root, 'config', 'apns', 'apns_prod.pem')
       ::APNS.host = 'gateway.push.apple.com'
     end

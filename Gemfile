@@ -51,6 +51,7 @@ gem 'mini_magick'
 
 #analytics
 gem 'keen'
+gem 'newrelic_rpm'
 
 #assets
 gem 'sprockets'
