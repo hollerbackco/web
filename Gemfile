@@ -41,6 +41,8 @@ gem 'apns'
 gem 'bcrypt-ruby'
 gem 'time-lord'
 gem 'i18n'
+
+gem 'keen'
 gem 'newrelic_rpm'
 
 #assets

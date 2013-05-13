@@ -70,6 +70,16 @@ module HollerbackApp
           conversation = current_user.conversations.create(creator: current_user)
           #conversation.members << current_user
 
+          Keen.publish("conversations:create", {
+            :user => {
+              id: current_user.id,
+              username: current_user.username
+            },
+            :total_invited_count => params[:invites].count,
+            :already_users_count => conversation.members.count
+          })
+
+
           inviter = Hollerback::ConversationInviter.new(current_user, conversation, params[:invites])
 
           inviter.invite
@@ -168,6 +178,10 @@ module HollerbackApp
       video = Video.find(params[:id])
 
       if video.mark_as_read! for: current_user
+        Keen.publish("video:watch", {
+          id: video.id,
+          user: {id: current_user.id, username: current_user.username} })
+
         {
           data: video
         }.to_json
@@ -187,6 +201,15 @@ module HollerbackApp
         )
 
         if video.save
+          Keen.publish("video:create", {
+            id: video.id,
+            conversation: {
+              id: conversation.id,
+              videos_count: conversation.videos.count
+            },
+            user: {id: current_user.id, username: current_user.username}
+          })
+
           conversation.touch
           video.mark_as_read! for: current_user
 
