@@ -203,7 +203,7 @@ module HollerbackApp
         if video.save
           Keen.publish("video:create", {
             id: video.id,
-            receivers_count: (conversations.members.count - 1 ),
+            receivers_count: (conversation.members.count - 1 ),
             conversation: {
               id: conversation.id,
               videos_count: conversation.videos.count
