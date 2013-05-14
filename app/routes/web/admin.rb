@@ -27,7 +27,7 @@ module HollerbackApp
         users_count: User.all.count,
         videos_count: Video.all.count,
         conversations_count: Conversation.all.count
-      }
+      }.to_json
     end
   end
 end
