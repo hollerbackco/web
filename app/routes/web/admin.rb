@@ -22,5 +22,12 @@ module HollerbackApp
       haml "admin/index".to_sym, layout: "layouts/admin".to_sym
     end
 
+    get '/madmin/stats' do
+      {
+        users_count: User.all.count,
+        videos_count: Video.all.count,
+        conversations_count: Conversation.all.count
+      }
+    end
   end
 end
