@@ -9,9 +9,11 @@ class User < ActiveRecord::Base
   has_many :memberships
   has_many :conversations, through: :memberships
   has_many :videos, through: :conversations
+  has_many :sent_videos, foreign_key: "user_id", class_name: "Video"
 
   before_create :set_access_token
   before_create :set_verification_code
+
   #todo: remove this
   before_validation :set_username, on: :create
 
