@@ -80,8 +80,11 @@ group :test do
   gem 'sqlite3'
   gem 'database_cleaner'
   gem 'sms-spec'
+  gem 'factory_girl'
+  gem 'ffaker'
 end
 
 group :test, :development do
+  gem 'guard-rspec'
   gem 'em-rspec'
 end

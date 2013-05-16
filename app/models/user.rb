@@ -12,6 +12,7 @@ class User < ActiveRecord::Base
 
   before_create :set_access_token
   before_create :set_verification_code
+
   #todo: remove this
   before_validation :set_username, on: :create
 
@@ -93,5 +94,4 @@ class User < ActiveRecord::Base
   def set_verification_code
     self.verification_code = SecureRandom.hex(3)
   end
-
 end

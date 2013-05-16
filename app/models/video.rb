@@ -6,7 +6,6 @@ class Video < ActiveRecord::Base
   end
 
   attr_accessible :filename, :user, :conversation, :in_progress
-
   acts_as_readable :on => :created_at
 
   belongs_to :user
