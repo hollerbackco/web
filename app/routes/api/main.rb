@@ -14,7 +14,8 @@ module HollerbackApp
     end
 
     get '/contacts/check' do
-      numbers = params[:numbers]
+      p params["numbers"]
+      numbers = params["numbers"]
       contact_checker =  Hollerback::ContactChecker.new(numbers, current_user)
       {
         data: contact_checker.contacts
