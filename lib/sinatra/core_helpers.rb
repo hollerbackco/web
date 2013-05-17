@@ -26,11 +26,26 @@ module Sinatra
       })
     end
 
-    def error_json(error_code, msg)
+    def error_json(error_code, options = {})
+      options = options.symbolize_keys
+
+      return unless error_code
+
+      ar_object = options.delete :for
+      if ar_object.is_a? ActiveRecord::Base
+        msg = ar_object.errors.full_messages.join(", ")
+        errors = ar_object.errors.full_messages
+      end
+
+      msg = options.delete(:msg) || msg || "error"
+      errors = options.delete(:errors) || errors || [msg]
+
+      status error_code
       {
         meta: {
           code: error_code,
-          errors: msg
+          msg: msg,
+          errors: errors
         }
       }.to_json
     end

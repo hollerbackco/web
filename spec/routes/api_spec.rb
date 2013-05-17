@@ -120,6 +120,17 @@ describe 'API ROUTES |' do
     subject.conversations.find(result["data"]["id"]).invites.count.should == 1
   end
 
+  it 'POST me/conversations | return error if no invites sent' do
+    post '/me/conversations', :access_token => access_token
+
+    result = JSON.parse(last_response.body)
+
+    last_response.should_not be_ok
+    result['meta']['code'].should == 400
+    result['meta']['msg'].should == "missing invites param"
+    subject.conversations.reload.count.should == 2
+  end
+
   it 'GET me/conversations/:id | get a specific conversation' do
     get "/me/conversations/#{conversation.id}", :access_token => access_token
 
@@ -147,8 +158,19 @@ describe 'API ROUTES |' do
     ]
 
     post "/me/conversations/#{secondary_subject.conversations.first.id}/videos/parts", access_token: second_token, parts: TEST_VIDEOS_2
-    #VideoStitchAndSend.should have_queued_job(1)
+    VideoStitchAndSend.jobs.size.should == 1
     last_response.should be_ok
+    VideoStitchAndSend.jobs.clear
+  end
+
+  it 'post me/conversations/:id/videos/parts | requires parts param' do
+    post "/me/conversations/#{secondary_subject.conversations.first.id}/videos/parts", access_token: second_token
+
+    result = JSON.parse(last_response.body)
+    last_response.should_not be_ok
+    result['meta']['code'].should == 400
+    result['meta']['msg'].should == "missing parts param"
+    VideoStitchAndSend.jobs.size.should == 0
   end
 
   it 'post me/conversations/:id/videos | sends a video' do
@@ -158,6 +180,17 @@ describe 'API ROUTES |' do
 
     last_response.should be_ok
     secondary_subject.conversations.find(conversation.id).videos.first.filename.should == "video1.mp4"
+  end
+
+  it 'post me/conversations/:id/videos | requires filename param' do
+    conversation = secondary_subject.conversations.reload.first
+
+    post "/me/conversations/#{conversation.id}/videos", access_token: second_token
+
+    result = JSON.parse(last_response.body)
+    last_response.should_not be_ok
+    result['meta']['code'].should == 400
+    result['meta']['msg'].should == "missing filename param"
   end
 
   it 'post me/videos/:id/read | user reads a video' do

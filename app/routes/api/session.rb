@@ -19,7 +19,7 @@ module HollerbackApp
         meta: {
           error_type: "AuthException",
           code: 403,
-          error_message: "Please specify correct email/password credentials or access_token"
+          msg: "Please specify correct email/password credentials or access_token"
         },
         data: nil
       }.to_json
