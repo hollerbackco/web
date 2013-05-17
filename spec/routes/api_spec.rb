@@ -53,6 +53,15 @@ describe 'API ROUTES |' do
     last_response.should be_ok
   end
 
+  it 'POST /register | requires params' do
+    post '/register', :email => "test@test.com", :password => "testtest"
+
+    result = JSON.parse(last_response.body)
+    last_response.should_not be_ok
+    result['meta']['msg'].should_not be_blank
+    result['meta']['errors'].is_a?(Array).should be_true
+  end
+
   it 'POST session | responds with an access_token' do
     post '/session', :email => "test@test.com", :password => "testtest"
 

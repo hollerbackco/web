@@ -3,6 +3,12 @@ en:
     title: Hollerback
     description:  this is going to be fun
     keywords:  app
+  activerecord:
+    errors:
+      messages:
+        blank: "cannot be blank"
+        taken: "is taken"
+        invalid: "is invalid"
   pages:
     test:
       meta:

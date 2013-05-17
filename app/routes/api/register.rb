@@ -25,12 +25,7 @@ module HollerbackApp
           user: user
         }.to_json
       else
-        {
-          meta: {
-            code: 400,
-            errors: user.errors
-          }
-        }.to_json
+        error_json 400, for: user
       end
     end
 
@@ -42,7 +37,7 @@ module HollerbackApp
           data: waitlister.to_json
         }
       else
-        error_json 400, waitlister.errors
+        error_json 400, msg: waitlister.errors
       end
     end
   end

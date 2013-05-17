@@ -22,7 +22,6 @@ class User < ActiveRecord::Base
   validates :email, presence: true, uniqueness: true
   validates_format_of :email, with: /.+@.+\..+/i
   validates :phone, presence: true, uniqueness: true
-  validates :phone_normalized, presence: true, uniqueness: true
 
   def unread_videos
     videos.unread_by(self)
@@ -31,6 +30,7 @@ class User < ActiveRecord::Base
   def set_username
     if self.username.blank? and self.email.present?
       self.username = self.email.split("@").first
+      self.username << SecureRandom.hex(3)
     end
   end
 
