@@ -12,6 +12,10 @@ module HollerbackApp
       })
 
       if user.save
+        Keen.publish("users:new", {
+          memberships: user.conversations.count
+        })
+
         #Hollerback::SMS.send_message user.phone_normalized, "Verification Code: #{user.verification_code}"
         if production?
           Hollerback::SMS.send_message "+13033595357", "#{user.name} #{user.phone_normalized} signed up"

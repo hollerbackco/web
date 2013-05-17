@@ -13,24 +13,25 @@
     -# Remove this if you use the .htaccess
     %meta{ "http-equiv" => "X-UA-Compatible", :content => "IE=edge,chrome=1" }/
 
-    %title= "Admin"
+    %title= "testing"
+    %meta{ :name => "description", :content => "" }/
+    %meta{ :name => "keywords", :content => t("meta.description") }/
     %meta{ :name => "viewport", :content => "width=device-width, initial-scale=1, maximum-scale=1.0" }/
-    %meta{ :name => "apple-mobile-web-app-capable", :content => "yes"}
-    %meta{ :name => "apple-mobile-web-app-status-bar-style", :content => "black"}
 
-    = stylesheet_tag "web"
-    = javascript_tag "web"
+    = stylesheet_tag "admin"
+    = javascript_tag "landing"
+    = tracking_code(:account => settings.google_analytics_key)
+
+    :javascript
+      window.addEventListener("load",function() {
+        // Set a timeout...
+        setTimeout(function(){
+          // Hide the address bar!
+          window.scrollTo(0, 1);
+        }, 0);
+      });
 
   %body
     .container
-      %header
-        %h1.title.clearfix
-          = image_tag "hollerback-logo.png"
-          .subtitle free video messaging
-      %section#main
-
-    :javascript
-      $(document).ready(function() {
-        var mainView = new MainView({el: "#main"})
-      });
-
+      %section
+        = yield

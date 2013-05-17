@@ -3,7 +3,7 @@ module Hollerback
     attr_accessor :phones, :inviter
 
     def initialize(numbers, user)
-      self.phones = numbers
+      self.phones = numbers || []
       self.inviter = user
     end
 

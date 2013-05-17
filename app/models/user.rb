@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   has_many :memberships
   has_many :conversations, through: :memberships, include: [:videos, :members]
   has_many :videos, through: :conversations
+  has_many :sent_videos, foreign_key: "user_id", class_name: "Video"
 
   before_create :set_access_token
   before_create :set_verification_code
@@ -17,7 +18,7 @@ class User < ActiveRecord::Base
   before_validation :set_username, on: :create
 
   validates :name, presence: true
-  validates :username, presence: true, uniqueness: true
+  #validates :username, presence: true, uniqueness: true
   validates :email, presence: true, uniqueness: true
   validates_format_of :email, with: /.+@.+\..+/i
   validates :phone, presence: true, uniqueness: true
