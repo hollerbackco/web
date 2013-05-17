@@ -241,6 +241,11 @@ module HollerbackApp
           id: video.id,
           user: {id: current_user.id, username: current_user.username} })
 
+        if current_user.device_token.present?
+          badge_count = current_user.unread_videos.count
+          APNS.send_notification(current_user.device_token, badge: badge_count)
+        end
+
         {
           meta: {
             code: 200
