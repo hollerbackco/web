@@ -55,6 +55,7 @@ gem 'newrelic_rpm'
 
 gem 'keen'
 gem 'newrelic_rpm'
+gem 'honeybadger'
 
 #assets
 gem 'sprockets'

@@ -23,7 +23,7 @@ module HollerbackApp
     #end
 
     get '/beta/:party' do
-      if production? and ! params.key? :test
+      if Sinatra::Base.production? and ! params.key? :test
         Hollerback::SMS.send_message "+13033595357", "#{params[:party]} visited the beta page"
       end
 

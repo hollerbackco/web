@@ -89,6 +89,8 @@ GEM
       tilt
     hashie (2.0.5)
     hike (1.2.2)
+    honeybadger (1.6.2)
+      json
     http_parser.rb (0.5.3)
     i18n (0.6.4)
     json (1.7.7)
@@ -264,6 +266,7 @@ DEPENDENCIES
   guard-sprockets2
   haml
   handlebars_assets
+  honeybadger
   i18n
   keen
   mini_magick
