@@ -11,7 +11,7 @@ class Video < ActiveRecord::Base
   belongs_to :user
   belongs_to :conversation
 
-  default_scope where(in_progress: false).order("created_at DESC")
+  default_scope order("created_at DESC")
 
   def ready!
     in_progress = false
