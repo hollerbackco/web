@@ -34,7 +34,9 @@ class VideoStitchAndSend
           APNS.send_notification(person.device_token, alert: "#{video.user.name}",
                                  badge: badge_count,
                                  sound: "default",
-                                 other: {hb: {conversation_id: video.conversation.id}})
+                                 other: {hb: {
+                                  conversation_id: conversation.id, 
+                                  video_id: video.id}})
         end
       end
   end
