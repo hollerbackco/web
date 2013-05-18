@@ -236,25 +236,23 @@ module HollerbackApp
     post '/me/videos/:id/read' do
       video = Video.find(params[:id])
 
-      if video.mark_as_read! for: current_user
-        Keen.publish("video:watch", {
-          id: video.id,
-          user: {id: current_user.id, username: current_user.username} })
+      video.mark_as_read! for: current_user
 
-        if current_user.device_token.present?
-          badge_count = current_user.unread_videos.count
-          APNS.send_notification(current_user.device_token, badge: badge_count)
-        end
+      Keen.publish("video:watch", {
+        id: video.id,
+        user: {id: current_user.id, username: current_user.username} })
 
-        {
-          meta: {
-            code: 200
-          },
-          data: video
-        }.to_json
-      else
-        error_json 400, msg: "could not mark as read"
+      if current_user.device_token.present?
+        badge_count = current_user.unread_videos.count
+        APNS.send_notification(current_user.device_token, badge: badge_count)
       end
+
+      {
+        meta: {
+          code: 200
+        },
+        data: video
+      }.to_json
     end
 
     post '/me/conversations/:id/videos/parts' do
