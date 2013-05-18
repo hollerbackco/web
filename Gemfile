@@ -6,7 +6,7 @@ gem 'rake'
 
 #server
 gem 'thin'
-gem 'sinatra'
+gem 'sinatra', :require => "sinatra/base"
 gem 'sinatra-contrib'
 
 #database

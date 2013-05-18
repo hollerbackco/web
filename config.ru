@@ -1,8 +1,6 @@
 require File.expand_path('./config/environment')
 require 'sidekiq/web'
 
-disable :run
-
 use Rack::MethodOverride
 use Rack::Session::Cookie, :secret => 'change_me_again'
 
@@ -19,7 +17,7 @@ map '/sidekiq' do
 end
 
 Sidekiq::Web.use Rack::Auth::Basic do |username, password|
-    username == 'jnoh' && password == 'watchthis'
+  username == 'jnoh' && password == 'watchthis'
 end 
 
 map HollerbackApp::WebApp.settings.assets_prefix do

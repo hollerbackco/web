@@ -8,9 +8,15 @@ YAML.load(File.open(env_file)).each do |key, value|
   ENV[key.to_s] ||= value
 end if File.exists?(env_file)
 
-# Setup db
-set :database, ENV["DATABASE_URL"]
-set :redis, ENV["REDISTOGO_URL"]
+module HollerbackApp
+  class BaseApp < ::Sinatra::Base
+    register ::Sinatra::ActiveRecordExtension
+
+    # Setup db
+    set :database, ENV["DATABASE_URL"]
+    set :redis, ENV["REDISTOGO_URL"]
+  end
+end
 
 # Setup lib
 %w[lib config/initializers].each do |dir|

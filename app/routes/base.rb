@@ -1,6 +1,10 @@
 module HollerbackApp
   class BaseApp < ::Sinatra::Base
     set :app_root, File.expand_path(".")
+    # Setup db
+    set :database, ENV["DATABASE_URL"]
+    set :redis, ENV["REDISTOGO_URL"]
+
     helpers ::Sinatra::Warden::Helpers
     helpers ::Sinatra::CoreHelpers
     register ::Sinatra::ActiveRecordExtension

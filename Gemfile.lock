@@ -106,7 +106,7 @@ GEM
     method_source (0.8.1)
     mini_magick (3.5.0)
       subexec (~> 0.2.1)
-    multi_json (1.2.0)
+    multi_json (1.7.3)
     newrelic_rpm (3.6.2.96)
     nokogiri (1.5.9)
     oauth (0.4.7)
