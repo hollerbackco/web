@@ -41,9 +41,21 @@ gem 'apns'
 gem 'bcrypt-ruby'
 gem 'time-lord'
 gem 'i18n'
+gem "em-http-request", "~> 1.0"
+
+#background
+gem 'slim'
+gem 'sidekiq'
+gem 'streamio-ffmpeg'
+gem 'mini_magick'
+
+#analytics
+gem 'keen'
+gem 'newrelic_rpm'
 
 gem 'keen'
 gem 'newrelic_rpm'
+gem 'honeybadger'
 
 #assets
 gem 'sprockets'
@@ -69,4 +81,11 @@ group :test do
   gem 'sqlite3'
   gem 'database_cleaner'
   gem 'sms-spec'
+  gem 'factory_girl'
+  gem 'ffaker'
+end
+
+group :test, :development do
+  gem 'guard-rspec'
+  gem 'em-rspec'
 end

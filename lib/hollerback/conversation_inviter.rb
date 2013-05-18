@@ -12,7 +12,6 @@ module Hollerback
       parsed_phones.each do |phone|
         if users = User.where(phone_normalized: phone) and users.any?
           conversation.members << users.first
-          puts "hello"
         else
           Invite.create(
             phone: phone.first,

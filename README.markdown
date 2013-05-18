@@ -49,8 +49,8 @@ Routes
 register a user
 
     params
-        name*
         email*
+        username*
         password*
         phone*             string, i.e. '+18885558888'
 
@@ -100,7 +100,7 @@ create a conversation
 
     params
         access_token*     string
-        invites*           array
+        invites*           array of phone numbers
 
     response
         {

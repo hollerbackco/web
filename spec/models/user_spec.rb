@@ -1,14 +1,8 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe User do
-
   before(:all) do
-    @user ||= User.create(
-      :name => "test2",
-      :email    => "test2@example.com",
-      :password => "password",
-      :phone => "+18588886666"
-    )
+    @user ||= FactoryGirl.create(:user)
   end
 
   let(:user) { @user }

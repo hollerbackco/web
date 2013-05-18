@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   acts_as_reader
 
   has_many :memberships
-  has_many :conversations, through: :memberships
+  has_many :conversations, through: :memberships, include: [:videos, :members]
   has_many :videos, through: :conversations
   has_many :sent_videos, foreign_key: "user_id", class_name: "Video"
 
@@ -22,7 +22,6 @@ class User < ActiveRecord::Base
   validates :email, presence: true, uniqueness: true
   validates_format_of :email, with: /.+@.+\..+/i
   validates :phone, presence: true, uniqueness: true
-  validates :phone_normalized, presence: true, uniqueness: true
 
   def unread_videos
     videos.unread_by(self)
@@ -31,6 +30,7 @@ class User < ActiveRecord::Base
   def set_username
     if self.username.blank? and self.email.present?
       self.username = self.email.split("@").first
+      self.username << SecureRandom.hex(3)
     end
   end
 
@@ -78,8 +78,8 @@ class User < ActiveRecord::Base
 
   def as_json(options={})
     #todo: uncomment when we add this to the signup flow
-    #options = options.merge(:methods => :isVerified)
-    options = options.merge(:except => [:verification_code, :username])
+    options = options.merge(:methods => :isVerified)
+    options = options.merge(:except => [:verification_code])
     super(options)
   end
 
@@ -95,5 +95,4 @@ class User < ActiveRecord::Base
   def set_verification_code
     self.verification_code = SecureRandom.hex(3)
   end
-
 end

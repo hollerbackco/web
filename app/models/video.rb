@@ -1,21 +1,32 @@
 class Video < ActiveRecord::Base
-  if production?
+  if Sinatra::Base.production?
     BUCKET_NAME = "hollerback-app"
   else
     BUCKET_NAME = "hollerback-app-dev"
   end
 
-  attr_accessible :filename, :user, :conversation
-
+  attr_accessible :filename, :user, :conversation, :in_progress
   acts_as_readable :on => :created_at
 
   belongs_to :user
   belongs_to :conversation
 
-  default_scope order("created_at DESC")
+  default_scope where(in_progress: false).order("created_at DESC")
+
+  def ready!
+    in_progress = false
+    save!
+  end
 
   def url
-    video_object.url_for(:read)
+    "http://s3.amazonaws.com/#{BUCKET_NAME}/#{filename}"
+    #video_object.url(:read)
+  end
+
+  def thumb_url
+    thumb = filename.split(".").first << "-thumb.png"
+    "http://s3.amazonaws.com/#{BUCKET_NAME}/#{thumb}"
+    #thumb_object.url(:read)
   end
 
   def metadata
@@ -23,7 +34,7 @@ class Video < ActiveRecord::Base
   end
 
   def self.video_urls
-    bucket_objects.map {|o| o.url}
+    bucket.objects.map {|o| o.url_for(:read)}
   end
 
   def isRead
@@ -31,21 +42,21 @@ class Video < ActiveRecord::Base
   end
 
   def as_json(options={})
-    options = options.merge(:methods => :isRead)
+    options = options.merge(:methods => [:isRead])
     super(options)
   end
-
-  private
 
   def self.bucket
     @bucket ||= AWS::S3.new.buckets[BUCKET_NAME]
   end
 
-  def self.bucket_objects
-    bucket.objects
-  end
+  private
 
   def video_object
     self.class.bucket.objects[filename]
+  end
+
+  def thumb_object
+    self.class.bucket.objects[thumb]
   end
 end

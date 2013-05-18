@@ -3,8 +3,20 @@ module HollerbackApp
     before '/me*' do
       authenticate(:api_token)
     end
+
     before '/contacts*' do
       authenticate(:api_token)
+    end
+
+    not_found do
+      {
+        meta: {
+          code: 404,
+          msg: "not found",
+          errors: []
+        },
+        data: nil
+      }.to_json
     end
 
     get '/' do
@@ -14,16 +26,23 @@ module HollerbackApp
     end
 
     get '/contacts/check' do
-      p params["numbers"]
       numbers = params["numbers"]
       contact_checker =  Hollerback::ContactChecker.new(numbers, current_user)
       {
+        meta: {
+          code: 200
+        },
         data: contact_checker.contacts
       }.to_json
     end
 
     get '/me' do
-      { data: current_user.as_json.merge(conversations: current_user.conversations)}.to_json
+      {
+        meta: {
+          code: 200
+        },
+        data: current_user.as_json.merge(conversations: current_user.conversations)
+      }.to_json
     end
 
     post '/me' do
@@ -34,19 +53,27 @@ module HollerbackApp
       obj[:phone]  = params["phone"] if params.key? "phone"
 
       if current_user.update_attributes obj
-        { data: current_user.as_json.merge(conversations: current_user.conversations)}.to_json
+        {
+          meta: {
+            code: 200
+          },
+          data: current_user.as_json.merge(conversations: current_user.conversations)
+        }.to_json
       else
-        status 400
-        error_json 400, "problem updating"
+        error_json 400, msg: current_user
       end
     end
 
     post '/me/verify' do
       if current_user.verify! params["code"]
-        { data: current_user.as_json.merge(conversations: current_user.conversations)}.to_json
+        {
+          meta: {
+            code: 200
+          },
+          data: current_user.as_json.merge(conversations: current_user.conversations)
+        }.to_json
       else
-        status 400
-        error_json 400, "incorrect code"
+        error_json 400, msg: "incorrect code"
       end
     end
 
@@ -59,18 +86,38 @@ module HollerbackApp
         conversation_json conversation
       end
 
-      { data: {conversations: conversations} }.to_json
+      Keen.publish("conversations:list", {
+        user: {
+          id: current_user.id,
+          username: current_user.username
+        }
+      })
+
+      {
+        meta: {
+          code: 200
+        },
+        data: {
+          conversations: conversations
+        }
+      }.to_json
     end
 
     # params
     #   invites: array of phone numbers
     post '/me/conversations' do
-      conversation = Conversation.find_by_phone_numbers(current_user, params[:invites])
-      status = Conversation.transaction do
-        unless conversation
-          conversation = current_user.conversations.create(creator: current_user)
-          #conversation.members << current_user
+      unless ensure_params :invites
+        return error_json 400, msg: "missing invites param"
+      end
 
+      unless conversation = Conversation.find_by_phone_numbers(current_user, params[:invites])
+        success = Conversation.transaction do
+          conversation = current_user.conversations.create(creator: current_user)
+          inviter = Hollerback::ConversationInviter.new(current_user, conversation, params[:invites])
+          inviter.invite
+        end
+
+        if success
           Keen.publish("conversations:create", {
             :user => {
               id: current_user.id,
@@ -79,22 +126,18 @@ module HollerbackApp
             :total_invited_count => params[:invites].count,
             :already_users_count => conversation.members.count
           })
-
-
-          inviter = Hollerback::ConversationInviter.new(current_user, conversation, params[:invites])
-
-          inviter.invite
-        else
-          true
         end
       end
 
-      if status
+      if conversation.errors.blank?
         {
+          meta: {
+            code: 200
+          },
           data: conversation_json(conversation)
         }.to_json
       else
-        {errors: "the conversation could not be created"}.to_json
+        error_json 400, for: conversation, msg: "problem updating"
       end
     end
 
@@ -102,6 +145,9 @@ module HollerbackApp
       begin
         conversation = current_user.conversations.find(params[:id])
         {
+          meta: {
+            code: 200
+          },
           data: conversation_json(conversation)
         }.to_json
       rescue ActiveRecord::RecordNotFound
@@ -122,7 +168,7 @@ module HollerbackApp
           data: nil
         }.to_json
       else
-        error_json 400, "conversation could not be deleted"
+        error_json 400, msg: "conversation could not be deleted"
       end
     end
 
@@ -130,6 +176,9 @@ module HollerbackApp
       begin
         conversation = current_user.conversations.find(params[:conversation_id])
         {
+          meta: {
+            code: 200
+          },
           data: conversation.invites
         }.to_json
       rescue ActiveRecord::RecordNotFound
@@ -141,6 +190,9 @@ module HollerbackApp
       begin
         conversation = current_user.conversations.find(params[:conversation_id])
         {
+          meta: {
+            code: 200
+          },
           data: conversation.members
         }.to_json
       rescue ActiveRecord::RecordNotFound
@@ -152,6 +204,9 @@ module HollerbackApp
       begin
         conversation = current_user.conversations.find(params[:conversation_id])
         {
+          meta: {
+            code: 200
+          },
           data: conversation.videos.with_read_marks_for(current_user)
         }.to_json
       rescue ActiveRecord::RecordNotFound
@@ -168,6 +223,9 @@ module HollerbackApp
         conversation = current_user.conversations.find(params[:conversation_id])
         video = conversation.videos.find params[:id]
         {
+          meta: {
+            code: 200
+          },
           data: video.user
         }.to_json
       rescue ActiveRecord::RecordNotFound
@@ -183,28 +241,71 @@ module HollerbackApp
           id: video.id,
           user: {id: current_user.id, username: current_user.username} })
 
+        if current_user.device_token.present?
+          badge_count = current_user.unread_videos.count
+          APNS.send_notification(current_user.device_token, badge: badge_count)
+        end
+
         {
+          meta: {
+            code: 200
+          },
           data: video
         }.to_json
       else
-        p "error"
-        error_json 400, "could not mark as read"
+        error_json 400, msg: "could not mark as read"
       end
     end
 
+    post '/me/conversations/:id/videos/parts' do
+      if !ensure_params :parts
+        return error_json 400, msg: "missing parts param"
+      end
+
+      conversation = current_user.conversations.find(params[:id])
+      video = conversation.videos.create(user: current_user)
+
+      VideoStitchAndSend.perform_async(params[:parts], video.id)
+
+      {
+        meta: {
+          code: 200
+        },
+        data: video
+      }.to_json
+    end
+
     post '/me/conversations/:id/videos' do
+      if !ensure_params :filename
+        return error_json 400, msg: "missing filename param"
+      end
+
       begin
         conversation = current_user.conversations.find(params[:id])
-
         video = conversation.videos.build(
           user: current_user,
           filename: params[:filename]
         )
 
         if video.save
+          conversation.touch
+          video.ready!
+          video.mark_as_read! for: current_user
+
+          people = conversation.members - [current_user]
+          people.each do |person|
+            if person.device_token.present?
+              badge_count = person.unread_videos.count
+              APNS.send_notification(person.device_token, alert: "#{current_user.name}",
+                                     badge: badge_count,
+                                     sound: "default",
+                                     other: {hb: {conversation_id: conversation.id}})
+            end
+          end
+
+          #todo: move this to async job
           Keen.publish("video:create", {
             id: video.id,
-            receivers_count: (conversation.members.count - 1 ),
             conversation: {
               id: conversation.id,
               videos_count: conversation.videos.count
@@ -212,29 +313,14 @@ module HollerbackApp
             user: {id: current_user.id, username: current_user.username}
           })
 
-          conversation.touch
-          video.mark_as_read! for: current_user
-
-          people = conversation.members - [current_user]
-
-          people.each do |person|
-            if person.device_token.present?
-              badge_count = person.unread_videos.count
-              APNS.send_notification(person.device_token, alert: "#{current_user.name} sent a message", 
-                                     badge: badge_count,
-                                     sound: "default",
-                                     other: {hb: {conversation_id: conversation.id}})
-            else
-              #Hollerback::SMS.send_message person.phone_normalized, "#{current_user.name} has sent a message"
-              puts "what the heck"
-            end
-          end
-
           {
+            meta: {
+              code: 200
+            },
             data: video
           }.to_json
         else
-          error_json 400, "please specify filename: where the file is located"
+          error_json 400, for: video
         end
 
       rescue ActiveRecord::RecordNotFound

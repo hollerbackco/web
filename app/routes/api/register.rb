@@ -17,7 +17,7 @@ module HollerbackApp
         })
 
         #Hollerback::SMS.send_message user.phone_normalized, "Verification Code: #{user.verification_code}"
-        if production?
+        if Sinatra::Base.production?
           Hollerback::SMS.send_message "+13033595357", "#{user.name} #{user.phone_normalized} signed up"
         end
         {
@@ -25,12 +25,7 @@ module HollerbackApp
           user: user
         }.to_json
       else
-        {
-          meta: {
-            code: 400,
-            errors: user.errors
-          }
-        }.to_json
+        error_json 400, for: user
       end
     end
 
@@ -42,7 +37,7 @@ module HollerbackApp
           data: waitlister.to_json
         }
       else
-        error_json 400, waitlister.errors
+        error_json 400, msg: waitlister.errors
       end
     end
   end

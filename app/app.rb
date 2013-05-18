@@ -2,10 +2,12 @@
 
 require File.expand_path('./app/routes/base')
 
-# load models
-Dir.open("./app/models").each do |file|
-  next if file =~ /^\./
-  require File.expand_path("./app/models/#{file}")
+# load models and jobs
+%w[models jobs].each do |dir|
+  Dir.open("./app/#{dir}").each do |file|
+    next if file =~ /^\./
+    require File.expand_path("./app/#{dir}/#{file}")
+  end
 end
 
 # load routes

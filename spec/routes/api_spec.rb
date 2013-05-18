@@ -53,6 +53,15 @@ describe 'API ROUTES |' do
     last_response.should be_ok
   end
 
+  it 'POST /register | requires params' do
+    post '/register', :email => "test@test.com", :password => "testtest"
+
+    result = JSON.parse(last_response.body)
+    last_response.should_not be_ok
+    result['meta']['msg'].should_not be_blank
+    result['meta']['errors'].is_a?(Array).should be_true
+  end
+
   it 'POST session | responds with an access_token' do
     post '/session', :email => "test@test.com", :password => "testtest"
 
@@ -67,11 +76,11 @@ describe 'API ROUTES |' do
   end
 
   it 'GET /contacts/check | return users from an array or phonenumbers' do
-    get '/contacts/check', :access_token => access_token, :numbers => [["+18587614144"], ["+18886664444"]]
+    get '/contacts/check', :access_token => access_token, :numbers => [[secondary_subject.phone_normalized]]
 
     result = JSON.parse(last_response.body)
 
-    subject.name.should == result['data'][1]["name"]
+    secondary_subject.name.should == result['data'][0]["name"]
 
     last_response.should be_ok
   end
@@ -120,30 +129,82 @@ describe 'API ROUTES |' do
     subject.conversations.find(result["data"]["id"]).invites.count.should == 1
   end
 
+  it 'POST me/conversations | return error if no invites sent' do
+    post '/me/conversations', :access_token => access_token
+
+    result = JSON.parse(last_response.body)
+
+    last_response.should_not be_ok
+    result['meta']['code'].should == 400
+    result['meta']['msg'].should == "missing invites param"
+    subject.conversations.reload.count.should == 2
+  end
+
   it 'GET me/conversations/:id | get a specific conversation' do
     get "/me/conversations/#{conversation.id}", :access_token => access_token
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
-    result['data']['name'].should == subject.conversations.find(1).name(subject)
+    result['data']['name'].should == subject.conversations.find(conversation.id).name(subject)
   end
 
   it 'post me/conversations/:id/leave | leave a group' do
-    expect{subject.conversations.find(1)}.to_not raise_error(::ActiveRecord::RecordNotFound)
-    post '/me/conversations/1/leave', access_token: access_token
+    expect{subject.conversations.find(conversation.id)}.to_not raise_error(::ActiveRecord::RecordNotFound)
+    post "/me/conversations/#{conversation.id}/leave", access_token: access_token
 
-    expect{subject.conversations.reload.find(1)}.to raise_error(::ActiveRecord::RecordNotFound)
+    expect{subject.conversations.reload.find(conversation.id)}.to raise_error(::ActiveRecord::RecordNotFound)
+  end
+
+  it 'post me/conversations/:id/videos/parts | sends a video' do
+    TEST_VIDEOS_2 = [
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.0.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.1.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.2.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.3.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.4.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.5.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.6.mp4"
+    ]
+
+    post "/me/conversations/#{secondary_subject.conversations.first.id}/videos/parts", access_token: second_token, parts: TEST_VIDEOS_2
+    VideoStitchAndSend.jobs.size.should == 1
+    last_response.should be_ok
+    VideoStitchAndSend.jobs.clear
+  end
+
+  it 'post me/conversations/:id/videos/parts | requires parts param' do
+    post "/me/conversations/#{secondary_subject.conversations.first.id}/videos/parts", access_token: second_token
+
+    result = JSON.parse(last_response.body)
+    last_response.should_not be_ok
+    result['meta']['code'].should == 400
+    result['meta']['msg'].should == "missing parts param"
+    VideoStitchAndSend.jobs.size.should == 0
   end
 
   it 'post me/conversations/:id/videos | sends a video' do
-    post '/me/conversations/2/videos', access_token: second_token, filename: 'video1.mp4'
+    conversation = secondary_subject.conversations.reload.first
+
+    post "/me/conversations/#{conversation.id}/videos", access_token: second_token, filename: 'video1.mp4'
 
     last_response.should be_ok
-    secondary_subject.conversations.find(2).videos.first.filename.should == "video1.mp4"
+    secondary_subject.conversations.find(conversation.id).videos.first.filename.should == "video1.mp4"
+  end
+
+  it 'post me/conversations/:id/videos | requires filename param' do
+    conversation = secondary_subject.conversations.reload.first
+
+    post "/me/conversations/#{conversation.id}/videos", access_token: second_token
+
+    result = JSON.parse(last_response.body)
+    last_response.should_not be_ok
+    result['meta']['code'].should == 400
+    result['meta']['msg'].should == "missing filename param"
   end
 
   it 'post me/videos/:id/read | user reads a video' do
-    video = subject.conversations.find(2).videos.first
+    conversation = subject.conversations.reload.first
+    video = conversation.videos.first
     video.unread?(subject).should be_true
 
     post "/me/videos/#{video.id}/read", access_token: access_token
