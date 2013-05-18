@@ -297,7 +297,9 @@ module HollerbackApp
               APNS.send_notification(person.device_token, alert: "#{current_user.name}",
                                      badge: badge_count,
                                      sound: "default",
-                                     other: {hb: {conversation_id: conversation.id}})
+                                     other: {hb: {
+                                      conversation_id: conversation.id, 
+                                      video_id: video.id}})
             end
           end
 
