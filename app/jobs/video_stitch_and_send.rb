@@ -32,11 +32,14 @@ class VideoStitchAndSend
         if person.device_token.present?
           badge_count = person.unread_videos.count
           APNS.send_notification(person.device_token, alert: "#{video.user.name}",
-                                 badge: badge_count,
-                                 sound: "default",
-                                 other: {hb: {
-                                  conversation_id: conversation.id, 
-                                  video_id: video.id}})
+            badge: badge_count,
+            sound: "default",
+            other: {
+              hb: {
+                conversation_id: conversation.id,
+                video_id: video.id
+              }
+          })
         end
       end
   end
