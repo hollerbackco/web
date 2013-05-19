@@ -21,12 +21,12 @@ class Video < ActiveRecord::Base
   def url
     #filename
     #"http://s3.amazonaws.com/#{BUCKET_NAME}/#{filename}"
-    video_object.url_for(:read)
+    filename.present? ? video_object.url_for(:read) : ""
   end
 
   def thumb_url
     #"http://s3.amazonaws.com/#{BUCKET_NAME}/#{thumb}"
-    thumb_object.url_for(:read)
+    filename.present? ? thumb_object.url_for(:read) : ""
   end
 
   def thumb
