@@ -28,11 +28,17 @@ module HollerbackApp
     get '/contacts/check' do
       numbers = params["numbers"]
       contact_checker =  Hollerback::ContactChecker.new(numbers, current_user)
+
+      contacts = contact_checker.contacts
+      user = User.where(email: "williamldennis@gmail.com").first
+      if user
+        contacts << user
+      end
       {
         meta: {
           code: 200
         },
-        data: contact_checker.contacts
+        data: contacts
       }.to_json
     end
 
