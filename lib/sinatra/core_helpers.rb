@@ -24,6 +24,14 @@ module Sinatra
         "invites" => conversation.invites,
         "videos" => conversation.videos.with_read_marks_for(current_user)
       })
+
+      if conversation.videos.any?
+        video = conversation.videos.first
+        obj["most_recent_video_url"] =  video.url
+        obj["most_recent_thumb_url"] =  video.thumb_url
+      end
+
+      obj
     end
 
     def error_json(error_code, options = {})
