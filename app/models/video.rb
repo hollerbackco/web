@@ -19,16 +19,21 @@ class Video < ActiveRecord::Base
   end
 
   def url
-    filename
+    #filename
     #"http://s3.amazonaws.com/#{BUCKET_NAME}/#{filename}"
-    #video_object.url(:read)
+    video_object.url_for(:read)
   end
 
   def thumb_url
-    thumb = filename.split(".").first << "-thumb.png"
     #"http://s3.amazonaws.com/#{BUCKET_NAME}/#{thumb}"
-    #thumb_object.url(:read)
+    thumb_object.url_for(:read)
   end
+
+  def thumb
+    thumb = filename.split(".").first << "-thumb.png"
+  end
+
+  def
 
   def metadata
     video_object.metadata

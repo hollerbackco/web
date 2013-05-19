@@ -243,7 +243,7 @@ module HollerbackApp
         user: {id: current_user.id, username: current_user.username} })
 
       if current_user.device_token.present?
-        badge_count = current_user.unread_videos.count
+        badge_count = current_user.unread_videos.reload.count
         APNS.send_notification(current_user.device_token, badge: badge_count)
       end
 
@@ -298,7 +298,7 @@ module HollerbackApp
                                      badge: badge_count,
                                      sound: "default",
                                      other: {hb: {
-                                      conversation_id: conversation.id, 
+                                      conversation_id: conversation.id,
                                       video_id: video.id}})
             end
           end

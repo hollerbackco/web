@@ -22,11 +22,12 @@ module Sinatra
         "name" => conversation.name(current_user),
         "members" => conversation.members,
         "invites" => conversation.invites,
-        "videos" => conversation.videos.with_read_marks_for(current_user)
+        #"videos" => conversation.videos.with_read_marks_for(current_user)
       })
 
       if conversation.videos.any?
         video = conversation.videos.first
+        puts video.url
         obj["most_recent_video_url"] =  video.url
         obj["most_recent_thumb_url"] =  video.thumb_url
       end

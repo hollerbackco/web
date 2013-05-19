@@ -15,6 +15,7 @@ class VideoStitchAndSend
         video.conversation.touch
         video.mark_as_read! for: video.user
         notify_recipients(video)
+        publish_analytics(video)
       end
     end
   end
@@ -42,5 +43,16 @@ class VideoStitchAndSend
           })
         end
       end
+  end
+
+  def publish_analytics(video)
+    Keen.publish("video:create", {
+      id: video.id,
+      conversation: {
+        id: video.conversation.id,
+        videos_count: video.conversation.videos.count
+      },
+      user: {id: video.user.id, username: video.user.username}
+    })
   end
 end
