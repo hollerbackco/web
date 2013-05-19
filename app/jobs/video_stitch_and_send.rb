@@ -36,7 +36,7 @@ class VideoStitchAndSend
             sound: "default",
             other: {
               hb: {
-                conversation_id: conversation.id,
+                conversation_id: video.conversation.id,
                 video_id: video.id
               }
           })
