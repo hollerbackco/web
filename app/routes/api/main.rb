@@ -164,8 +164,8 @@ module HollerbackApp
     post '/me/conversations/:id/leave' do
       membership = current_user.memberships.where({
         conversation_id: params[:id]
-      }).first
 
+      }).first
       if membership.destroy
         {
           meta: {
@@ -312,6 +312,7 @@ module HollerbackApp
           #todo: move this to async job
           Keen.publish("video:create", {
             id: video.id,
+            receivers_count: (conversation.members.count - 1 ),
             conversation: {
               id: conversation.id,
               videos_count: conversation.videos.count
