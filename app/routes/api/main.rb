@@ -30,9 +30,9 @@ module HollerbackApp
       contact_checker =  Hollerback::ContactChecker.new(numbers, current_user)
 
       contacts = contact_checker.contacts
-      user = User.where(email: "williamldennis@gmail.com").first
-      if user
-        contacts << user
+      if params["first"]
+        user = User.where(email: "williamldennis@gmail.com").first
+        contacts << user if user
       end
       {
         meta: {
