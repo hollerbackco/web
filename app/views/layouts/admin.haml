@@ -22,6 +22,10 @@
     = javascript_tag "landing"
     = tracking_code(:account => settings.google_analytics_key)
 
+    :css
+      body {
+        margin-top: 60px;
+      }
     :javascript
       window.addEventListener("load",function() {
         // Set a timeout...
@@ -32,6 +36,16 @@
       });
 
   %body
+    %header.navbar.navbar-inverse.navbar-fixed-top
+      .navbar-inner
+        .container
+          .brand Hollerback
+          .nav-collapse.collapse
+            %ul.nav
+              %li
+                %a{href: "/madmin"} Home
+              %li
+                %a{href: "/madmin/app_links"} App Downloads
     .container
       %section
         = yield

@@ -23,12 +23,21 @@ module HollerbackApp
     #end
 
     get '/beta/:party' do
+      party = params[:party]
+
       if Sinatra::Base.production? and ! params.key? :test
-        Hollerback::SMS.send_message "+13033595357", "#{params[:party]} visited the beta page"
+        Hollerback::SMS.send_message "+13033595357", "#{party} visited the beta page"
       end
 
-      url = URI.escape("https://s3.amazonaws.com/hollerback-app-dev/distro/HollerbackAppEnterprise.plist")
-      redirect "itms-services://?action=download-manifest&url=#{url}"
+      app_link = AppLink.where(slug: party).first_or_create
+
+      if app_link.usable?
+        app_link.increment!(:downloads_count)
+        url = URI.escape("https://s3.amazonaws.com/hollerback-app-dev/distro/HollerbackAppEnterprise.plist")
+        redirect "itms-services://?action=download-manifest&url=#{url}"
+      else
+        redirect "/"
+      end
     end
 
     ['/fly', '/fly/:from_name'].each do |path|
