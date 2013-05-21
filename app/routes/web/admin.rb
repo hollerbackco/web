@@ -27,6 +27,11 @@ module HollerbackApp
       haml "admin/app_links".to_sym, layout: "layouts/admin".to_sym
     end
 
+    get '/madmin/waitlist' do
+      @waitlisters = Waitlister.all
+      haml "admin/invite_requests".to_sym, layout: "layouts/admin".to_sym
+    end
+
     get '/madmin/stats' do
       {
         users_count: User.all.count,
