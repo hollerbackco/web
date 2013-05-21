@@ -32,6 +32,7 @@ module HollerbackApp
       contacts = contact_checker.contacts
       if params["first"]
         user = User.where(email: "williamldennis@gmail.com").first
+        user.name = "Will Dennis - Cofounder of Hollerback"
         contacts << user if user
       end
       {
