@@ -1,0 +1,54 @@
+%h1 Stats
+%article
+  %h2 Active Users
+  #active-users
+
+%article
+  %h2 Videos Sent
+  #videos-sent
+
+%article
+  %h2 Videos Watched
+  #videos-watched
+
+:javascript
+  var Keen=Keen||{configure:function(e){this._cf=e},addEvent:function(e,t,n,i){this._eq=this._eq||[],this._eq.push([e,t,n,i])},setGlobalProperties:function(e){this._gp=e},onChartsReady:function(e){this._ocrq=this._ocrq||[],this._ocrq.push(e)}};(function(){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src=("https:"==document.location.protocol?"https://":"http://")+"dc8na2hxrj29i.cloudfront.net/code/keen-2.1.0-min.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)})();
+
+    // Configure the Keen object with your Project ID and (optional) access keys.
+  Keen.configure({
+    projectId: "518194e13843312d5e000000",
+    readKey: "e5c4cca463c1b014077482bb36f989ec1fcd0d6ffe5acbd62723f6f19ce14c10c35640953e6be444f338ceb26e60f411e37620a3fe3a9dd598764ddd70faeab9c91534dbdfe3311f6b3e1e92f818b90adf131084e5c9fe9276d85242cfba083ecc8386bca7153290fb340ab12118c9a0"    // required for doing analysis
+  });
+
+  Keen.onChartsReady(function() {
+    var series = new Keen.Series("video:create", {
+      analysisType: "count",
+      timeframe: "this_14_days",
+      interval: "daily"
+    });
+
+    series.draw(document.getElementById("videos-sent"), {
+      label: "Videos sent over time"
+    });
+
+    var watch = new Keen.Series("video:watch", {
+      analysisType: "count",
+      timeframe: "this_14_days",
+      interval: "daily"
+    });
+
+    watch.draw(document.getElementById("videos-watched"), {
+      label: "Videos watched over time"
+    });
+
+    var users = new Keen.Series("video:watch", {
+      analysisType: "count_unique",
+      timeframe: "this_14_days",
+      interval: "daily",
+      targetProperty: "user.id"
+    });
+
+    users.draw(document.getElementById("active-users"), {
+      label: "Users who watched a video"
+    });
+  });
