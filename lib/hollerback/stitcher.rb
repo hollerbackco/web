@@ -29,7 +29,7 @@ module Hollerback
       prepared = files.map { |file| Movie.new(file).prepare_for_stitch(output_dir).path }
       command = "ffmpeg -i \"concat:"
       command << prepared.join("|")
-      command << "\" -c copy -bsf:a aac_adtstoasc "
+      command << "\" -b:v 128k -bsf:a aac_adtstoasc "
       command << output_file
 
       Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
@@ -40,7 +40,7 @@ module Hollerback
     def self.rotate(movie)
       final_path = "#{movie.path}.final.mp4"
 
-      command = "ffmpeg -i #{movie.path} -b:v 128k -vf \"transpose=1\" -y -r 30 -qscale 0 -acodec copy #{final_path}"
+      command = "ffmpeg -i #{movie.path} -vf \"transpose=1\" -y -r 30 -qscale 0 -acodec copy #{final_path}"
 
       Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
 
