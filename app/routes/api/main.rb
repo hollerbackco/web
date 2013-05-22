@@ -210,11 +210,20 @@ module HollerbackApp
     get '/me/conversations/:conversation_id/videos' do
       begin
         conversation = current_user.conversations.find(params[:conversation_id])
+
+        scoped_videos = conversation.videos
+
+        if params[:page]
+          scoped_videos = scoped_videos.paginate(page: params[:page], per_page: 20)
+        end
+
+        videos = scoped_videos.with_read_marks_for(current_user)
+
         {
           meta: {
             code: 200
           },
-          data: conversation.videos.with_read_marks_for(current_user)
+          data: videos
         }.to_json
       rescue ActiveRecord::RecordNotFound
         not_found

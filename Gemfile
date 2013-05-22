@@ -18,6 +18,8 @@ gem 'redis'
 #model
 gem 'unread'
 gem 'awesome_nested_set'
+gem 'will_paginate'
+#gem 'kaminari', :require => 'kaminari/sinatra'
 
 #views
 gem 'haml'
