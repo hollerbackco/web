@@ -22,7 +22,7 @@ module HollerbackApp
       haml "admin/index".to_sym, layout: "layouts/admin".to_sym
     end
 
-    get '/madmin/stats' do
+    get '/madmin/metrics' do
       @app_links = AppLink.all
       haml "admin/stats".to_sym, layout: "layouts/admin".to_sym
     end
