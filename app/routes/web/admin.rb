@@ -22,9 +22,19 @@ module HollerbackApp
       haml "admin/index".to_sym, layout: "layouts/admin".to_sym
     end
 
+    get '/madmin/stats' do
+      @app_links = AppLink.all
+      haml "admin/stats".to_sym, layout: "layouts/admin".to_sym
+    end
+
     get '/madmin/app_links' do
       @app_links = AppLink.all
       haml "admin/app_links".to_sym, layout: "layouts/admin".to_sym
+    end
+
+    get '/madmin/waitlist' do
+      @waitlisters = Waitlister.all
+      haml "admin/invite_requests".to_sym, layout: "layouts/admin".to_sym
     end
 
     get '/madmin/stats' do
