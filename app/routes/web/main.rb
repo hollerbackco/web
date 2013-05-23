@@ -31,7 +31,11 @@ module HollerbackApp
 
       app_link = AppLink.where(slug: party).first_or_create
 
-      if app_link.usable?
+      if params[:party] == "teamhollerback"
+        app_link.increment!(:downloads_count)
+        url = URI.escape("https://s3.amazonaws.com/hollerback-app-dev/distro/HollerbackAppEnterprise-Stage.plist")
+        redirect "itms-services://?action=download-manifest&url=#{url}"
+      else  app_link.usable?
         app_link.increment!(:downloads_count)
         url = URI.escape("https://s3.amazonaws.com/hollerback-app-dev/distro/HollerbackAppEnterprise.plist")
         redirect "itms-services://?action=download-manifest&url=#{url}"
