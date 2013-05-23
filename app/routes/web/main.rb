@@ -35,7 +35,7 @@ module HollerbackApp
         app_link.increment!(:downloads_count)
         url = URI.escape("https://s3.amazonaws.com/hollerback-app-dev/distro/HollerbackAppEnterprise-Stage.plist")
         redirect "itms-services://?action=download-manifest&url=#{url}"
-      else  app_link.usable?
+      elsif app_link.usable?
         app_link.increment!(:downloads_count)
         url = URI.escape("https://s3.amazonaws.com/hollerback-app-dev/distro/HollerbackAppEnterprise.plist")
         redirect "itms-services://?action=download-manifest&url=#{url}"
