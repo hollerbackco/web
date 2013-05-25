@@ -19,12 +19,13 @@ module HollerbackApp
       #I18n.backend.load_translations
     end
 
-    configure :development, :staging do
+    configure :development, :staging, :test do
       ::APNS.pem = File.join(app_root, 'config', 'apns', 'apns_dev.pem')
     end
 
     configure :production do
       require 'newrelic_rpm'
+      ::GCMS = GCM.new ENV["gcm_key"]
       ::APNS.pem = File.join(app_root, 'config', 'apns', 'apns_enterprise_prod.pem')
       ::APNS.host = 'gateway.push.apple.com'
     end

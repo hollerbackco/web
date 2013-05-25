@@ -69,6 +69,9 @@ GEM
       sexp_processor (~> 4.0)
     formatador (0.2.4)
     fssm (0.2.10)
+    gcm (0.0.2)
+      httparty
+      json
     guard (1.8.0)
       formatador (>= 0.2.4)
       listen (>= 1.0.0)
@@ -92,6 +95,9 @@ GEM
     honeybadger (1.6.2)
       json
     http_parser.rb (0.5.3)
+    httparty (0.11.0)
+      multi_json (~> 1.0)
+      multi_xml (>= 0.5.2)
     i18n (0.6.4)
     json (1.7.7)
     jwt (0.1.6)
@@ -107,6 +113,7 @@ GEM
     mini_magick (3.5.0)
       subexec (~> 0.2.1)
     multi_json (1.7.3)
+    multi_xml (0.5.3)
     newrelic_rpm (3.6.2.96)
     nokogiri (1.5.9)
     oauth (0.4.7)
@@ -262,6 +269,7 @@ DEPENDENCIES
   factory_girl
   ffaker
   flay
+  gcm
   guard-rspec
   guard-sprockets2
   haml
