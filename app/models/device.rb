@@ -5,4 +5,8 @@ class Device < ActiveRecord::Base
   validates :token,    presence: true
 
   belongs_to :user
+
+  def ios?
+    platform == "ios"
+  end
 end

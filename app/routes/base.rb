@@ -25,6 +25,7 @@ module HollerbackApp
 
     configure :production do
       require 'newrelic_rpm'
+      ::GCMS = GCM.new ENV["gcm_key"]
       ::APNS.pem = File.join(app_root, 'config', 'apns', 'apns_enterprise_prod.pem')
       ::APNS.host = 'gateway.push.apple.com'
     end

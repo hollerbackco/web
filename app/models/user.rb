@@ -54,7 +54,7 @@ class User < ActiveRecord::Base
 
   #todo: get rid of this
   def device_token=(token)
-    devices.create(platform: "ios", token: "token")
+    devices.build(platform: "ios", token: "token")
   end
 
   def phone_area_code
