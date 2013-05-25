@@ -28,21 +28,7 @@ class VideoStitchAndSend
   end
 
   def notify_recipients(video)
-      recipients = video.conversation.members - [video.user]
-      recipients.each do |person|
-        if person.device_token.present?
-          badge_count = person.unread_videos.count
-          APNS.send_notification(person.device_token, alert: "#{video.user.name}",
-            badge: badge_count,
-            sound: "default",
-            other: {
-              hb: {
-                conversation_id: video.conversation.id,
-                video_id: video.id
-              }
-          })
-        end
-      end
+    Hollerback::NotifyRecipients.new(video).run
   end
 
   def publish_analytics(video)

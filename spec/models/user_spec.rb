@@ -34,4 +34,10 @@ describe User do
   it "should return an isVerified attribute in json object" do
     user.as_json.key?(:isVerified).should be_true
   end
+
+  it "should create a device when token is set" do
+    user.device_token = "helo"
+    user.save
+    user.devices.reload.count.should == 1
+  end
 end

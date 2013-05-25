@@ -40,7 +40,7 @@ module Hollerback
     def self.rotate(movie)
       final_path = "#{movie.path}.final.mp4"
 
-      command = "ffmpeg -i #{movie.path} -vf \"transpose=1\" -y -r 30 -qscale 0 -acodec copy #{final_path}"
+      command = "ffmpeg -i #{movie.path} -vf \"transpose=1\" -y -r 30 -b:v 256k -acodec copy  #{final_path}"
 
       Open3.popen3(command) { |stdin, stdout, stderr| stderr.read }
 

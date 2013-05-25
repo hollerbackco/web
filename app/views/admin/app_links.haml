@@ -3,9 +3,11 @@
   %thead
     %tr
       %td Name
+      %td Segment
       %td Downloads
   %tbody
     - @app_links.each do |link|
       %tr
         %td= link.slug
+        %td= link.segment
         %td= link.downloads_count

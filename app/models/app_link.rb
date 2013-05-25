@@ -1,9 +1,9 @@
 class AppLink < ActiveRecord::Base
-  attr_accessible :slug, :downloads_count, :max_downloads, :expires_at
+  attr_accessible :slug, :downloads_count, :max_downloads, :expires_at, :segment
 
   belongs_to :sharer, class_name: "User"
 
-  validates :slug, presence: true, uniqueness: true
+  validates :slug, presence: true
 
   def usable?
     downloads_left? and !expired?

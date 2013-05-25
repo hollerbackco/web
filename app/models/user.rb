@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
 
   acts_as_reader
 
+  has_many :devices
   has_many :memberships
   has_many :conversations, through: :memberships, include: [:videos, :members]
   has_many :videos, through: :conversations
@@ -49,6 +50,11 @@ class User < ActiveRecord::Base
   def phone=(phone)
     self.phone_normalized = Phoner::Phone.parse(phone).to_s
     super
+  end
+
+  #todo: get rid of this
+  def device_token=(token)
+    devices.build(platform: "ios", token: "token")
   end
 
   def phone_area_code
