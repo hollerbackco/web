@@ -261,14 +261,16 @@ module HollerbackApp
 
     post '/me/videos/:id/read' do
       video = Video.find(params[:id])
-
       video.mark_as_read! for: current_user
 
       Keen.publish("video:watch", {
         id: video.id,
         user: {id: current_user.id, username: current_user.username} })
 
-      Hollerback::NotifyRecipients.new(video).run
+      unwatched_count = current_user.unread_videos.count
+      current_user.devices.ios.each do |device|
+        APNS.send_notification(device.token, badge: unwatched_count)
+      end
 
       {
         meta: {
@@ -312,24 +314,12 @@ module HollerbackApp
           conversation.touch
           video.ready!
           video.mark_as_read! for: current_user
-
-          people = conversation.members - [current_user]
-          people.each do |person|
-            if person.device_token.present?
-              badge_count = person.unread_videos.count
-              APNS.send_notification(person.device_token, alert: "#{current_user.name}",
-                                     badge: badge_count,
-                                     sound: "default",
-                                     other: {hb: {
-                                      conversation_id: conversation.id,
-                                      video_id: video.id}})
-            end
-          end
+          Hollerback::NotifyRecipients.new(video).run
 
           #todo: move this to async job
           Keen.publish("video:create", {
             id: video.id,
-            receivers_count: (conversation.members.count - 1 ),
+            receivers_count: (conversation.members.count - 1),
             conversation: {
               id: conversation.id,
               videos_count: conversation.videos.count
