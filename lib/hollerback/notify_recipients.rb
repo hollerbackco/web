@@ -17,24 +17,23 @@ module Hollerback
         video_id: video.id,
         sender_name: video.user.name
       }
+      badge_count = person.unread_videos.count
 
-      person.devices.each do |device|
-        badge_count = person.unread_videos.count
+      person.devices.ios.each do |device|
+        APNS.send_notification(device.token, {
+          alert: "#{video.user.name}",
+          badge: badge_count,
+          sound: "default",
+          other: {
+            hb: data
+          }
+        })
+      end
 
-        if device.platform == "ios"
-          APNS.send_notification(device.token, {
-            alert: "#{video.user.name}",
-            badge: badge_count,
-            sound: "default",
-            other: {
-              hb: data
-            }
-          })
-        else
-          GCMS.send_notification([device.token],
-            data: data
-          )
-        end
+      person.devices.android.each do |device|
+        GCMS.send_notification([device.token],
+          data: data
+        )
       end
     end
   end

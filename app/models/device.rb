@@ -6,6 +6,9 @@ class Device < ActiveRecord::Base
 
   belongs_to :user
 
+  scope :ios, where(platform: "ios")
+  scope :android, where(platform: "android")
+
   def ios?
     platform == "ios"
   end
