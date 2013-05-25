@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
 
   acts_as_reader
 
-  has_many :devices
+  has_many :devices, autosave: true
   has_many :memberships
   has_many :conversations, through: :memberships, include: [:videos, :members]
   has_many :videos, through: :conversations
@@ -23,6 +23,11 @@ class User < ActiveRecord::Base
   validates :email, presence: true, uniqueness: true
   validates_format_of :email, with: /.+@.+\..+/i
   validates :phone, presence: true, uniqueness: true
+
+  #todo: get rid of this
+  def device_token=(token)
+    devices.build(platform: "ios", token: "token")
+  end
 
   def unread_videos
     videos.unread_by(self)
@@ -52,10 +57,6 @@ class User < ActiveRecord::Base
     super
   end
 
-  #todo: get rid of this
-  def device_token=(token)
-    devices.build(platform: "ios", token: "token")
-  end
 
   def phone_area_code
     phoner.present? ? phoner.area_code : "858"

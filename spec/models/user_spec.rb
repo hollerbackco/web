@@ -7,14 +7,8 @@ describe User do
 
   let(:user) { @user }
 
-  it "should create a new instance given valid attributes" do
-    User.create!(
-      :name => "username",
-      :username => "username",
-      :email    => "user@example.com",
-      :password => "password",
-      :phone => "+18587614144"
-    )
+  it "should have a device" do
+    user.devices.count.should == 1
   end
 
   it "should generate a verification thats 6 characters in length" do
@@ -36,8 +30,9 @@ describe User do
   end
 
   it "should create a device when token is set" do
+    device_count = user.devices.count
     user.device_token = "helo"
     user.save
-    user.devices.reload.count.should == 1
+    user.devices.reload.count.should == device_count + 1
   end
 end
