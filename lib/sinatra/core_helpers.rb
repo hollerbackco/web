@@ -27,7 +27,6 @@ module Sinatra
 
       if conversation.videos.any?
         video = conversation.videos.first
-        puts video.url
         obj["most_recent_video_url"] =  video.url
         obj["most_recent_thumb_url"] =  video.thumb_url
       end

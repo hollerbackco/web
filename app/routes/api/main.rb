@@ -30,11 +30,16 @@ module HollerbackApp
       contact_checker =  Hollerback::ContactChecker.new(numbers, current_user)
 
       contacts = contact_checker.contacts
+
+      #todo remove this after launch
+      user = User.where(email: "williamldennis@gmail.com").first
+      contacts = contacts - [user]
+
       if params["first"]
-        user = User.where(email: "williamldennis@gmail.com").first
         user.name = "Will Dennis - Cofounder of Hollerback"
         contacts << user if user
       end
+
       {
         meta: {
           code: 200
@@ -210,11 +215,25 @@ module HollerbackApp
     get '/me/conversations/:conversation_id/videos' do
       begin
         conversation = current_user.conversations.find(params[:conversation_id])
+
+        scoped_videos = conversation.videos.scoped
+
+        if params[:page]
+          scoped_videos = scoped_videos.paginate(:page => params[:page], :per_page => 20)
+        end
+
+        videos = scoped_videos.with_read_marks_for(current_user)
+
+        if params[:page]
+          last_page = videos.current_page == videos.total_pages
+        end
+
         {
           meta: {
-            code: 200
+            code: 200,
+            last_page: last_page
           },
-          data: conversation.videos.with_read_marks_for(current_user)
+          data: videos
         }.to_json
       rescue ActiveRecord::RecordNotFound
         not_found
