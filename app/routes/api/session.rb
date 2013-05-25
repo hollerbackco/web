@@ -4,6 +4,7 @@ module HollerbackApp
     post '/session' do
       logout
       authenticate(:password)
+
       if params.key? :platform and params.key? :device_token
         current_user.devices.create({
           :platform => params[:platform],
