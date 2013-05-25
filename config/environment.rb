@@ -2,6 +2,9 @@ require 'rubygems'
 require 'bundler'
 Bundler.require
 
+require 'will_paginate'
+require 'will_paginate/active_record'
+
 # setup config vars
 env_file = File.join('config', 'local_env.yml')
 YAML.load(File.open(env_file)).each do |key, value|

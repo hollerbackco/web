@@ -48,7 +48,7 @@ class Video < ActiveRecord::Base
   end
 
   def as_json(options={})
-    options = options.merge(:methods => [:isRead])
+    options = options.merge(:methods => [:isRead, :url, :thumb_url])
     super(options)
   end
 
