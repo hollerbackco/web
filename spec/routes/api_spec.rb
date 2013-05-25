@@ -28,7 +28,8 @@ describe 'API ROUTES |' do
       username: "test",
       email: "test@test.com",
       password: "testtest",
-      phone: "+18886664444"
+      phone: "+18886664444",
+      device_token: "testtoken"
     )
 
     @conversation = @user.conversations.create
@@ -38,7 +39,8 @@ describe 'API ROUTES |' do
       username: "second",
       email: "second@test.com",
       password: "secondtest",
-      phone: "+18886668888"
+      phone: "+18886668888",
+      device_token: "testtoken"
     )
   end
 

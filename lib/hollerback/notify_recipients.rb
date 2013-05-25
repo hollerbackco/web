@@ -22,7 +22,7 @@ module Hollerback
         badge_count = person.unread_videos.count
 
         if device.platform == "ios"
-          APNS.send_notification(person.device_token, {
+          APNS.send_notification(device.token, {
             alert: "#{video.user.name}",
             badge: badge_count,
             sound: "default",

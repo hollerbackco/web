@@ -19,7 +19,7 @@ module HollerbackApp
       #I18n.backend.load_translations
     end
 
-    configure :development, :staging do
+    configure :development, :staging, :test do
       ::APNS.pem = File.join(app_root, 'config', 'apns', 'apns_dev.pem')
     end
 
