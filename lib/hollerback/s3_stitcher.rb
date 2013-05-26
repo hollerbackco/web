@@ -49,7 +49,7 @@ module Hollerback
       rescue => ex
         retries -= 1
         if retries > 0
-          puts "ERROR during S3 upload: #{ex.inspect}. Retries: #{retries left}"
+          puts "ERROR during S3 upload: #{ex.inspect}. Retries: #{retries} left"
           retry
         else
            # oh well, we tried...
