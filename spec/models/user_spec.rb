@@ -34,5 +34,7 @@ describe User do
     user.device_token = "helo"
     user.save
     user.devices.reload.count.should == device_count + 1
+    p user.devices
+    user.devices.where(:token => "helo").any?.should be_true
   end
 end
