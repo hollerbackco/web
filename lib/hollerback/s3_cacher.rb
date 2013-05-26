@@ -8,7 +8,7 @@ module Hollerback
     end
 
     def cache!
-      File.open(cached_path, "w") do |f|
+      File.open(cached_path, "wb") do |f|
         f.write(@bucket.objects[@s3path].read)
       end
     end

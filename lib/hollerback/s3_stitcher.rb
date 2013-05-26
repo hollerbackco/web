@@ -34,8 +34,28 @@ module Hollerback
 
     def send_file_to_s3(file, s3path)
       obj = bucket.objects[s3path]
-      obj.write(file: file)
+      upload_to_s3(file, obj)
+      #obj.write(file: file)
+      p s3path
       s3path
+    end
+
+    #todo temp fix to s3 upload problem
+    # ref: https://github.com/aws/aws-sdk-ruby/issues/241
+    def upload_to_s3(path, s3_obj)
+      retries = 3
+      begin
+        s3_obj.write(File.open(path, 'rb', :encoding => 'BINARY'))
+      rescue => ex
+        retries -= 1
+        if retries > 0
+          puts "ERROR during S3 upload: #{ex.inspect}. Retries: #{retries left}"
+          retry
+        else
+           # oh well, we tried...
+          raise
+        end
+      end
     end
   end
 end
