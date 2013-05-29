@@ -216,7 +216,7 @@ module HollerbackApp
       begin
         conversation = current_user.conversations.find(params[:conversation_id])
 
-        scoped_videos = conversation.videos.scoped
+        scoped_videos = conversation.videos_for(current_user).scoped
 
         if params[:page]
           scoped_videos = scoped_videos.paginate(:page => params[:page], :per_page => 20)

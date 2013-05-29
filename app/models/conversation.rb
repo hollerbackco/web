@@ -1,8 +1,7 @@
 class Conversation < ActiveRecord::Base
   attr_accessible :creator, :invites, :name
 
-  has_many :videos, conditions: {in_progress: false},
-    order: "videos.created_at DESC", :dependent => :destroy
+  has_many :videos, order: "videos.created_at DESC", :dependent => :destroy
   has_many :memberships
   has_many :members, through: :memberships, source: :user, class_name: "User"
   has_many :invites
@@ -10,6 +9,15 @@ class Conversation < ActiveRecord::Base
   belongs_to :creator, class_name: "User"
 
   default_scope order("updated_at DESC")
+
+  # all videos sent by user or all videos that are complete
+  def videos_for(user)
+    t = Video.arel_table
+    videos.where(
+      t[:user_id].eq(user.id).
+      or(t[:in_progress].eq(false))
+    )
+  end
 
   def name(disclude_user=nil)
     member_names = members.map {|member| name = member.name.split(" ");  name.first }
