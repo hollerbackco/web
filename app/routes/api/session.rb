@@ -10,7 +10,7 @@ module HollerbackApp
       if params.key?("platform") and params.key?("device_token")
         current_user.devices.where({
           :platform => params["platform"],
-          :device_token => params["device_token"]
+          :token => params["device_token"]
         }).first_or_create
       elsif params.key? :device_token
         current_user.update_attributes(:device_token => params[:device_token])

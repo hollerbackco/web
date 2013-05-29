@@ -68,11 +68,13 @@ describe 'API ROUTES |' do
   end
 
   it 'POST session | responds with an access_token' do
-    post '/session', :email => "test@test.com", :password => "testtest"
+    post '/session', :email => "test@test.com", :password => "testtest",
+      :platform => "android", :device_token => "hello"
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
     result['access_token'].should == subject.access_token
+    subject.reload.devices.count.should == 2
   end
 
   it 'POST session | returns 403 when incorrect password' do

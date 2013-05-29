@@ -20,6 +20,7 @@ module HollerbackApp
     end
 
     configure :development, :staging, :test do
+      ::GCMS = GCM.new ENV["GCM_KEY"]
       ::APNS.pem = File.join(app_root, 'config', 'apns', 'apns_dev.pem')
     end
 

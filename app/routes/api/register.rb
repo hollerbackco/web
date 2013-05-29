@@ -13,7 +13,7 @@ module HollerbackApp
       if params.key? :platform and params.key? :device_token
         user.devices.build({
           :platform => params[:platform],
-          :device_token => params[:device_token]
+          :token => params[:device_token]
         })
       elsif params.key? :device_token
         user.device_token = params[:device_token]
