@@ -12,6 +12,7 @@ class VideoStitchAndSend
       video_path = Hollerback::S3Stitcher.new(files, Video::BUCKET_NAME, s3_output_label).run
 
       if video.update_attributes(filename: video_path, in_progress: false)
+        video.ready!
         video.conversation.touch
         video.mark_as_read! for: video.user
         notify_recipients(video)
