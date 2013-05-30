@@ -1,5 +1,5 @@
 class Conversation < ActiveRecord::Base
-  attr_accessible :creator, :invites, :name
+  attr_accessible :creator, :name
 
   has_many :videos, order: "videos.created_at DESC", :dependent => :destroy
   has_many :memberships
