@@ -17,7 +17,9 @@ module Sinatra
     end
 
     def conversation_json(conversation)
-      if cached = HollerbackApp::BaseApp.settings.cache.get("user/#{current_user.id}/conversation/#{conversation.id}/#{conversation.updated_at}")
+      cache_key = "#{current_user.memcache_key}/conversation/#{conversation.id}-#{conversation.updated_at}"
+
+      if cached = HollerbackApp::BaseApp.settings.cache.get(cache_key)
         return cached
       end
 
@@ -35,7 +37,7 @@ module Sinatra
         obj["most_recent_thumb_url"] =  video.thumb_url
       end
 
-      HollerbackApp::BaseApp.settings.cache.set("user/#{current_user.id}/conversation/#{conversation.id}/#{conversation.updated_at}", obj)
+      HollerbackApp::BaseApp.settings.cache.set(cache_key, obj)
 
       obj
     end

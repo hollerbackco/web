@@ -24,6 +24,21 @@ class User < ActiveRecord::Base
   validates_format_of :email, with: /.+@.+\..+/i
   validates :phone, presence: true, uniqueness: true
 
+
+  def memcache_key_touch
+    HollerbackApp::BaseApp.settings.cache.set("user/#{id}/memcache-id", self.memcache_id + 1)
+  end
+
+  def memcache_id
+    HollerbackApp::BaseApp.settings.cache.fetch("user/#{id}/memcache-id") do
+      rand(10)
+    end
+  end
+
+  def memcache_key
+    "user/#{id}-#{memcache_id}"
+  end
+
   #todo: get rid of this
   def device_token=(token)
     devices.build(platform: "ios", token: token)
