@@ -98,12 +98,12 @@ module HollerbackApp
         conversation_json conversation
       end
 
-      Keen.publish("conversations:list", {
-        user: {
-          id: current_user.id,
-          username: current_user.username
-        }
-      })
+      #Keen.publish("conversations:list", {
+        #user: {
+          #id: current_user.id,
+          #username: current_user.username
+        #}
+      #})
 
       {
         meta: {
