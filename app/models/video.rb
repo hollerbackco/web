@@ -14,7 +14,7 @@ class Video < ActiveRecord::Base
   default_scope order("created_at DESC")
 
   def ready!
-    in_progress = false
+    self.in_progress = false
     save!
   end
 
