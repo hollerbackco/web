@@ -17,29 +17,24 @@ module Sinatra
     end
 
     def conversation_json(conversation)
-      cache_key = "#{current_user.memcache_key}/conversation/#{conversation.id}-#{conversation.updated_at}"
+      cache_key = "user/#{current_user.id}/conversations/#{conversation.id}-#{conversation.updated_at}"
 
-      if cached = HollerbackApp::BaseApp.settings.cache.get(cache_key)
-        return cached
+      HollerbackApp::BaseApp.settings.cache.fetch(cache_key, 1.hour) do
+        obj = conversation.as_json(root: false).merge({
+          "unread_count" => conversation.videos_for(current_user).unread_by(current_user).count,
+          "name" => conversation.name(current_user),
+          "members" => conversation.members.as_json,
+          "invites" => conversation.invites.as_json
+        })
+
+        if conversation.videos.any?
+          video = conversation.videos_for(current_user).first
+          obj["most_recent_video_url"] =  video.url
+          obj["most_recent_thumb_url"] =  video.thumb_url
+        end
+
+        obj
       end
-
-      obj = conversation.as_json(root: false).merge({
-        "unread_count" => conversation.videos_for(current_user).unread_by(current_user).count,
-        "name" => conversation.name(current_user),
-        "members" => conversation.members.as_json,
-        "invites" => conversation.invites.as_json,
-        #"videos" => conversation.videos.with_read_marks_for(current_user)
-      })
-
-      if conversation.videos.any?
-        video = conversation.videos_for(current_user).first
-        obj["most_recent_video_url"] =  video.url
-        obj["most_recent_thumb_url"] =  video.thumb_url
-      end
-
-      HollerbackApp::BaseApp.settings.cache.set(cache_key, obj)
-
-      obj
     end
 
     def error_json(error_code, options = {})
