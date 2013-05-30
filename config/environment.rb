@@ -18,6 +18,14 @@ module HollerbackApp
     # Setup db
     set :database, ENV["DATABASE_URL"]
     set :redis, ENV["REDISTOGO_URL"]
+    if ENV["MEMCACHIER_SERVERS"]
+      set :cache, Dalli::Client.new( ENV['MEMCACHIER_SERVERS'],
+                                     :username => ENV['MEMCACHIER_USERNAME'],
+                                     :password => ENV['MEMCACHIER_PASSWORD'],
+                                     :expires_in => 1.day)
+    else
+      set :cache, Dalli::Client.new
+    end
   end
 end
 
