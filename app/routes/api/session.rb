@@ -37,7 +37,7 @@ module HollerbackApp
     delete '/session/:platform' do
       authenticate(:api_token)
       logout
-      current_user.devices.ios.destroy_all
+      current_user.devices.where(:platform => params[:platform]).destroy_all if current_user
     end
   end
 end
