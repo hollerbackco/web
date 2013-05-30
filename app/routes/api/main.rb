@@ -262,6 +262,8 @@ module HollerbackApp
     post '/me/videos/:id/read' do
       video = Video.find(params[:id])
       video.mark_as_read! for: current_user
+      conversation = video.conversation
+      HollerbackApp::BaseApp.settings.cache.set("user/#{current_user.id}/conversation/#{conversation.id}/#{conversation.updated_at}", nil)
 
       Keen.publish("video:watch", {
         id: video.id,
