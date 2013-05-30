@@ -17,6 +17,10 @@ module Sinatra
     end
 
     def conversation_json(conversation)
+      if cached = HollerbackApp::BaseApp.settings.cache.get("user/#{current_user.id}/conversation/#{conversation.id}/#{conversation.updated_at}")
+        return cached
+      end
+
       obj = conversation.as_json(root: false).merge({
         "unread_count" => conversation.videos_for(current_user).unread_by(current_user).count,
         "name" => conversation.name(current_user),
@@ -30,6 +34,8 @@ module Sinatra
         obj["most_recent_video_url"] =  video.url
         obj["most_recent_thumb_url"] =  video.thumb_url
       end
+
+      HollerbackApp::BaseApp.settings.cache.set("user/#{current_user.id}/conversation/#{conversation.id}/#{conversation.updated_at}", obj)
 
       obj
     end

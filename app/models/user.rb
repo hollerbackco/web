@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
 
   has_many :devices, autosave: true
   has_many :memberships
-  has_many :conversations, through: :memberships, include: [:videos, :members]
+  has_many :conversations, through: :memberships
   has_many :videos, through: :conversations
   has_many :sent_videos, foreign_key: "user_id", class_name: "Video"
 

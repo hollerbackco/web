@@ -14,6 +14,7 @@ gem 'activerecord'
 gem 'sinatra-activerecord'
 gem 'pg'
 gem 'redis'
+gem 'dalli'
 
 #model
 gem 'unread'
