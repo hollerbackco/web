@@ -216,25 +216,29 @@ module HollerbackApp
       begin
         conversation = current_user.conversations.find(params[:conversation_id])
 
-        scoped_videos = conversation.videos_for(current_user).scoped
+        cache_key = "#{current_user.memcache_key}/conversation/#{conversation.id}-#{conversation.updated_at}/videos#{params[:page]}"
 
-        if params[:page]
-          scoped_videos = scoped_videos.paginate(:page => params[:page], :per_page => 20)
+        res = HollerbackApp::BaseApp.settings.cache.fetch(cache_key, 1.hour) do
+          scoped_videos = conversation.videos_for(current_user).scoped
+
+          if params[:page]
+            scoped_videos = scoped_videos.paginate(:page => params[:page], :per_page => 20)
+          end
+
+          videos = scoped_videos.with_read_marks_for(current_user)
+
+          if params[:page]
+            last_page = videos.current_page == videos.total_pages
+          end
+
+          {
+            meta: {
+              code: 200,
+              last_page: last_page
+            },
+            data: videos
+          }.to_json
         end
-
-        videos = scoped_videos.with_read_marks_for(current_user)
-
-        if params[:page]
-          last_page = videos.current_page == videos.total_pages
-        end
-
-        {
-          meta: {
-            code: 200,
-            last_page: last_page
-          },
-          data: videos
-        }.to_json
       rescue ActiveRecord::RecordNotFound
         not_found
       end
@@ -263,16 +267,10 @@ module HollerbackApp
       video = Video.find(params[:id])
       video.mark_as_read! for: current_user
       conversation = video.conversation
-      HollerbackApp::BaseApp.settings.cache.set("user/#{current_user.id}/conversation/#{conversation.id}/#{conversation.updated_at}", nil)
 
-      Keen.publish("video:watch", {
-        id: video.id,
-        user: {id: current_user.id, username: current_user.username} })
+      current_user.memcache_key_touch
 
-      unwatched_count = current_user.unread_videos.count
-      current_user.devices.ios.each do |device|
-        APNS.send_notification(device.token, badge: unwatched_count)
-      end
+      VideoRead.perform_async(video.id, current_user.id)
 
       {
         meta: {
