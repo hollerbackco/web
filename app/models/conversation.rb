@@ -12,11 +12,15 @@ class Conversation < ActiveRecord::Base
 
   # all videos sent by user or all videos that are complete
   def videos_for(user)
-    t = Video.arel_table
-    videos.where(
-      t[:user_id].eq(user.id).
-      or(t[:in_progress].eq(false))
-    )
+    if user
+      t = Video.arel_table
+      videos.where(
+        t[:user_id].eq(user.id).
+        or(t[:in_progress].eq(false))
+      )
+    else
+      videos
+    end
   end
 
   def name(disclude_user=nil)
