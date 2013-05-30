@@ -269,6 +269,7 @@ module HollerbackApp
       conversation = video.conversation
 
       current_user.memcache_key_touch
+      HollerbackApp::BaseApp.settings.cache.delete "user/#{current_user.id}/conversations/#{conversation.id}-#{conversation.updated_at}"
 
       VideoRead.perform_async(video.id, current_user.id)
 
