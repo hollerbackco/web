@@ -18,7 +18,7 @@ module Sinatra
 
     def conversation_json(conversation)
       obj = conversation.as_json(root: false).merge({
-        "unread_count" => conversation.videos.unread_by(current_user).count,
+        "unread_count" => conversation.videos_for(current_user).unread_by(current_user).count,
         "name" => conversation.name(current_user),
         "members" => conversation.members,
         "invites" => conversation.invites,
