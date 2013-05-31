@@ -13,6 +13,7 @@ require 'sidekiq/testing'
 require 'factory_girl'
 require 'ffaker'
 
+
 module HollerbackApp
   class BaseApp < ::Sinatra::Base
     set :environment, :test
@@ -42,6 +43,8 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with(:truncation)
 
     FactoryGirl.find_definitions
+
+    AWS.stub!
   end
 end
 

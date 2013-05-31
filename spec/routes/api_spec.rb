@@ -23,14 +23,7 @@ describe 'API ROUTES |' do
   end
 
   before(:all) do
-    @user ||= User.create!(
-      name: "test user",
-      username: "test",
-      email: "test@test.com",
-      password: "testtest",
-      phone: "+18886664444",
-      device_token: "testtoken"
-    )
+    @user ||= FactoryGirl.create(:user)
 
     @conversation = @user.conversations.create
     25.times do
@@ -39,21 +32,14 @@ describe 'API ROUTES |' do
       video.save
     end
 
-    @second_user ||= User.create!(
-      name: "second user",
-      username: "second",
-      email: "second@test.com",
-      password: "secondtest",
-      phone: "+18886668888",
-      device_token: "testtoken"
-    )
+    @second_user ||= FactoryGirl.create(:user)
   end
 
   let(:subject) { @user }
   let(:secondary_subject) { @second_user }
   let(:conversation) { @conversation }
-  let(:access_token) { @user.access_token }
-  let(:second_token) { @second_user.access_token }
+  let(:access_token) { @user.devices.first.access_token }
+  let(:second_token) { @second_user.devices.first.access_token }
 
   it 'shows an index' do
     get ''
@@ -61,7 +47,7 @@ describe 'API ROUTES |' do
   end
 
   it 'POST register | requires params' do
-    post '/register', :email => "test@test.com", :password => "testtest"
+    post '/register', :email => subject.email, :password => subject.password
 
     result = JSON.parse(last_response.body)
     last_response.should_not be_ok
@@ -70,18 +56,29 @@ describe 'API ROUTES |' do
   end
 
   it 'POST session | responds with an access_token' do
-    post '/session', :email => "test@test.com", :password => "testtest",
+    device_count = subject.devices.count
+    post '/session', :email => subject.email, :password => subject.password,
       :platform => "android", :device_token => "hello"
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
-    result['access_token'].should == subject.access_token
-    subject.reload.devices.count.should == 2
+    result['access_token'].should_not be_nil
+    subject.reload.devices.count.should == device_count + 1
   end
 
   it 'POST session | returns 403 when incorrect password' do
-    post '/session', :email => "test@test.com", :password => "test"
+    post '/session', :email => subject.email, :password => "#{subject.password}kj"
     last_response.should_not be_ok
+  end
+
+  it 'DELETE session | deletes the device' do
+    user = FactoryGirl.create(:user)
+    device_count = user.devices.count
+
+    delete '/session', :access_token => user.devices.first.access_token
+    last_response.should be_ok
+
+    user.devices.count.should == device_count - 1
   end
 
   it 'GET contacts/check | return users from an array or phonenumbers' do
@@ -130,7 +127,7 @@ describe 'API ROUTES |' do
 
   it 'POST me/conversations | create a conversation' do
     conversations_count = subject.conversations.count
-    post '/me/conversations', :access_token => access_token, "invites[]" => ["+18886668888","+18888888888"]
+    post '/me/conversations', :access_token => access_token, "invites[]" => [secondary_subject.phone_normalized,"+18888888888"]
 
     result = JSON.parse(last_response.body)
 

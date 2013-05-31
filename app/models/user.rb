@@ -39,9 +39,16 @@ class User < ActiveRecord::Base
     "user/#{id}-#{memcache_id}"
   end
 
-  #todo: get rid of this
-  def device_token=(token)
-    devices.build(platform: "ios", token: token)
+  def device_for(token, platform)
+    devices.where({
+      :platform => (platform || "ios"),
+      :token => token
+    }).first_or_create
+  end
+
+  #todo get rid of this
+  def access_token
+    devices.general.any? ? devices.general.first.access_token : ""
   end
 
   def unread_videos
@@ -64,7 +71,11 @@ class User < ActiveRecord::Base
   end
 
   def self.authenticate_with_access_token(access_token)
-    User.find_by_access_token(access_token)
+    if device = Device.find_by_access_token(access_token)
+      device.user
+    else
+      nil
+    end
   end
 
   def phone=(phone)
@@ -101,7 +112,7 @@ class User < ActiveRecord::Base
   def as_json(options={})
     #todo: uncomment when we add this to the signup flow
     options = options.merge(:methods => :isVerified)
-    options = options.merge(:except => [:verification_code])
+    options = options.merge(:except => [:verification_code, :device_token])
     super(options)
   end
 

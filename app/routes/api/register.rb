@@ -10,26 +10,20 @@ module HollerbackApp
         phone: params[:phone]
       })
 
-      if params.key? :platform and params.key? :device_token
-        user.devices.build({
-          :platform => params[:platform],
-          :token => params[:device_token]
-        })
-      elsif params.key? :device_token
-        user.device_token = params[:device_token]
-      end
-
       if user.save
+        device = user.device_for(params["device_token"], params["platform"])
+
         Keen.publish("users:new", {
           memberships: user.conversations.count
         })
 
-        #Hollerback::SMS.send_message user.phone_normalized, "Verification Code: #{user.verification_code}"
         if Sinatra::Base.production?
           Hollerback::SMS.send_message "+13033595357", "#{user.name} #{user.phone_normalized} signed up"
         end
+
+        #Hollerback::SMS.send_message user.phone_normalized, "Verification Code: #{user.verification_code}"
         {
-          access_token: user.access_token,
+          access_token: device.access_token,
           user: user
         }.to_json
       else
