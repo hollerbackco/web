@@ -40,6 +40,10 @@ class User < ActiveRecord::Base
   end
 
   def device_for(token, platform)
+    if token.blank? and platform.blank?
+      gen = devices.general.first
+      return gen if gen.present?
+    end
     devices.where({
       :platform => (platform || "ios"),
       :token => token

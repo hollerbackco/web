@@ -11,6 +11,12 @@ describe User do
     user.devices.count.should == 1
   end
 
+  it "should grab general device if it exists and nil values" do
+    new_device = user.devices.create(platform: "general")
+    get_device = user.device_for(nil,nil)
+    new_device.should == get_device
+  end
+
   it "device should have an access_token" do
     user.devices.first.access_token.should_not be_nil
   end
