@@ -11,6 +11,10 @@ describe User do
     user.devices.count.should == 1
   end
 
+  it "device should have an access_token" do
+    user.devices.first.access_token.should_not be_nil
+  end
+
   it "should generate a verification thats 6 characters in length" do
     user.verification_code.should_not be_nil
     user.verification_code.length.should == 6
@@ -27,14 +31,5 @@ describe User do
 
   it "should return an isVerified attribute in json object" do
     user.as_json.key?(:isVerified).should be_true
-  end
-
-  it "should create a device when token is set" do
-    device_count = user.devices.count
-    user.device_token = "helo"
-    user.save
-    user.devices.reload.count.should == device_count + 1
-    p user.devices
-    user.devices.where(:token => "helo").any?.should be_true
   end
 end
