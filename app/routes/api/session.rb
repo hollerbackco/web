@@ -5,19 +5,10 @@ module HollerbackApp
       logout
       authenticate(:password)
 
-      p params
-
-      if params.key?("platform") and params.key?("device_token")
-        current_user.devices.where({
-          :platform => params["platform"],
-          :token => params["device_token"]
-        }).first_or_create
-      elsif params.key? :device_token
-        current_user.update_attributes(:device_token => params[:device_token])
-      end
+      device = current_user.device_for(params["device_token"], params["platform"])
 
       {
-        access_token: current_user.access_token,
+        access_token: device.access_token,
         user: current_user
       }.to_json
     end
@@ -34,10 +25,10 @@ module HollerbackApp
       }.to_json
     end
 
-    delete '/session/:platform' do
+    delete '/session/?:platform?' do
       authenticate(:api_token)
+      current_user.devices.where(:access_token => params["access_token"]).destroy_all if current_user
       logout
-      current_user.devices.where(:platform => params[:platform]).destroy_all if current_user
     end
   end
 end
