@@ -24,7 +24,7 @@ module HollerbackApp
         #Hollerback::SMS.send_message user.phone_normalized, "Verification Code: #{user.verification_code}"
         {
           access_token: device.access_token,
-          user: user
+          user: user.as_json.merge(access_token: device.access_token)
         }.to_json
       else
         error_json 400, for: user

@@ -9,7 +9,7 @@ module HollerbackApp
 
       {
         access_token: device.access_token,
-        user: current_user
+        user: current_user.as_json.merge(access_token: device.access_token)
       }.to_json
     end
 

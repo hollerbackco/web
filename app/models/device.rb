@@ -6,8 +6,8 @@ class Device < ActiveRecord::Base
 
   belongs_to :user
 
-  scope :ios, where(platform: "ios")
-  scope :android, where(platform: "android")
+  scope :ios, where(platform: "ios").where("token is not null")
+  scope :android, where(platform: "android").where("token is not null")
   scope :general, where(platform: "general")
 
   before_create :set_access_token
@@ -16,7 +16,6 @@ class Device < ActiveRecord::Base
     platform == "ios"
   end
 
-  private
 
   def set_access_token
     self.access_token = loop do
