@@ -5,3 +5,4 @@
 .rvmrc
 config/local_env.yml
 log/newrelic_agent.log
+tmp/
