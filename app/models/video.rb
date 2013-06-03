@@ -63,7 +63,7 @@ class Video < ActiveRecord::Base
   end
 
   def self.stream_bucket
-    @bucket ||= AWS::S3.new.buckets[STREAM_BUCKET]
+    @stream_bucket ||= AWS::S3.new.buckets[STREAM_BUCKET]
   end
 
   private
