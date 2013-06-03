@@ -5,8 +5,9 @@ module HollerbackApp
       obj = JSON.parse request.body.read
       p obj 
       if obj.key? "Message"
-        jobId = obj["Message"]["jobId"]
-        if obj["Message"]["state"] == "COMPLETED"
+        msg = JSON.parse obj["Message"]
+        jobId = msg["jobId"]
+        if msg["state"] == "COMPLETED"
           StreamJob.find_by_job_id(jobId).complete!
         end
       end
