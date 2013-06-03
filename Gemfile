@@ -18,7 +18,6 @@ gem 'dalli'
 
 #model
 gem 'unread'
-d
 gem 'awesome_nested_set'
 gem 'will_paginate'
 #gem 'kaminari', :require => 'kaminari/sinatra'
