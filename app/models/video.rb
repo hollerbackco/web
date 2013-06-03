@@ -1,7 +1,9 @@
 class Video < ActiveRecord::Base
   if Sinatra::Base.production?
+    STREAM_BUCKET = "hb-streams"
     BUCKET_NAME = "hollerback-app-dev"
   else
+    STREAM_BUCKET = "hb-streams"
     BUCKET_NAME = "hollerback-app-dev"
   end
 
@@ -24,6 +26,12 @@ class Video < ActiveRecord::Base
     filename.present? ? video_object.url_for(:read, :expires => 1.week).to_s : ""
   end
 
+  def stream_url
+    #filename
+    #"http://s3.amazonaws.com/#{BUCKET_NAME}/#{filename}"
+    streamname.present? ? stream_object.url_for(:read, :expires => 1.week).to_s : ""
+  end
+
   def thumb_url
     #"http://s3.amazonaws.com/#{BUCKET_NAME}/#{thumb}"
     filename.present? ? thumb_object.url_for(:read, :expires => 1.week).to_s : ""
@@ -32,8 +40,6 @@ class Video < ActiveRecord::Base
   def thumb
     thumb = filename.split(".").first << "-thumb.png"
   end
-
-  def
 
   def metadata
     video_object.metadata
@@ -48,7 +54,7 @@ class Video < ActiveRecord::Base
   end
 
   def as_json(options={})
-    options = options.merge(:methods => [:isRead, :url, :thumb_url])
+    options = options.merge(:methods => [:isRead, :url, :thumb_url, :stream_url])
     super(options)
   end
 
@@ -56,7 +62,15 @@ class Video < ActiveRecord::Base
     @bucket ||= AWS::S3.new.buckets[BUCKET_NAME]
   end
 
+  def self.stream_bucket
+    @bucket ||= AWS::S3.new.buckets[STREAM_BUCKET]
+  end
+
   private
+
+  def stream_object
+    self.class.stream_bucket.objects[filename]
+  end
 
   def video_object
     self.class.bucket.objects[filename]
