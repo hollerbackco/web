@@ -69,7 +69,7 @@ class Video < ActiveRecord::Base
   private
 
   def stream_object
-    self.class.stream_bucket.objects[filename]
+    self.class.stream_bucket.objects[streamname]
   end
 
   def video_object
