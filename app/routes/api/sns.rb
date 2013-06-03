@@ -2,7 +2,8 @@
 module HollerbackApp
   class ApiApp < BaseApp
     post '/sns/et' do
-      p obj = JSON.parse request.body.read
+      obj = JSON.parse request.body.read
+      p obj 
       if obj.key? "Message"
         jobId = obj["Message"]["jobId"]
         if obj["Message"]["state"] == "COMPLETED"
