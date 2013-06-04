@@ -23,18 +23,18 @@ class Video < ActiveRecord::Base
   def url
     #filename
     #"http://s3.amazonaws.com/#{BUCKET_NAME}/#{filename}"
-    filename.present? ? video_object.url_for(:read, :expires => 1.week).to_s : ""
+    filename.present? ? video_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
   end
 
   def stream_url
     #filename
     #"http://s3.amazonaws.com/#{BUCKET_NAME}/#{filename}"
-    streamname.present? ? stream_object.url_for(:read, :expires => 1.week).to_s : ""
+    streamname.present? ? stream_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
   end
 
   def thumb_url
     #"http://s3.amazonaws.com/#{BUCKET_NAME}/#{thumb}"
-    filename.present? ? thumb_object.url_for(:read, :expires => 1.week).to_s : ""
+    filename.present? ? thumb_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
   end
 
   def thumb
