@@ -226,6 +226,9 @@ module HollerbackApp
           end
 
           videos = scoped_videos.with_read_marks_for(current_user)
+          video_json = videos.map do |video|
+            video.as_json_as_user current_user
+          end
 
           if params[:page]
             last_page = videos.current_page == videos.total_pages
@@ -236,7 +239,7 @@ module HollerbackApp
               code: 200,
               last_page: last_page
             },
-            data: videos
+            data: video_json
           }.to_json
         end
       rescue ActiveRecord::RecordNotFound
