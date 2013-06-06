@@ -45,7 +45,7 @@ class Video < ActiveRecord::Base
   end
 
   def isRead
-    unread?
+    !unread?
     #self[:read_mark_id].present? and read_mark_id.present?
   end
 
