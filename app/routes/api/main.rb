@@ -278,7 +278,7 @@ module HollerbackApp
         meta: {
           code: 200
         },
-        data: video
+        data: video.as_json_for_user(current_user)
       }.to_json
     end
 
