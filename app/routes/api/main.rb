@@ -227,7 +227,7 @@ module HollerbackApp
 
           videos = scoped_videos.with_read_marks_for(current_user)
           video_json = videos.map do |video|
-            video.as_json_as_user current_user
+            video.as_json_fo_user current_user
           end
 
           if params[:page]
