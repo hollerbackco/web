@@ -38,10 +38,14 @@ module HollerbackApp
     end
 
     get '/madmin/stats' do
+    stats = Hollerback::Statistics.new
       {
-        users_count: User.all.count,
-        videos_count: Video.all.count,
-        conversations_count: Conversation.all.count
+        users_count: stats.user_count,
+        conversations_count: stats.conversations.count,
+        videos_count: stats.videos_sent_count,
+        received_count: stats.videos_received_count,
+        members_per_conversation_avg: stats.members_in_conversation_avg,
+        videos_per_conversation_avg: stats.videos_in_conversation_avg
       }.to_json
     end
   end
