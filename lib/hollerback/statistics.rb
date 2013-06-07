@@ -74,7 +74,7 @@ module Hollerback
     def video_compute_queue
       return @queue if @queue
       @sqs = AWS::SQS.new
-      @queue ||= sqs.queues.create("video:compute")
+      @queue ||= @sqs.queues.create("video:compute")
     end
   end
 end
