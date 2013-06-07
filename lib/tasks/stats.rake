@@ -21,7 +21,7 @@ namespace :stats do
 
   desc "send videos to aws to compute"
   task :compute do
-    Video.find_in_batches(batch_size: 100) do |videos|
+    Video.find_in_batches(batch_size: 10) do |videos|
       messages = []
       videos.each do |video|
         messages << { message_body: {video_location: video.filename, created: video.created_at}.to_json }
