@@ -44,13 +44,8 @@ class Video < ActiveRecord::Base
     bucket.objects.map {|o| o.url_for(:read)}
   end
 
-  def isRead
-    !unread?
-    #self[:read_mark_id].present? and read_mark_id.present?
-  end
-
   def as_json_for_user(user)
-    as_json.merge(isRead: unread?(user))
+    as_json.merge(isRead: !unread?(user))
   end
 
   def as_json(options={})
