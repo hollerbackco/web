@@ -24,7 +24,7 @@ namespace :stats do
     Video.find_in_batches do |videos|
       messages = []
       videos.each do |video|
-        messages << { message_body: {video_location: video.filename, created: videoc.created_at}.to_json }
+        messages << { message_body: {video_location: video.filename, created: video.created_at}.to_json }
       end
       stats.batch_enqueue messages
     end
