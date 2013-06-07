@@ -27,9 +27,10 @@ module Hollerback
         t.run
       end
 
-      def screengrab(prefix="tmp")
+      def screengrab(prefix="tmp", size)
         output_file = "#{prefix}/#{label}.png"
-        t = Hollerback::Stitcher::ScreenGrabber.new(self, output_file)
+        t = Hollerback::Stitcher::ScreenGrabber.new(self, output_file, size)
+        p t
         t.run
       end
 

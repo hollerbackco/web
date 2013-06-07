@@ -21,24 +21,19 @@ class Video < ActiveRecord::Base
   end
 
   def url
-    #filename
-    #"http://s3.amazonaws.com/#{BUCKET_NAME}/#{filename}"
-    filename.present? ? video_object.url_for(:read, :expires => 1.week).to_s : ""
+    filename.present? ? video_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
   end
 
   def stream_url
-    #filename
-    #"http://s3.amazonaws.com/#{BUCKET_NAME}/#{filename}"
-    streamname.present? ? stream_object.url_for(:read, :expires => 1.week).to_s : ""
+    streamname.present? ? stream_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
+  end
+
+  def image_url
+    filename.present? ? image_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
   end
 
   def thumb_url
-    #"http://s3.amazonaws.com/#{BUCKET_NAME}/#{thumb}"
-    filename.present? ? thumb_object.url_for(:read, :expires => 1.week).to_s : ""
-  end
-
-  def thumb
-    thumb = filename.split(".").first << "-thumb.png"
+    filename.present? ? thumb_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
   end
 
   def metadata
@@ -49,12 +44,12 @@ class Video < ActiveRecord::Base
     bucket.objects.map {|o| o.url_for(:read)}
   end
 
-  def isRead
-    self[:read_mark_id].present? and read_mark_id.present?
+  def as_json_for_user(user)
+    as_json.merge(isRead: !unread?(user))
   end
 
   def as_json(options={})
-    options = options.merge(:methods => [:isRead, :url, :thumb_url, :stream_url])
+    options = options.merge(:methods => [:url, :thumb_url, :image_url, :stream_url])
     super(options)
   end
 
@@ -63,13 +58,13 @@ class Video < ActiveRecord::Base
   end
 
   def self.stream_bucket
-    @bucket ||= AWS::S3.new.buckets[STREAM_BUCKET]
+    @stream_bucket ||= AWS::S3.new.buckets[STREAM_BUCKET]
   end
 
   private
 
   def stream_object
-    self.class.stream_bucket.objects[filename]
+    self.class.stream_bucket.objects[streamname]
   end
 
   def video_object
@@ -77,6 +72,12 @@ class Video < ActiveRecord::Base
   end
 
   def thumb_object
+    thumb = filename.split(".").first << "-thumb.png"
     self.class.bucket.objects[thumb]
+  end
+
+  def image_object
+    image = filename.split(".").first << "-image.png"
+    self.class.bucket.objects[image]
   end
 end

@@ -13,12 +13,13 @@ module Hollerback
         files = S3Cacher.get(@files, @bucketname, dir)
         movie = Stitcher.stitch(files, output_path(dir, files), dir)
 
-        image = movie.screengrab(dir)
+        image = movie.screengrab(dir, :small)
+        large = movie.screengrab(dir, :large)
 
-        send_file_to_s3(image, "#{@s3_output_label}-thumb.png")
+        send_file_to_s3(image, "#{@s3_output_label}-image.png")
+        send_file_to_s3(large, "#{@s3_output_label}-thumb.png")
+
         video_path = send_file_to_s3(movie.path, "#{@s3_output_label}.mp4")
-
-        video_path
       end
     end
 
@@ -36,7 +37,7 @@ module Hollerback
       obj = bucket.objects[s3path]
       upload_to_s3(file, obj)
       #obj.write(file: file)
-      p s3path
+      #p s3path
       s3path
     end
 
