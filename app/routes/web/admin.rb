@@ -40,7 +40,7 @@ module HollerbackApp
     get '/madmin/stats' do
     stats = Hollerback::Statistics.new
       {
-        users_count: stats.user_count,
+        users_count: stats.users_count,
         conversations_count: stats.conversations.count,
         videos_count: stats.videos_sent_count,
         received_count: stats.videos_received_count,
