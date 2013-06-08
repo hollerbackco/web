@@ -21,6 +21,12 @@ module Hollerback
       end
     end
 
+    def videos_unread_count
+      HollerbackApp::BaseApp.settings.cache.fetch "stat-videos-unread" do
+        User.all.map{ |u| u.unread_videos.count }.sum
+      end
+    end
+
     def memberships_count
       HollerbackApp::BaseApp.settings.cache.fetch "stat-memberships-sent" do
         Membership.all.count
@@ -63,6 +69,7 @@ module Hollerback
       HollerbackApp::BaseApp.settings.cache.delete "stat-conversations-count"
       HollerbackApp::BaseApp.settings.cache.delete "stat-users-count"
       HollerbackApp::BaseApp.settings.cache.delete "stat-videos-sent"
+      HollerbackApp::BaseApp.settings.cache.delete "stat-videos-unread"
       HollerbackApp::BaseApp.settings.cache.delete "stat-memberships-sent"
       HollerbackApp::BaseApp.settings.cache.delete "stat-avg-members-per-convo-count"
       HollerbackApp::BaseApp.settings.cache.delete "stat-avg-videos-per-convo-count"

@@ -1,6 +1,6 @@
 namespace :stats do
   desc "puts stats"
-  task :get do
+  task :get => :uncache do
     ActiveRecord::Base.logger = nil
     puts "================================"
     puts "total users: #{stats.users_count}"
@@ -12,10 +12,17 @@ namespace :stats do
     puts "avg members per conversation: #{stats.members_in_conversations_avg}"
     puts "avg videos per conversation: #{stats.videos_in_conversations_avg}"
     puts "================================"
+    puts "unread videos: #{stats.videos_unread_count}"
+    puts "avg videos per conversation: #{stats.videos_in_conversations_avg}"
+    puts "================================"
   end
 
   desc "cache values of the stats"
-  task :cache do
+  task :cache => :uncache do
+  end
+
+  desc "uncache all"
+  task :uncache do
     stats.uncache_all
   end
 
