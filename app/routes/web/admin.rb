@@ -41,11 +41,11 @@ module HollerbackApp
     stats = Hollerback::Statistics.new
       {
         users_count: stats.users_count,
-        conversations_count: stats.conversations.count,
+        conversations_count: stats.conversations_count,
         videos_count: stats.videos_sent_count,
         received_count: stats.videos_received_count,
-        members_per_conversation_avg: stats.members_in_conversation_avg,
-        videos_per_conversation_avg: stats.videos_in_conversation_avg
+        members_per_conversation_avg: stats.members_in_conversations_avg,
+        videos_per_conversation_avg: stats.videos_in_conversations_avg
       }.to_json
     end
   end
