@@ -36,8 +36,6 @@ module Hollerback
     def send_file_to_s3(file, s3path)
       obj = bucket.objects[s3path]
       upload_to_s3(file, obj)
-      #obj.write(file: file)
-      #p s3path
       s3path
     end
 

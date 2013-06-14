@@ -1,4 +1,26 @@
 namespace :assets do
+
+  desc 'grab image screen'
+  task :generate_images do
+    Video.where("filename is not null").each do |video|
+      video_key = video.filename
+
+      Dir.mktmpdir do |dir|
+        # grab video from s3
+        files = S3Cacher.get([video_key], Video::BUCKET_NAME, dir)
+
+        # grab screenshot
+        movie =  Hollerback::Stitcher::Movie.new(files.first.to_s)
+        image = movie.screengrab dir, :large
+
+        # sent the file to s3
+        output_path = video_key.split(".").first << "-image.png"
+
+        send_file_to_s3 image, output_path
+      end
+    end
+  end
+
   desc 'compile assets'
   task :compile => [:compile_js, :compile_css] do
   end
@@ -31,5 +53,32 @@ namespace :assets do
     asset.write_to("#{outfile}.gz")
     puts "successfully compiled css assets"
   end
-  # todo: add :clean_all, :clean_css, :clean_js tasks, invoke before writing new file(s)
+
+  def bucket
+    @bucket ||= AWS::S3.new.buckets[Video::BUCKET_NAME]
+  end
+
+  def send_file_to_s3(file, s3path)
+    obj = bucket.objects[s3path]
+    upload_to_s3(file, obj)
+    s3path
+  end
+
+  #todo temp fix to s3 upload problem
+  # ref: https://github.com/aws/aws-sdk-ruby/issues/241
+  def upload_to_s3(path, s3_obj)
+    retries = 3
+    begin
+      s3_obj.write(File.open(path, 'rb', :encoding => 'BINARY'))
+    rescue => ex
+      retries -= 1
+      if retries > 0
+        puts "ERROR during S3 upload: #{ex.inspect}. Retries: #{retries} left"
+        retry
+      else
+         # oh well, we tried...
+        raise
+      end
+    end
+  end
 end
