@@ -27,7 +27,7 @@ module Sinatra
           "invites" => conversation.invites.as_json
         })
 
-        obj["videos"] = conversation.videos_for(current_user).unread_by(current_user).map do |video|
+        obj["videos"] = conversation.videos_for(current_user).unread_by(current_user).limit(10).map do |video|
           video.as_json_for_user current_user
         end
 
