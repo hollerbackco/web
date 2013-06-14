@@ -29,11 +29,11 @@ class Video < ActiveRecord::Base
   end
 
   def image_url
-    filename.present? ? image_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
+    image_object.exists? ? image_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
   end
 
   def thumb_url
-    filename.present? ? thumb_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
+    thumb_object.exists? ? thumb_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
   end
 
   def metadata
