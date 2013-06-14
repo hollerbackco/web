@@ -18,6 +18,8 @@ namespace :assets do
 
         send_file_to_s3 image, output_path
       end
+
+      puts video.image_url
     end
   end
 
