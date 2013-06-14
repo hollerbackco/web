@@ -31,7 +31,14 @@ namespace :stats do
     Video.find_in_batches(batch_size: 10) do |videos|
       messages = []
       videos.each do |video|
-        messages << { message_body: {video_location: video.filename, created: video.created_at}.to_json }
+        messages << {
+          message_body: {
+            video_id: video.id,
+            video_location: video.filename,
+            created: video.created_at,
+            user_id: video.user.id
+          }.to_json
+        }
       end
       stats.batch_enqueue messages
     end

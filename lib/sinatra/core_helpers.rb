@@ -27,6 +27,10 @@ module Sinatra
           "invites" => conversation.invites.as_json
         })
 
+        obj["videos"] = conversation.videos_for(current_user).unread_by(current_user).map do |video|
+          video.as_json_for_user current_user
+        end
+
         if conversation.videos.any?
           video = conversation.videos_for(current_user).first
           obj["most_recent_video_url"] =  video.url

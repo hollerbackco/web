@@ -211,6 +211,8 @@ module HollerbackApp
       begin
         conversation = current_user.conversations.find(params[:conversation_id])
 
+        ConversationRead.perform_async(current_user.id)
+
         cache_key = "#{current_user.memcache_key}/conversation/#{conversation.id}-#{conversation.updated_at}/videos#{params[:page]}"
 
         res = HollerbackApp::BaseApp.settings.cache.fetch(cache_key, 1.hour) do

@@ -41,7 +41,7 @@
       label: "Videos watched over time"
     });
 
-    var users = new Keen.Series("video:watch", {
+    var users = new Keen.Series("conversations:list", {
       analysisType: "count_unique",
       timeframe: "this_14_days",
       interval: "daily",
