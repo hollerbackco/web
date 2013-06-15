@@ -14,14 +14,17 @@ namespace :assets do
         files = Hollerback::S3Cacher.get([video_key], Video::BUCKET_NAME, dir)
 
         # grab screenshot
-        movie =  Hollerback::Stitcher::Movie.new(files.first.to_s)
-        image = movie.screengrab dir, :large
+        begin
+          movie =  Hollerback::Stitcher::Movie.new(files.first.to_s)
+          image = movie.screengrab dir, :large
 
-        # sent the file to s3
-        output_path = video_key.split(".").first << "-image.png"
+          # sent the file to s3
+          output_path = video_key.split(".").first << "-image.png"
 
-        send_file_to_s3 image, output_path
-
+          send_file_to_s3 image, output_path
+        rescue FFMPEG::Error
+          puts "!!!!!!!!!!!!!!!!!!!!! ERROR"
+        end
       end
       puts video.image_url
     end
