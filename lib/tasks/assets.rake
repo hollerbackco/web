@@ -11,7 +11,12 @@ namespace :assets do
 
       Dir.mktmpdir do |dir|
         # grab video from s3
-        files = Hollerback::S3Cacher.get([video_key], Video::BUCKET_NAME, dir)
+        begin
+          files = Hollerback::S3Cacher.get([video_key], Video::BUCKET_NAME, dir)
+        rescue
+          puts "no file"
+          next
+        end
 
         # grab screenshot
         begin
