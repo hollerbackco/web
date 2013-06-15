@@ -3,7 +3,10 @@ namespace :assets do
   desc 'grab image screen'
   task :generate_images do
     Video.where("filename is not null").each do |video|
-      next unless video.image_url.blank?
+      unless video.image_url.blank?
+        puts video.image_url
+        next
+      end
       video_key = video.filename
 
       Dir.mktmpdir do |dir|
