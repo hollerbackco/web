@@ -3,6 +3,7 @@ namespace :assets do
   desc 'grab image screen'
   task :generate_images do
     Video.where("filename is not null").each do |video|
+      next unless video.image_url.blank?
       video_key = video.filename
 
       Dir.mktmpdir do |dir|
@@ -17,8 +18,8 @@ namespace :assets do
         output_path = video_key.split(".").first << "-image.png"
 
         send_file_to_s3 image, output_path
-      end
 
+      end
       puts video.image_url
     end
   end
