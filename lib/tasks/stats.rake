@@ -35,6 +35,7 @@ namespace :stats do
           message_body: {
             user_id: video.user_id,
             video_id: video.id,
+            video_location: video.filename,
             video_url: video.url,
             created: video.created_at,
             recipient_count: video.recipients.count
