@@ -25,14 +25,17 @@ class Video < ActiveRecord::Base
   end
 
   def stream_url
+    return "" if filename.blank?
     streamname.present? ? stream_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
   end
 
   def image_url
+    return "" if filename.blank?
     image_object.exists? ? image_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
   end
 
   def thumb_url
+    return "" if filename.blank?
     thumb_object.exists? ? thumb_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
   end
 
