@@ -33,10 +33,11 @@ namespace :stats do
       videos.each do |video|
         messages << {
           message_body: {
+            user_id: video.user.id,
             video_id: video.id,
-            video_location: video.filename,
+            video_url: video.url,
             created: video.created_at,
-            user_id: video.user.id
+            recipient_count: video.recipients.count
           }.to_json
         }
       end
