@@ -197,7 +197,7 @@ describe 'API ROUTES |' do
   end
 
   it 'POST me/conversations/:id/videos/parts | sends a video' do
-    TEST_VIDEOS_2 = [
+    parts = [
       "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.0.mp4",
       "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.1.mp4",
       "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.2.mp4",
@@ -209,10 +209,10 @@ describe 'API ROUTES |' do
 
     post "/me/conversations/#{secondary_subject.conversations.first.id}/videos/parts",
       access_token: second_token,
-      parts: TEST_VIDEOS_2
+      parts: parts
 
-    VideoStitchAndSend.jobs.size.should == 1
     last_response.should be_ok
+    VideoStitchAndSend.jobs.size.should == 1
     VideoStitchAndSend.jobs.clear
   end
 

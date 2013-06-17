@@ -13,7 +13,6 @@ require 'sidekiq/testing'
 require 'factory_girl'
 require 'ffaker'
 
-
 module HollerbackApp
   class BaseApp < ::Sinatra::Base
     set :environment, :test
@@ -44,7 +43,7 @@ RSpec.configure do |config|
 
     FactoryGirl.find_definitions
 
-    #AWS.stub!
+    AWS.stub!
   end
 end
 

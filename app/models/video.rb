@@ -20,6 +20,10 @@ class Video < ActiveRecord::Base
     save!
   end
 
+  def recipients
+    conversation.members - [user]
+  end
+
   def url
     filename.present? ? video_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
   end
