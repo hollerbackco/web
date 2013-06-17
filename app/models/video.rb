@@ -21,6 +21,7 @@ class Video < ActiveRecord::Base
   end
 
   def recipients
+    return [] if conversation.blank?
     conversation.members - [user]
   end
 
