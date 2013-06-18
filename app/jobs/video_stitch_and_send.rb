@@ -3,6 +3,7 @@ class VideoStitchAndSend
 
   def perform(files, video_id, s3_output_file=nil)
     video = Video.find video_id
+    user = video.user
 
     if video
       if s3_output_file.present?
@@ -15,7 +16,8 @@ class VideoStitchAndSend
         #make_stream(video)
         video.ready!
         video.conversation.touch
-        video.mark_as_read! for: video.user
+        user.memcache_key_touch
+
         notify_recipients(video)
         publish_analytics(video)
       end
