@@ -1,12 +1,15 @@
 module Hollerback
   class NotifyRecipients
     def initialize(video)
-      @recipients = video.conversation.members - [video.user]
       @video = video
+      @recipients = video.recipients
     end
 
     def run
-      @recipients.each {|r| notify @video, r}
+      @recipients.each do |recipient|
+        notify @video, recipient
+        touch_cache recipient
+      end
     end
 
     private
@@ -35,6 +38,10 @@ module Hollerback
           data: data
         )
       end
+    end
+
+    def touch_cache(user)
+      user.memcache_key_touch
     end
   end
 end

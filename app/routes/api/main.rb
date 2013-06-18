@@ -274,7 +274,6 @@ module HollerbackApp
       #todo make sure this doesnt get reset before video is marked as read.
       current_user.memcache_key_touch
       HollerbackApp::BaseApp.settings.cache.delete "user/#{current_user.id}/conversations/#{conversation.id}-#{conversation.updated_at}"
-      HollerbackApp::BaseApp.settings.cache.delete "#{current_user.memcache_key}/conversations"
       VideoRead.perform_async(video.id, current_user.id)
 
       {
@@ -316,9 +315,9 @@ module HollerbackApp
         )
 
         if video.save
-          conversation.touch
           video.ready!
-          video.mark_as_read! for: current_user
+          conversation.touch
+          current_user.memcache_key_touch
           Hollerback::NotifyRecipients.new(video).run
 
           #todo: move this to async job

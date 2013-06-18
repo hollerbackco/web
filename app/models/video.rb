@@ -15,7 +15,9 @@ class Video < ActiveRecord::Base
 
   default_scope order("created_at DESC")
 
+  # prepare the video
   def ready!
+    mark_as_read! for: user
     self.in_progress = false
     save!
   end
