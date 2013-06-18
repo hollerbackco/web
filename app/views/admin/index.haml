@@ -19,6 +19,7 @@
 %table.table.table-bordered
   %thead
     %tr
+      %td Id
       %td Name
       %td Email
       %td Phone
@@ -28,6 +29,7 @@
   %tbody
     - @users.each do |user|
       %tr
+        %td= user.id
         %td= user.name
         %td= user.email
         %td= user.phone_normalized

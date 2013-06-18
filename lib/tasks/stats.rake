@@ -28,13 +28,14 @@ namespace :stats do
 
   desc "send videos to aws to compute"
   task :compute do
-    Video.find_in_batches(batch_size: 10) do |videos|
+    Video.where("user_id is not null").find_in_batches(batch_size: 10) do |videos|
       messages = []
       videos.each do |video|
         messages << {
           message_body: {
-            user_id: video.user.id,
+            user_id: video.user_id,
             video_id: video.id,
+            video_location: video.filename,
             video_url: video.url,
             created: video.created_at,
             recipient_count: video.recipients.count
