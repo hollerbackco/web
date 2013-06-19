@@ -101,16 +101,14 @@ module HollerbackApp
       ConversationRead.perform_async(current_user.id)
       cache_key = "#{current_user.memcache_key}/conversations"
 
-      res = HollerbackApp::BaseApp.settings.cache.fetch(cache_key, 1.hour) do
-        {
-          meta: {
-            code: 200
-          },
-          data: {
-            conversations: conversations
-          }
-        }.to_json
-      end
+      {
+        meta: {
+          code: 200
+        },
+        data: {
+          conversations: conversations
+        }
+      }.to_json
     end
 
     # params
