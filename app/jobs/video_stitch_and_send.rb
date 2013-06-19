@@ -43,7 +43,7 @@ class VideoStitchAndSend
   def publish_analytics(video)
     Keen.publish("video:create", {
       id: video.id,
-      receivers_count: (video.conversation.members.count - 1 ),
+      receivers_count: (video.conversation.members.count - 1),
       conversation: {
         id: video.conversation.id,
         videos_count: video.conversation.videos.count
