@@ -94,12 +94,17 @@ module HollerbackApp
     ########################################
 
     get '/me/conversations' do
-      conversations = current_user.conversations.map do |conversation|
+      scope = current_user.conversations
+
+      if params["page"]
+        scope = scope.paginate(:page => params["page"].to_i, :per_page => (params["limit"] || 20).to_i)
+      end
+
+      conversations = scope.map do |conversation|
         conversation_json conversation
       end
 
       ConversationRead.perform_async(current_user.id)
-      cache_key = "#{current_user.memcache_key}/conversations"
 
       {
         meta: {
@@ -114,7 +119,7 @@ module HollerbackApp
     # params
     #   invites: array of phone numbers
     post '/me/conversations' do
-      unless ensure_params :invites
+      unless ensure_params(:invites)
         return error_json 400, msg: "missing invites param"
       end
 
