@@ -25,11 +25,16 @@ describe 'API ROUTES |' do
   before(:all) do
     @user ||= FactoryGirl.create(:user)
 
-    @conversation = @user.conversations.create
-    25.times do
-      video = @conversation.videos.create(:filename => "hello.mp4")
-      video.in_progress = false
-      video.save
+
+    10.times do
+      @user.conversations.create
+    end
+    @user.conversations.each do |conversation|
+      25.times do
+        video = conversation.videos.create(:filename => "hello.mp4")
+        video.in_progress = false
+        video.save
+      end
     end
 
     @second_user ||= FactoryGirl.create(:user)
@@ -37,7 +42,7 @@ describe 'API ROUTES |' do
 
   let(:subject) { @user }
   let(:secondary_subject) { @second_user }
-  let(:conversation) { @conversation }
+  let(:conversation) { @user.conversations.first }
   let(:access_token) { @user.devices.first.access_token }
   let(:second_token) { @second_user.devices.first.access_token }
 
@@ -165,6 +170,18 @@ describe 'API ROUTES |' do
     conversations.should be_a_kind_of(Array)
   end
 
+  it 'GET me/conversations | should paginate' do
+    limit = 1
+
+    get '/me/conversations', :access_token => access_token, :page => 1, :limit => limit
+
+    result = JSON.parse(last_response.body)
+    conversations = result['data']['conversations']
+
+    last_response.should be_ok
+    conversations.count.should ==  limit
+  end
+
   it 'POST me/conversations | create a conversation' do
     conversations_count = subject.conversations.count
     post '/me/conversations', :access_token => access_token, "invites[]" => [secondary_subject.phone_normalized,"+18888888888"]
@@ -260,7 +277,7 @@ describe 'API ROUTES |' do
   end
 
   it "GET me/conversations/:id/videos | should paginate" do
-    get "/me/conversations/#{conversation.id}/videos?page=1", :access_token => access_token
+    get "/me/conversations/#{conversation.id}/videos", :access_token => access_token, :page => 1
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok

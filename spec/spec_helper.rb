@@ -43,7 +43,7 @@ RSpec.configure do |config|
 
     FactoryGirl.find_definitions
 
-    AWS.stub!
+    #AWS.stub!
   end
 end
 
