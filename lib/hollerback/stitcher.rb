@@ -26,7 +26,14 @@ module Hollerback
     end
 
     def self.stitch(files, output_file, output_dir)
-      prepared = files.map { |file| Movie.new(file).prepare_for_stitch(output_dir).path }
+      prepared = files.map do |file|
+        begin
+          Movie.new(file).prepare_for_stitch(output_dir).path
+        rescue
+          nil
+        end
+      end.compact
+
       command = "ffmpeg -i \"concat:"
       command << prepared.join("|")
       command << "\" -c copy -bsf:a aac_adtstoasc "
