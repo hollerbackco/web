@@ -28,22 +28,22 @@ class Video < ActiveRecord::Base
   end
 
   def url
-    filename.present? ? video_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
+    filename.present? ? video_object.url_for(:read, :expires => 1.month, :secure => false).to_s : ""
   end
 
   def stream_url
     return "" if filename.blank?
-    streamname.present? ? stream_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
+    streamname.present? ? stream_object.url_for(:read, :expires => 1.month, :secure => false).to_s : ""
   end
 
   def image_url
     return "" if filename.blank?
-    image_object.exists? ? image_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
+    image_object.exists? ? image_object.url_for(:read, :expires => 1.month, :secure => false).to_s : ""
   end
 
   def thumb_url
     return "" if filename.blank?
-    thumb_object.exists? ? thumb_object.url_for(:read, :expires => 1.week, :secure => false).to_s : ""
+    thumb_object.exists? ? thumb_object.url_for(:read, :expires => 1.month, :secure => false).to_s : ""
   end
 
   def metadata
@@ -59,7 +59,7 @@ class Video < ActiveRecord::Base
   end
 
   def as_json(options={})
-    options = options.merge(:methods => [:url, :thumb_url, :image_url, :stream_url])
+    options = options.merge(:methods => [:url, :thumb_url])
     super(options)
   end
 
