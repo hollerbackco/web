@@ -28,7 +28,9 @@ class Video < ActiveRecord::Base
   end
 
   def url
-    filename.present? ? video_object.url_for(:read, :expires => 1.month, :secure => false).to_s : ""
+    HollerbackApp::BaseApp.settings.cache.fetch("video-url-#{id}", 1.week) do
+      filename.present? ? video_object.url_for(:read, :expires => 1.month, :secure => false).to_s : ""
+    end
   end
 
   def stream_url
@@ -37,13 +39,17 @@ class Video < ActiveRecord::Base
   end
 
   def image_url
-    return "" if filename.blank?
-    image_object.exists? ? image_object.url_for(:read, :expires => 1.month, :secure => false).to_s : ""
+    HollerbackApp::BaseApp.settings.cache.fetch("video-image-url-#{id}", 1.week) do
+      return "" if filename.blank?
+      image_object.exists? ? image_object.url_for(:read, :expires => 1.month, :secure => false).to_s : ""
+    end
   end
 
   def thumb_url
-    return "" if filename.blank?
-    thumb_object.exists? ? thumb_object.url_for(:read, :expires => 1.month, :secure => false).to_s : ""
+    HollerbackApp::BaseApp.settings.cache.fetch("video-thumb-url-#{id}", 1.week) do
+      return "" if filename.blank?
+      thumb_object.exists? ? thumb_object.url_for(:read, :expires => 1.month, :secure => false).to_s : ""
+    end
   end
 
   def metadata
