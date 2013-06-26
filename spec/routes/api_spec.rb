@@ -182,6 +182,16 @@ describe 'API ROUTES |' do
     conversations.count.should ==  limit
   end
 
+  it 'GET me/conversations | updated_at' do
+    get '/me/conversations', :access_token => access_token, :updated_at => Time.now
+
+    result = JSON.parse(last_response.body)
+    conversations = result['data']['conversations']
+
+    last_response.should be_ok
+    conversations.count.should == 0
+  end
+
   it 'POST me/conversations | create a conversation' do
     conversations_count = subject.conversations.count
     post '/me/conversations', :access_token => access_token, "invites[]" => [secondary_subject.phone_normalized,"+18888888888"]

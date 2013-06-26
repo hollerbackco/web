@@ -24,7 +24,6 @@ class User < ActiveRecord::Base
   validates_format_of :email, with: /.+@.+\..+/i
   validates :phone, presence: true, uniqueness: true
 
-
   def memcache_key_touch
     HollerbackApp::BaseApp.settings.cache.set("user/#{id}/memcache-id", self.memcache_id + 1)
   end
@@ -86,7 +85,6 @@ class User < ActiveRecord::Base
     self.phone_normalized = Phoner::Phone.parse(phone).to_s
     super
   end
-
 
   def phone_area_code
     phoner.present? ? phoner.area_code : "858"
