@@ -30,7 +30,7 @@ module Sinatra
         scope = conversation.videos_for(current_user)
         scope = scope.limit(20)
         unless updated_at.nil?
-          scope = scope.where("videos.updated_at ? >", updated_at)
+          scope = scope.where("videos.updated_at > ?", updated_at)
         end
 
         obj["videos"] = scope.map do |video|
