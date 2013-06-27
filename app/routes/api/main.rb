@@ -105,6 +105,11 @@ module HollerbackApp
       if params["updated_at"]
         updated_at = Time.parse params["updated_at"]
         scope = scope.where("conversations.updated_at > ?", updated_at)
+      elsif session["updated_at"]
+        scope = scope.where("conversations.updated_at > ?", session["updated_at"])
+        session["updated_at"] = Time.now
+      else
+        session["updated_at"] = Time.now
       end
 
       conversations = scope.map do |conversation|
