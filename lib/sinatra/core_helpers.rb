@@ -16,7 +16,7 @@ module Sinatra
       }
     end
 
-    def conversation_json(conversation)
+    def conversation_json(conversation, updated_at=nil)
       cache_key = "user/#{current_user.id}/conversations/#{conversation.id}-#{conversation.updated_at}"
 
       HollerbackApp::BaseApp.settings.cache.fetch(cache_key, 1.hour) do
@@ -27,8 +27,14 @@ module Sinatra
           "invites" => conversation.invites.as_json
         })
 
-        obj["videos"] = conversation.videos_for(current_user).limit(20).map do |video|
-          video.as_json_for_user current_user
+        scope = conversation.videos_for(current_user)
+        scope = scope.limit(20)
+        unless updated_at.nil?
+          scope = scope.where("videos.updated_at ? >", updated_at)
+        end
+
+        obj["videos"] = scope.map do |video|
+          video.as_json_for_user(current_user)
         end
 
         if conversation.videos.any?

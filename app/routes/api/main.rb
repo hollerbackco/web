@@ -94,14 +94,26 @@ module HollerbackApp
     ########################################
 
     get '/me/conversations' do
+      updated_at = nil
+
       scope = current_user.conversations
 
       if params["page"]
         scope = scope.paginate(:page => params["page"].to_i, :per_page => (params["limit"] || 20).to_i)
       end
 
+      if params["updated_at"]
+        updated_at = Time.parse params["updated_at"]
+        scope = scope.where("conversations.updated_at > ?", updated_at)
+      elsif session["updated_at"]
+        scope = scope.where("conversations.updated_at > ?", session["updated_at"])
+        session["updated_at"] = Time.now
+      else
+        session["updated_at"] = Time.now
+      end
+
       conversations = scope.map do |conversation|
-        conversation_json conversation
+        conversation_json conversation, updated_at
       end
 
       ConversationRead.perform_async(current_user.id)
