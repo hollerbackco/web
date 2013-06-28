@@ -99,7 +99,7 @@ module HollerbackApp
       scope = current_user.conversations
 
       if params["page"]
-        scope = scope.paginate(:page => params["page"].to_i, :per_page => (params["limit"] || 20).to_i)
+        scope = scope.paginate(:page => params["page"].to_i, :per_page => (params["perPage"] || 10).to_i)
       end
 
       if params["updated_at"]
@@ -108,7 +108,7 @@ module HollerbackApp
       end
 
       conversations = scope.map do |conversation|
-        conversation_json conversation, updated_at
+        conversation_json conversation
       end
 
       ConversationRead.perform_async(current_user.id)
@@ -232,7 +232,7 @@ module HollerbackApp
           scoped_videos = conversation.videos_for(current_user).scoped
 
           if params[:page]
-            scoped_videos = scoped_videos.paginate(:page => params[:page], :per_page => 20)
+            scoped_videos = scoped_videos.paginate(:page => params[:page], :per_page => (params["perPage"] || 10))
           end
 
           videos = scoped_videos.with_read_marks_for(current_user)

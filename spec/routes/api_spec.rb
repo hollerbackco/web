@@ -25,7 +25,6 @@ describe 'API ROUTES |' do
   before(:all) do
     @user ||= FactoryGirl.create(:user)
 
-
     10.times do
       @user.conversations.create
     end
@@ -36,6 +35,8 @@ describe 'API ROUTES |' do
         video.save
       end
     end
+
+    p @user.conversations.first
 
     @second_user ||= FactoryGirl.create(:user)
   end
@@ -173,7 +174,7 @@ describe 'API ROUTES |' do
   it 'GET me/conversations | should paginate' do
     limit = 1
 
-    get '/me/conversations', :access_token => access_token, :page => 1, :limit => limit
+    get '/me/conversations', :access_token => access_token, :page => 1, :perPage => limit
 
     result = JSON.parse(last_response.body)
     conversations = result['data']['conversations']
@@ -274,11 +275,11 @@ describe 'API ROUTES |' do
   end
 
   it "GET me/conversations/:id/videos | should get all videos" do
-    expect{subject.conversations.find(conversation.id)}.to_not raise_error(::ActiveRecord::RecordNotFound)
+    #expect{subject.conversations.find(conversation.id)}.to_not raise_error(::ActiveRecord::RecordNotFound)
 
     get "/me/conversations/#{conversation.id}/videos", :access_token => access_token
 
-    videos_count = conversation.videos.count
+    videos_count = conversation.videos_for(subject).reload.count
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
@@ -286,14 +287,14 @@ describe 'API ROUTES |' do
     result["data"].count.should == videos_count
   end
 
-  it "GET me/conversations/:id/videos | should paginate" do
+  it "GET me/conversations/:id/videos | should paginate and default to 10" do
     get "/me/conversations/#{conversation.id}/videos", :access_token => access_token, :page => 1
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
 
+    result["data"].count.should == 10
     result["meta"]["last_page"].should be_false
-    result["data"].count.should == 20
   end
 
   it 'POST me/conversations/:id/leave | leave a group' do

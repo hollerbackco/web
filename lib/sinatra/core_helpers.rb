@@ -28,7 +28,7 @@ module Sinatra
         })
 
         scope = conversation.videos_for(current_user)
-        scope = scope.limit(20)
+        scope = scope.limit(10)
         unless updated_at.nil?
           scope = scope.where("videos.updated_at > ?", updated_at)
         end
