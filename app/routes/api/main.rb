@@ -295,7 +295,7 @@ module HollerbackApp
         meta: {
           code: 200
         },
-        data: video.as_json_for_user(current_user)
+        data: video.as_json_for_user(current_user).merge(conversation: conversation_json(conversation))
       }.to_json
     end
 
