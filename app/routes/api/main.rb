@@ -302,7 +302,7 @@ module HollerbackApp
       conversation = current_user.conversations.find(params[:id])
       video = conversation.videos.create(user: current_user)
 
-      VideoStitchAndSend.perform_async(params[:parts], video.id)
+      VideoStitchRequest.perform_async(params[:parts], video.id)
 
       {
         meta: {
