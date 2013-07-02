@@ -21,7 +21,7 @@ class VideoStitchRequest
   private
 
   def get_url(key)
-    bucket.objects[key].url_for(:read, :expires => 1.month, :secure => false).to_s : ""
+    bucket.objects[key].url_for(:read, :expires => 1.month, :secure => false).to_s
   end
 
   def bucket
