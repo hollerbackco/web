@@ -11,7 +11,7 @@ class VideoStitchRequest
       urls = files.map {|key| get_url(key) }.flatten
 
       queue.send_message({
-        parts: files,
+        parts: urls,
         output: "#{Hollerback::Stitcher::Movie.random_label}",
         video_id: video_id
       }.to_json)
