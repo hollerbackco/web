@@ -8,9 +8,7 @@ module Hollerback
     end
 
     def contacts
-      phones.map do |phone|
-        User.all(conditions: [ "phone_normalized IN (:phone_normalized)", {phone_normalized: phone}])
-      end.flatten.uniq - [self.inviter]
+      User.all(conditions: [ "phone_normalized IN (:phone_normalized)", {phone_normalized: phones}]).flatten.uniq - [self.inviter]
     end
 
     def parsed_phones
