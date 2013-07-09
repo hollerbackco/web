@@ -9,7 +9,7 @@ module Hollerback
 
     def contacts
       phones.map do |phone|
-        User.where(phone_normalized: phone)
+        User.all(conditions: [ "phone_normalized IN (:phone_normalized)", {phone_normalized: phone}])
       end.flatten.uniq - [self.inviter]
     end
 
