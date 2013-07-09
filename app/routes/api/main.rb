@@ -27,6 +27,9 @@ module HollerbackApp
 
     get '/contacts/check' do
       numbers = params["numbers"]
+      if numbers.is_a? String
+        numbers = numbers.split(",")
+      end
       contact_checker =  Hollerback::ContactChecker.new(numbers, current_user)
 
       contacts = contact_checker.contacts
