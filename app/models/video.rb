@@ -30,7 +30,7 @@ class Video < ActiveRecord::Base
   def url
     return "" if filename.blank?
     HollerbackApp::BaseApp.settings.cache.fetch("video-url-#{id}", 1.week) do
-      filename.present? ? video_object.url_for(:read, :expires => 1.month, :secure => false).to_s : ""
+      video_object.url_for(:read, :expires => 1.month, :secure => false).to_s
     end
   end
 
@@ -48,8 +48,10 @@ class Video < ActiveRecord::Base
 
   def thumb_url
     return "" if filename.blank?
+    return "" unless thumb_object.exists?
+
     HollerbackApp::BaseApp.settings.cache.fetch("video-thumb-url-#{id}", 1.week) do
-      thumb_object.exists? ? thumb_object.url_for(:read, :expires => 1.month, :secure => false).to_s : ""
+      thumb_object.url_for(:read, :expires => 1.month, :secure => false).to_s
     end
   end
 
