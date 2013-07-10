@@ -4,6 +4,7 @@ module HollerbackApp
 
     helpers ::Sinatra::Warden::Helpers
     helpers ::Sinatra::CoreHelpers
+    register Sinatra::MultiRoute
     register ::Sinatra::ActiveRecordExtension
 
     helpers do

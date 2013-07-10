@@ -4,6 +4,7 @@ Bundler.require
 
 require 'will_paginate'
 require 'will_paginate/active_record'
+require 'sinatra/multi_route'
 
 # setup config vars
 env_file = File.join('config', 'local_env.yml')

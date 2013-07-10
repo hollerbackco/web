@@ -25,7 +25,7 @@ module HollerbackApp
       }.to_json
     end
 
-    get '/contacts/check' do
+    route :get, :post, '/contacts/check' do
       numbers = params["numbers"]
       if numbers.is_a? String
         numbers = numbers.split(",")
