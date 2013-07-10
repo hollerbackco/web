@@ -69,7 +69,7 @@ module HollerbackApp
 
     ['/fly', '/fly/:from_name'].each do |path|
       get path do
-        @signup_test = ab_test("signup_waitlist", 'twitter', 'email')
+        #@signup_test = ab_test("signup_waitlist", 'twitter', 'email')
         if params.key? "from_name"
           session[:from] = params[:from_name]
         end
