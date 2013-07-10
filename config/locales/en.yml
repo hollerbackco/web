@@ -22,11 +22,9 @@ en:
   promotion:
     meta:
       title: Hollerback - Help us Launch
-      description: help launch this start up for a chance to win two plane tickets!
     a:
       description: |
         Help us launch Hollerback.
-        Win 2 Plane Tickets.
       step1:
         primary: Log In with Twitter
       step2:
@@ -34,7 +32,6 @@ en:
     b:
       description: |
         Help us launch Hollerback.
-        Win 2 Plane Tickets.
       step1:
         description: Enter your email to enter
         primary: Submit
