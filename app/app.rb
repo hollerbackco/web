@@ -1,9 +1,8 @@
 # load all the necessary files for the app to run
-
-require File.expand_path('./app/routes/base')
+#require File.expand_path('./app/routes/base')
 
 # load models and jobs
-%w[models jobs].each do |dir|
+%w[models jobs services].each do |dir|
   Dir.open("./app/#{dir}").each do |file|
     next if file =~ /^\./
     require File.expand_path("./app/#{dir}/#{file}")

@@ -5,7 +5,7 @@ module Hollerback
   class SMS
     class << self
       def configure(sid, token, phone)
-        @client = self.client(sid,token)
+        @client = self.client(sid, token)
         @phone = phone
       end
 

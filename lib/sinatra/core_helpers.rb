@@ -1,5 +1,9 @@
 module Sinatra
   module CoreHelpers
+    def t(*args)
+      I18n.t(*args)
+    end
+
     # checks the params hash for a single argument as both !nil and !empty
     def ensure_param(arg)
       params[arg.to_sym].present?
