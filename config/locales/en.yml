@@ -28,7 +28,7 @@ en:
       step1:
         primary: Log In with Twitter
       step2:
-        description: We'll send a single tweet from your account on the day of the launch. And we'll select a winner.
+        description: We'll send a single tweet from your account on the day of the launch.
     b:
       description: |
         Help us launch Hollerback.
