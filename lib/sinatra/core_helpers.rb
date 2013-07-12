@@ -51,6 +51,22 @@ module Sinatra
       end
     end
 
+    def success_json(opts={})
+      data = opts.delete(:data)
+      meta = {code: 200}
+      if meta_add = opts.delete(:meta)
+        meta = meta.merge meta_add
+      end
+
+      {
+        meta: {
+          code: 200
+        },
+        data: data
+      }.to_json
+
+    end
+
     def error_json(error_code, options = {})
       options = options.symbolize_keys
 
