@@ -34,7 +34,7 @@ module HollerbackApp
       unless conversation = Conversation.find_by_phone_numbers(current_user, params[:invites])
         success = Conversation.transaction do
           conversation = current_user.conversations.create(creator: current_user)
-          if params.key? "name"
+          if params.key? "name" and params[:name] != "<null>"
             conversation.name = params[:name]
             conversation.save
           end
