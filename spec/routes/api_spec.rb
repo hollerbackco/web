@@ -36,14 +36,12 @@ describe 'API ROUTES |' do
       end
     end
 
-    p @user.conversations.first
-
     @second_user ||= FactoryGirl.create(:user)
   end
 
   let(:subject) { @user }
   let(:secondary_subject) { @second_user }
-  let(:conversation) { @user.conversations.first }
+  let(:conversation) { @user.conversations.last }
   let(:access_token) { @user.devices.first.access_token }
   let(:second_token) { @second_user.devices.first.access_token }
 
@@ -204,6 +202,20 @@ describe 'API ROUTES |' do
     subject.conversations.find(result["data"]["id"]).invites.count.should == 1
   end
 
+  it 'POST me/conversations | create a conversation with a title' do
+    name = "this should be a title"
+    conversations_count = subject.conversations.count
+    post '/me/conversations',
+      :access_token => access_token,
+      "invites[]" => [secondary_subject.phone_normalized,"+18887777777"],
+      :name => name
+
+    result = JSON.parse(last_response.body)
+
+    last_response.should be_ok
+    subject.conversations.reload.find_by_name(name).should_not be_nil
+  end
+
   it 'POST me/conversations | return error if no invites sent' do
     conversations_count = subject.conversations.count
     post '/me/conversations', :access_token => access_token
@@ -240,8 +252,8 @@ describe 'API ROUTES |' do
       parts: parts
 
     last_response.should be_ok
-    VideoStitchAndSend.jobs.size.should == 1
-    VideoStitchAndSend.jobs.clear
+    VideoStitchRequest.jobs.size.should == 1
+    VideoStitchRequest.jobs.clear
   end
 
   it 'POST me/conversations/:id/videos/parts | requires parts param' do
@@ -251,7 +263,7 @@ describe 'API ROUTES |' do
     last_response.should_not be_ok
     result['meta']['code'].should == 400
     result['meta']['msg'].should == "missing parts param"
-    VideoStitchAndSend.jobs.size.should == 0
+    VideoStitchRequest.jobs.size.should == 0
   end
 
   it 'POST me/conversations/:id/videos | sends a video' do
