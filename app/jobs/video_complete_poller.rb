@@ -5,8 +5,11 @@ class VideoCompletePoller
   end
 
   def run
+    SQSLogger.logger.info " -- Started Video Ready Polling Service"
     queue.poll do |message|
+      SQSLogger.logger.info "Message body: #{message.body}"
       data = JSON.parse(message.body)
+
       if video = Video.find(data["video_id"])
         video.update_attributes(filename: data["output"], in_progress: false)
         video.ready!
@@ -16,6 +19,8 @@ class VideoCompletePoller
         notify_recipients(video)
         publish_analytics(video)
       end
+
+      SQSLogger.logger.info " -- Finshed updating #{video.id}"
     end
   end
 
