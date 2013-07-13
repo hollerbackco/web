@@ -1,5 +1,9 @@
 module HollerbackApp
   class WebApp < BaseApp
+    helpers ::Sinatra::Assets::Helpers
+    helpers ::Sprockets::Helpers
+    helpers ::Split::Helper
+
     set :views, File.join(app_root, 'app', 'views')
 
     # google analytics
@@ -81,9 +85,5 @@ module HollerbackApp
       sprockets.css_compressor = YUI::CssCompressor.new
       #sprockets.js_compressor  = Uglifier.new(mangle: true)
     end
-
-    helpers ::Sinatra::Assets::Helpers
-    helpers ::Sprockets::Helpers
-    helpers ::Split::Helper
   end
 end
