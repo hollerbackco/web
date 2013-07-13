@@ -23,6 +23,6 @@ else
 end
 
 SQSLogger.logger.info " -- Preparing \"#{queue_name}\" SQS Queue"
-queue = AWS::SQS.new.queues.create()
+queue = AWS::SQS.new.queues.create(queue_name)
 
 VideoCompletePoller.new(queue).run
