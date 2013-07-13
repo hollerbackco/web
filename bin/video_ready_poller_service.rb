@@ -12,6 +12,7 @@ module SQSLogger
   def self.create_logger
     logger = Logger.new(STDOUT)
     logger.level = Logger::INFO
+    logger
   end
 end
 
