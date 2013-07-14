@@ -5,6 +5,16 @@ module HollerbackApp
       logout
       authenticate(:password)
 
+      # remove all devices with device_token that is not blank
+      if params.key "device_token" and !params["device_token"].blank?
+        devices = Device.where("token" => params["device_token"])
+        if devices.any?
+          p "destroying devices ---"
+          p devices
+        end
+        devices.destroy_all
+      end
+
       device = current_user.device_for(params["device_token"], params["platform"])
 
       {
