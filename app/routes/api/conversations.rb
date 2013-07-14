@@ -33,14 +33,14 @@ module HollerbackApp
       p params
 
       # todo allow conversations to s 
-      unless conversation = Conversation.find_by_phone_numbers(current_user, params[:invites])
+      unless conversation = Conversation.find_by_phone_numbers(current_user, params["invites"])
         success = Conversation.transaction do
           conversation = current_user.conversations.create(creator: current_user)
-          if params.key? "name" and params[:name] != "<null>"
-            conversation.name = params[:name]
+          if params.key? "name" and params["name"] != "<null>"
+            conversation.name = params["name"]
             conversation.save
           end
-          inviter = Hollerback::ConversationInviter.new(current_user, conversation, params[:invites])
+          inviter = Hollerback::ConversationInviter.new(current_user, conversation, params["invites"])
           inviter.invite
         end
 
