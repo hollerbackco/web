@@ -6,7 +6,7 @@ module Sinatra
 
     # checks the params hash for a single argument as both !nil and !empty
     def ensure_param(arg)
-      params[arg.to_sym].present?
+      params[arg.to_s].present?
     end
 
     # checks an array of params from the params hash
