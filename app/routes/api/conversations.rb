@@ -30,6 +30,8 @@ module HollerbackApp
         return error_json 400, msg: "missing invites param"
       end
 
+      conversation = nil
+
       success = Conversation.transaction do
         conversation = current_user.conversations.create(creator: current_user)
         if params.key? "name" and params["name"] != "<null>"
@@ -51,7 +53,7 @@ module HollerbackApp
         })
       end
 
-      if conversation.errors.blank?
+      if conversation and conversation.errors.blank?
         success_json data: conversation_json(conversation)
       else
         error_json 400, for: conversation, msg: "problem updating"
