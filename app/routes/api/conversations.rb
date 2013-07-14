@@ -30,6 +30,8 @@ module HollerbackApp
         return error_json 400, msg: "missing invites param"
       end
 
+      p params
+
       # todo allow conversations to s 
       unless conversation = Conversation.find_by_phone_numbers(current_user, params[:invites])
         success = Conversation.transaction do
