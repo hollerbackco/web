@@ -15,6 +15,10 @@ class Video < ActiveRecord::Base
 
   default_scope order("created_at DESC")
 
+  def self.random_label
+    "#{SecureRandom.hex(1).upcase}/#{SecureRandom.uuid.upcase}"
+  end
+
   # prepare the video
   def ready!
     self.mark_as_read! for: user

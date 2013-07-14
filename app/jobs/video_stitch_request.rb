@@ -12,7 +12,7 @@ class VideoStitchRequest
 
       queue.send_message({
         parts: urls,
-        output: "#{Hollerback::Stitcher::Movie.random_label}",
+        output: "#{Video.random_label}",
         video_id: video_id
       }.to_json)
     end
