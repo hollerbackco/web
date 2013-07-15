@@ -29,7 +29,7 @@ class Conversation < ActiveRecord::Base
   end
   alias_method :is_group, :group?
 
-  def member_names(discluded_user)
+  def member_names(discluded_user=nil)
     people = members
     if discluded_user.present?
       people = members - [discluded_user]
