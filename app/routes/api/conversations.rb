@@ -14,7 +14,9 @@ module HollerbackApp
         scope = scope.where("conversations.updated_at > ?", updated_at)
       end
 
-      conversations = scope.map do |conversation|
+      conversations = scope.select { |conversation|
+        conversation.videos.count > 0
+      }.map do |conversation|
         conversation_json conversation
       end
 
