@@ -23,17 +23,22 @@ class Conversation < ActiveRecord::Base
     end
   end
 
-  def name(discluded_user=nil)
+  # all conversations with a name that is set.
+  def group?
+    members.count > 2 or self[:name].present?
+  end
+  alias_method :is_group, :group?
+
+  def member_names(discluded_user)
     people = members
     if discluded_user.present?
       people = members - [discluded_user]
     end
-    auto_name = if people.any?
-                  people.map(&:name).map {|name| name.split(" ").first}.join(", ")
-                else
-                  "(#{invites.count}) Invited"
-                end
-    self[:name] || auto_name
+    people.any? ? people.map {|user| user.name.split(" ").first}.join(", ") : nil
+  end
+
+  def name(discluded_user=nil)
+    self[:name] || member_names(discluded_user) || "(#{invites.count}) Invited"
   end
 
   def involved_phones

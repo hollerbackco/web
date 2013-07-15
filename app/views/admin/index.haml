@@ -3,6 +3,7 @@
   %thead
     %tr
       %td Sender
+      %td Group Name
       %td Members
       %td Filename
       %td Created At
@@ -11,6 +12,7 @@
       %tr
         %td= video.user.name
         %td= video.conversation.name
+        %td= video.conversation.member_names
         %td
           = video.filename
         %td= video.created_at
