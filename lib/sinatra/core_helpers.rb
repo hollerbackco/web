@@ -28,7 +28,8 @@ module Sinatra
           "unread_count" => conversation.videos_for(current_user).unread_by(current_user).count,
           "name" => conversation.name(current_user),
           "members" => conversation.members.as_json,
-          "invites" => conversation.invites.as_json
+          "invites" => conversation.invites.as_json,
+          "is_group" => conversation.group?
         })
 
         scope = conversation.videos_for(current_user)
@@ -64,7 +65,6 @@ module Sinatra
         },
         data: data
       }.to_json
-
     end
 
     def error_json(error_code, options = {})

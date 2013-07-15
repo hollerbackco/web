@@ -23,7 +23,13 @@ class Conversation < ActiveRecord::Base
     end
   end
 
-  def member_names(discluded_user)
+  # all conversations with a name that is set.
+  def group?
+    members.count > 2 or self[:name].present?
+  end
+  alias_method :is_group, :group?
+
+  def member_names(discluded_user=nil)
     people = members
     if discluded_user.present?
       people = members - [discluded_user]
