@@ -30,33 +30,30 @@ module HollerbackApp
         return error_json 400, msg: "missing invites param"
       end
 
-      p params
+      conversation = nil
 
-      # todo allow conversations to s 
-      unless conversation = Conversation.find_by_phone_numbers(current_user, params["invites"])
-        success = Conversation.transaction do
-          conversation = current_user.conversations.create(creator: current_user)
-          if params.key? "name" and params["name"] != "<null>"
-            conversation.name = params["name"]
-            conversation.save
-          end
-          inviter = Hollerback::ConversationInviter.new(current_user, conversation, params["invites"])
-          inviter.invite
+      success = Conversation.transaction do
+        conversation = current_user.conversations.create(creator: current_user)
+        if params.key? "name" and params["name"] != "<null>"
+          conversation.name = params["name"]
+          conversation.save
         end
-
-        if success
-          Keen.publish("conversations:create", {
-            :user => {
-              id: current_user.id,
-              username: current_user.username
-            },
-            :total_invited_count => params[:invites].count,
-            :already_users_count => conversation.members.count
-          })
-        end
+        inviter = Hollerback::ConversationInviter.new(current_user, conversation, params["invites"])
+        inviter.invite
       end
 
-      if conversation.errors.blank?
+      if success
+        Keen.publish("conversations:create", {
+          :user => {
+            id: current_user.id,
+            username: current_user.username
+          },
+          :total_invited_count => params[:invites].count,
+          :already_users_count => conversation.members.count
+        })
+      end
+
+      if conversation and conversation.errors.blank?
         success_json data: conversation_json(conversation)
       else
         error_json 400, for: conversation, msg: "problem updating"
