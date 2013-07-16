@@ -25,6 +25,42 @@ module HollerbackApp
       success_json data: {conversations: conversations}
     end
 
+    # creates one conversation for each number supplied in the invites params.
+    # => each conversation will have a video created from the supplied parts params.
+    post '/me/conversations/batch' do
+      unless ensure_params(:invites, :parts)
+        return error_json 400, msg: "missing required params"
+      end
+
+      invites = params["invites"]
+      parts = params["parts"]
+      conversations = []
+
+      for number in invites
+        conversation = nil
+
+        success = Conversation.transaction do
+          conversation = current_user.conversations.create(creator: current_user)
+          inviter = Hollerback::ConversationInviter.new(current_user, conversation, [number])
+          inviter.invite
+
+          video = conversation.videos.create(user: current_user)
+          VideoStitchRequest.perform_async(parts, video.id)
+        end
+
+        if success
+          ConversationCreate.perform_async(current_user.id, conversation.id, [number])
+          conversations << conversation
+        end
+      end
+
+      if conversations.any?
+        success_json data: conversations.map {|conversation| conversation_json(conversation) }
+      else
+        error_json 400, for: conversation, msg: "problem creating conversations"
+      end
+    end
+
     # params
     #   invites: array of phone numbers
     post '/me/conversations' do

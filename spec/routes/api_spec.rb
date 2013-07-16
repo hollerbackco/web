@@ -28,6 +28,7 @@ describe 'API ROUTES |' do
     10.times do
       @user.conversations.create
     end
+
     @user.conversations.each do |conversation|
       25.times do
         video = conversation.videos.create(:filename => "hello.mp4")
@@ -37,13 +38,20 @@ describe 'API ROUTES |' do
     end
 
     @second_user ||= FactoryGirl.create(:user)
+    @conversation = @user.conversations.last
+    @access_token = @user.devices.first.access_token 
+    @second_token = @second_user.devices.first.access_token 
+  end
+
+  before(:each) do
+    VideoStitchRequest.jobs.clear
   end
 
   let(:subject) { @user }
   let(:secondary_subject) { @second_user }
-  let(:conversation) { @user.conversations.last }
-  let(:access_token) { @user.devices.first.access_token }
-  let(:second_token) { @second_user.devices.first.access_token }
+  let(:conversation) { @conversation }
+  let(:access_token) { @access_token }
+  let(:second_token) { @second_token }
 
   it 'shows an index' do
     get ''
@@ -228,6 +236,30 @@ describe 'API ROUTES |' do
     subject.conversations.reload.count.should == conversations_count
   end
 
+  it 'POST me/conversations/batch | should create multiple conversations' do
+    parts = [
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.0.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.1.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.2.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.3.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.4.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.5.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.6.mp4"
+    ]
+
+    conversations_count = subject.conversations.count
+    post '/me/conversations/batch', :access_token => access_token,
+      "invites[]" => [secondary_subject.phone_normalized, "+18888888888"],
+      :parts => parts
+
+    result = JSON.parse(last_response.body)
+    result['data'].count.should == 2
+
+    last_response.should be_ok
+    subject.conversations.reload.count.should == conversations_count + 2
+  end
+
+
   it 'GET me/conversations/:id | get a specific conversation' do
     get "/me/conversations/#{conversation.id}", :access_token => access_token
 
@@ -253,7 +285,6 @@ describe 'API ROUTES |' do
 
     last_response.should be_ok
     VideoStitchRequest.jobs.size.should == 1
-    VideoStitchRequest.jobs.clear
   end
 
   it 'POST me/conversations/:id/videos/parts | requires parts param' do
