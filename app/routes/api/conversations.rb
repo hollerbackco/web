@@ -32,27 +32,19 @@ module HollerbackApp
         return error_json 400, msg: "missing invites param"
       end
 
+      invites = params["invites"]
+      name = params["name"]
+      name = nil if params["name"] == "<null>" #TODO: iOs sometimes sends a null value
       conversation = nil
 
       success = Conversation.transaction do
-        conversation = current_user.conversations.create(creator: current_user)
-        if params.key? "name" and params["name"] != "<null>"
-          conversation.name = params["name"]
-          conversation.save
-        end
-        inviter = Hollerback::ConversationInviter.new(current_user, conversation, params["invites"])
+        conversation = current_user.conversations.create(creator: current_user, name: name)
+        inviter = Hollerback::ConversationInviter.new(current_user, conversation, invites)
         inviter.invite
       end
 
       if success
-        Keen.publish("conversations:create", {
-          :user => {
-            id: current_user.id,
-            username: current_user.username
-          },
-          :total_invited_count => params[:invites].count,
-          :already_users_count => conversation.members.count
-        })
+        ConversationCreate.perform_async(current_user.id, conversation.id, invites)
       end
 
       if conversation and conversation.errors.blank?
