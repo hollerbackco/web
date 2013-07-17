@@ -4,7 +4,7 @@ FactoryGirl.define do
     name                { Faker::Name.name }
     username            { Faker::Name.name }
     phone               { Faker::PhoneNumber.phone_number }
-    password            { "HELLO" }
+    #password            { "HELLO" }
 
     after(:create) do |user|
       user.devices << Device.create(platform: "ios", token: "devicetoken#{Faker::Name.name}")
