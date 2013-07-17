@@ -2,6 +2,7 @@
 %table.table.table-bordered
   %thead
     %tr
+      %td Id
       %td Sender
       %td Group Name
       %td Members
@@ -10,6 +11,7 @@
   %tbody
     - @videos.each do |video|
       %tr
+        %td= video.id
         %td= video.user.name
         %td= video.conversation.name
         %td= video.conversation.member_names
@@ -28,6 +30,7 @@
       %td Conversations
       %td Videos
       %td Created At
+      %td App Version
   %tbody
     - @users.each do |user|
       %tr
@@ -40,3 +43,4 @@
         %td
           = user.sent_videos.count
         %td= user.created_at
+        %td= user.last_app_version
