@@ -2,7 +2,7 @@ class User < ActiveRecord::Base
   has_secure_password
   attr_accessible :name, :email, :phone, :username,
     :password, :password_confirmation, :phone_normalized,
-    :device_token
+    :device_token, :last_app_version
 
   acts_as_reader
 

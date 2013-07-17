@@ -1,8 +1,11 @@
 module HollerbackApp
   class ApiApp < BaseApp
     before '/me*' do
-      p request
       authenticate(:api_token)
+      app_version = request["HTTP_IOS_APP_VER"]
+      if app_version and app_version != current_user.last_app_version
+        current_user.update_attribute :last_app_version, app_version
+      end
     end
 
     before '/contacts*' do
