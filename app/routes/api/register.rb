@@ -3,15 +3,12 @@ module HollerbackApp
   class ApiApp < BaseApp
     post '/register' do
       user = User.new({
-        email:    params[:email],
-        name:     params[:name],
-        password: params[:password],
-        password_confirmation: params[:password],
+        username:     params[:name],
         phone: params[:phone]
       })
 
       if user.save
-        device = user.device_for(params["device_token"], params["platform"])
+        #device = user.device_for(params["device_token"], params["platform"])
 
         Keen.publish("users:new", {
           memberships: user.conversations.count
@@ -21,12 +18,12 @@ module HollerbackApp
           Hollerback::SMS.send_message "+13033595357", "#{user.name} #{user.phone_normalized} signed up"
         end
 
-        #Hollerback::SMS.send_message user.phone_normalized, "Verification Code: #{user.verification_code}"
+        Hollerback::SMS.send_message user.phone_normalized, "Verification Code: #{user.verification_code}"
         {
-          access_token: device.access_token,
-          user: user.as_json.merge(access_token: device.access_token)
+          user: user.as_json
         }.to_json
       else
+        p user
         error_json 400, for: user
       end
     end

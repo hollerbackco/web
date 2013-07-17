@@ -58,8 +58,26 @@ describe 'API ROUTES |' do
     last_response.should be_ok
   end
 
+  it 'POST verify | should return access_token' do
+    post '/verify', phone: subject.phone_normalized, code: subject.verification_code,
+      :platform => "android", :device_token => "hello"
+    result = JSON.parse(last_response.body)
+    last_response.should be_ok
+    result['access_token'].should_not be_nil
+    result['user']['access_token'].should_not be_nil
+  end
+
+  it 'POST verify | should fail: requires params' do
+    post '/verify'
+
+    result = JSON.parse(last_response.body)
+    last_response.should_not be_ok
+    result['meta']['msg'].should_not be_blank
+    result['meta']['errors'].is_a?(Array).should be_true
+  end
+
   it 'POST register | should fail: requires params' do
-    post '/register', :email => "test@test.com", :password => "jhejkf"
+    post '/register'
 
     result = JSON.parse(last_response.body)
     last_response.should_not be_ok
@@ -68,59 +86,21 @@ describe 'API ROUTES |' do
   end
 
   it 'POST register | creates a user' do
-    post '/register', :email => "test@test.com", :password => "helloah", :name => "myname", :phone => "8587614144"
+    post '/register', :username => "myname", :phone => "8587614144"
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
-    puts result['access_token']
-    puts result['user']['access_token']
+
     result['access_token'].should_not be_nil
     result['user']['access_token'].should_not be_nil
   end
 
-  it 'POST session | responds with an access_token' do
+  it 'POST session | should respond' do
     device_count = subject.devices.count
-    post '/session', :email => subject.email, :password => subject.password,
-      :platform => "android", :device_token => "hello"
+    post '/session', :phone => subject.phone_normalized
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
-    puts result['access_token']
-    puts result['user']['access_token']
-    result['access_token'].should_not be_nil
-    result['user']['access_token'].should_not be_nil
-    subject.reload.devices.count.should == device_count + 1
-  end
-
-  it 'POST session | responds with an access_token for no platorm' do
-    device_count = subject.devices.count
-    post '/session', :email => subject.email, :password => subject.password
-
-    result = JSON.parse(last_response.body)
-    last_response.should be_ok
-    puts result['access_token']
-    puts result['user']['access_token']
-    result['access_token'].should_not be_nil
-    result['user']['access_token'].should_not be_nil
-    subject.reload.devices.count.should == device_count + 1
-  end
-
-  it 'POST session | responds with the same access_token for no platorm' do
-    device_count = subject.devices.count
-    post '/session', :email => subject.email, :password => subject.password
-
-    result = JSON.parse(last_response.body)
-    last_response.should be_ok
-    puts result['access_token']
-    puts result['user']['access_token']
-    result['access_token'].should_not be_nil
-    result['user']['access_token'].should_not be_nil
-    subject.reload.devices.count.should == device_count
-  end
-
-  it 'POST session | returns 403 when incorrect password' do
-    post '/session', :email => subject.email, :password => "#{subject.password}kj"
-    last_response.should_not be_ok
   end
 
   it 'DELETE session | deletes the device' do

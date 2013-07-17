@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  has_secure_password
+  #has_secure_password
   attr_accessible :name, :email, :phone, :username,
     :password, :password_confirmation, :phone_normalized,
     :device_token
@@ -16,13 +16,15 @@ class User < ActiveRecord::Base
   before_create :set_verification_code
 
   #todo: remove this
-  before_validation :set_username, on: :create
+  #before_validation :set_username, on: :create
 
-  validates :name, presence: true
-  #validates :username, presence: true, uniqueness: true
-  validates :email, presence: true, uniqueness: true
-  validates_format_of :email, with: /.+@.+\..+/i
   validates :phone, presence: true, uniqueness: true
+  validates :username, presence: true
+
+  #validates :name, presence: true
+  #validates :username, presence: true, uniqueness: true
+  #validates :email, presence: true, uniqueness: true
+  #validates_format_of :email, with: /.+@.+\..+/i
 
   def memcache_key_touch
     HollerbackApp::BaseApp.settings.cache.set("user/#{id}/memcache-id", self.memcache_id + 1)
@@ -58,19 +60,13 @@ class User < ActiveRecord::Base
     videos.unread_by(self)
   end
 
-  def set_username
-    if self.username.blank? and self.email.present?
-      self.username = self.email.split("@").first
-      self.username << SecureRandom.hex(3)
-    end
-  end
-
   def member_of
     Conversation.joins(:members).where("users.id" => [self])
   end
 
-  def self.authenticate(email, password)
-    User.find_by_email(email).try(:authenticate, password)
+  def self.authenticate(phone, code)
+    user = User.find_by_phone_normalized(phone)
+    user.verify(code)
   end
 
   def self.authenticate_with_access_token(access_token)
@@ -98,10 +94,23 @@ class User < ActiveRecord::Base
     @phoner ||= Phoner::Phone.parse(phone_normalized)
   end
 
+  def self.verify(phone, code)
+    user = User.find_by_phone_normalized(phone)
+    if user and user.verification_code == code
+      user
+    else
+      nil
+    end
+  end
+
   def verified?
     self.verification_code.blank?
   end
   alias_method :isVerified, :verified?
+
+  def verifY(code)
+    self.verification_code == code
+  end
 
   def verify!(code)
     if self.verification_code == code
@@ -112,8 +121,8 @@ class User < ActiveRecord::Base
   end
 
   def as_json(options={})
-    #todo: uncomment when we add this to the signup flow
-    options = options.merge(:only => [:id, :phone, :phone_normalized, :name, :email, :username, :created_at, :updated_at])
+    #TODO: uncomment when we add this to the signup flow
+    options = options.merge(:only => [:id, :phone, :phone_normalized, :username, :created_at, :updated_at])
     options = options.merge(:methods => :isVerified)
     #options = options.merge(:except => [:verification_code, :device_token])
     super(options)
