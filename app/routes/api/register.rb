@@ -10,6 +10,11 @@ module HollerbackApp
       if user.save
         #device = user.device_for(params["device_token"], params["platform"])
 
+        invites = Invite.where(phone: params["phone"])
+        for invite in invites
+          invite.accept! user
+        end
+
         Keen.publish("users:new", {
           memberships: user.conversations.count
         })

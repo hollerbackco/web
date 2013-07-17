@@ -9,7 +9,15 @@ class Invite < ActiveRecord::Base
 
   validates :phone, presence: true
 
-  def accept!
-    update_attribute! :accepted, true
+  def accepted?
+    accepted
+  end
+
+  def accept!(user)
+    self.transaction do 
+      conversation.members << user
+      self.accepted = true
+      save!
+    end
   end
 end
