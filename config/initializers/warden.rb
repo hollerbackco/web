@@ -7,13 +7,13 @@ end
 
 Warden::Strategies.add(:password) do
   def valid?
-    params['phone'] && params['password']
+    params['phone'] && params['code']
   end
 
   def authenticate!
     user = User.authenticate(
       params['phone'],
-      params['password']
+      params['code']
       )
     user.nil? ? fail!('Could not log in') : success!(user, 'Successfully logged in')
   end

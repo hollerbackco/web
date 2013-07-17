@@ -66,7 +66,11 @@ class User < ActiveRecord::Base
 
   def self.authenticate(phone, code)
     user = User.find_by_phone_normalized(phone)
-    user.verify(code)
+    if user and user.verify(code)
+      user
+    else
+      nil
+    end
   end
 
   def self.authenticate_with_access_token(access_token)
@@ -94,21 +98,12 @@ class User < ActiveRecord::Base
     @phoner ||= Phoner::Phone.parse(phone_normalized)
   end
 
-  def self.verify(phone, code)
-    user = User.find_by_phone_normalized(phone)
-    if user and user.verification_code == code
-      user
-    else
-      nil
-    end
-  end
-
   def verified?
     self.verification_code.blank?
   end
   alias_method :isVerified, :verified?
 
-  def verifY(code)
+  def verify(code)
     self.verification_code == code
   end
 

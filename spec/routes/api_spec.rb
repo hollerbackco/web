@@ -90,9 +90,6 @@ describe 'API ROUTES |' do
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
-
-    result['access_token'].should_not be_nil
-    result['user']['access_token'].should_not be_nil
   end
 
   it 'POST session | should respond' do
@@ -118,7 +115,7 @@ describe 'API ROUTES |' do
 
     result = JSON.parse(last_response.body)
 
-    secondary_subject.name.should == result['data'][0]["name"]
+    secondary_subject.username.should == result['data'][0]["username"]
 
     last_response.should be_ok
   end
@@ -129,14 +126,12 @@ describe 'API ROUTES |' do
   end
 
   it 'POST me | updates the user' do
-    post '/me', :access_token => access_token, :name => "jeff"
+    post '/me', :access_token => access_token, :username => "jeff"
     last_response.should be_ok
 
     result = JSON.parse(last_response.body)
 
-    subject.name.should_not == result['data']['name']
-    #because its not reloaded yet
-    subject.reload.name.should == result['data']['name']
+    subject.reload.username.should == result['data']['username']
   end
 
   it 'POST me | verifies code' do

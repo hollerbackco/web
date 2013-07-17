@@ -3,8 +3,8 @@ module HollerbackApp
   class ApiApp < BaseApp
     post '/register' do
       user = User.new({
-        username:     params[:name],
-        phone: params[:phone]
+        username: params["username"],
+        phone:    params["phone"]
       })
 
       if user.save
@@ -23,7 +23,6 @@ module HollerbackApp
           user: user.as_json
         }.to_json
       else
-        p user
         error_json 400, for: user
       end
     end
