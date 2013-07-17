@@ -1,7 +1,7 @@
 module HollerbackApp
   class ApiApp < BaseApp
     before '/me*' do
-      p request['iOS-App-Ver']
+      p request
       authenticate(:api_token)
     end
 
