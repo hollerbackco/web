@@ -4,7 +4,7 @@ class Conversation < ActiveRecord::Base
   has_many :videos, order: "videos.created_at DESC", :dependent => :destroy
   has_many :memberships
   has_many :members, through: :memberships, source: :user, class_name: "User"
-  has_many :invites
+  has_many :invites, conditions: {accepted: false}
 
   belongs_to :creator, class_name: "User"
 
