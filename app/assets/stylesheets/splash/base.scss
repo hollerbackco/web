@@ -53,6 +53,7 @@ textarea {
 
   }
 
+
   .participate {
     background: image-url("girl2.jpg") left bottom no-repeat;
     margin-top: 0;
@@ -199,6 +200,27 @@ textarea {
 
 .splash-body {
   text-align: center;
+
+  #header {
+    .logo {
+      display: inline-block;
+      background: image-url("banana-logo.png");
+      width: 100px;
+      height: 105px;
+    }
+
+    .wordmark {
+      display: inline-block;
+      background: image-url("welcome-hollerback-logo.png");
+      width: 513px;
+      height: 98px;
+
+      /* Hide the text. */
+      text-indent: 200%;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+  }
 
   h1 {
     margin-bottom: 0;
