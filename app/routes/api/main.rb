@@ -8,10 +8,6 @@ module HollerbackApp
       end
     end
 
-    before '/contacts*' do
-      authenticate(:api_token)
-    end
-
     not_found do
       error_json 404, "not found"
     end

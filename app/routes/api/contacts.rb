@@ -6,7 +6,7 @@ module HollerbackApp
         numbers = numbers.split(",")
       end
 
-      contacts =  Hollerback::ContactChecker.new(numbers, current_user).contacts
+      contacts =  Hollerback::ContactChecker.new(numbers).contacts
 
       #TODO remove this after launch
       user = User.where(email: "williamldennis@gmail.com").first
