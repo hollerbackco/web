@@ -8,6 +8,7 @@ gem 'rake'
 gem 'thin'
 gem 'sinatra', :require => "sinatra/base"
 gem 'sinatra-contrib'
+gem "rack-reverse-proxy", :require => "rack/reverse_proxy"
 
 #database
 gem 'activerecord'
@@ -20,7 +21,6 @@ gem 'dalli'
 gem 'unread'
 gem 'awesome_nested_set'
 gem 'will_paginate'
-#gem 'kaminari', :require => 'kaminari/sinatra'
 
 #views
 gem 'haml'
