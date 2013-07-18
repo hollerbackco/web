@@ -107,6 +107,14 @@ class User < ActiveRecord::Base
     self.verification_code == code
   end
 
+  def verification_code
+    if self[:verfication_code].blank?
+      set_verification_code
+      save
+    end
+    self[:verification_code]
+  end
+
   def verify!(code)
     if self.verification_code == code
       self.verification_code = nil

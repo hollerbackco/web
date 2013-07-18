@@ -10,11 +10,14 @@ module HollerbackApp
 
       user = User.find_by_phone_normalized(params["phone"])
 
-      Hollerback::SMS.send_message user.phone_normalized, "Verification Code: #{user.verification_code}"
-
-      {
-        user: user.as_json
-      }.to_json
+      if user
+        Hollerback::SMS.send_message user.phone_normalized, "Verification Code: #{user.verification_code}"
+        {
+          user: user.as_json
+        }.to_json
+      else
+        not_found
+      end
     end
 
     post '/verify' do
