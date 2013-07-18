@@ -30,10 +30,6 @@ describe User do
     user.verified?.should be_false
   end
 
-  it "should verify with the corrent code" do
-    user.verify!(user.verification_code)
-    user.verified?.should be_true
-  end
 
   it "should return an isVerified attribute in json object" do
     user.as_json.key?(:isVerified).should be_true

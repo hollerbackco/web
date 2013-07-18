@@ -108,7 +108,7 @@ class User < ActiveRecord::Base
   end
 
   def verification_code
-    if self[:verfication_code].blank?
+    if self[:verification_code].blank?
       set_verification_code
       save
     end
