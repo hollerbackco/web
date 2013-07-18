@@ -2,13 +2,17 @@ module Hollerback
   class ContactChecker
     attr_accessor :phones, :inviter
 
-    def initialize(numbers, user)
+    def initialize(numbers, user=nil)
       self.phones = numbers || []
       self.inviter = user
     end
 
     def contacts
-      User.all(conditions: [ "phone_normalized IN (:phone_normalized)", {phone_normalized: phones}]).flatten.uniq - [self.inviter]
+      users = User.all(conditions: [ "phone_normalized IN (:phone_normalized)", {phone_normalized: phones}]).flatten.uniq
+      if self.inviter.present?
+        users = users - [self.inviter]
+      end
+      users
     end
 
     def parsed_phones
