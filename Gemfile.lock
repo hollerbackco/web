@@ -137,6 +137,8 @@ GEM
     rack (1.5.2)
     rack-protection (1.5.0)
       rack
+    rack-reverse-proxy (0.4.4)
+      rack (>= 1.0.0)
     rack-test (0.6.2)
       rack (>= 1.0)
     rake (10.0.4)
@@ -287,6 +289,7 @@ DEPENDENCIES
   omniauth-twitter
   pg
   phone
+  rack-reverse-proxy
   rake
   rb-fsevent
   redis

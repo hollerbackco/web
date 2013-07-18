@@ -1,3 +1,13 @@
+
+Design Principles and Resources
+===============================
+
+http://www.12factor.net/
+http://dl.dropboxusercontent.com/u/1579953/talks/modern_architecture.pdf
+
+- logs as first class citizens
+
+
 TODO
 - install graphite/statsd to start measuring performance and monitor server
 
