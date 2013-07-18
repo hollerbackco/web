@@ -111,7 +111,7 @@ describe 'API ROUTES |' do
   end
 
   it 'GET contacts/check | return users from an array or phonenumbers' do
-    get '/contacts/check', :access_token => access_token, :numbers => [[secondary_subject.phone_normalized]]
+    get '/contacts/check', :numbers => [[secondary_subject.phone_normalized]]
 
     result = JSON.parse(last_response.body)
 
