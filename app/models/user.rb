@@ -65,7 +65,7 @@ class User < ActiveRecord::Base
   end
 
   def self.authenticate(phone, code)
-    user = User.find_by_phone(phone)
+    user = User.find_by_phone_normalized(phone)
     if user and user.verify(code)
       user
     else
