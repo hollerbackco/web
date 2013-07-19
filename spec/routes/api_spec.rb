@@ -134,13 +134,6 @@ describe 'API ROUTES |' do
     subject.reload.username.should == result['data']['username']
   end
 
-  it 'POST me | verifies code' do
-    post '/me/verify', :access_token => access_token, :code => subject.verification_code
-    last_response.should be_ok
-
-    subject.reload.verified?.should be_true
-  end
-
 
   it 'GET me/conversations | gets users conversations' do
     get '/me/conversations', :access_token => access_token
