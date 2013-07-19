@@ -8,8 +8,8 @@ class ConversationCreate
     Keen.publish("conversations:create", {
       :name => conversation.name,
       :user => {
-        id: current_user.id,
-        username: current_user.username
+        id: user.id,
+        username: user.username
       },
       :total_invited_count => params[:invites].count,
       :already_users_count => conversation.members.count
