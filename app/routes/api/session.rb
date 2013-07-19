@@ -43,11 +43,11 @@ module HollerbackApp
         access_token: device.access_token,
         user: user.as_json.merge(access_token: device.access_token)
       }.to_json
-
     end
 
 
     post '/unauthenticated' do
+      $stdout.puts("source=#{settings.environment} measure.unauthenticated=1")
       status 403
       {
         meta: {

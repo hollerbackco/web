@@ -2,7 +2,6 @@ module HollerbackApp
   class ApiApp < BaseApp
     before '/me*' do
       authenticate(:api_token)
-      p request.env
       app_version = request.env["HTTP_IOS_APP_VER"]
       if app_version and app_version != current_user.last_app_version
         current_user.update_attribute :last_app_version, app_version
@@ -32,14 +31,6 @@ module HollerbackApp
         success_json data: current_user.as_json.merge(conversations: current_user.conversations)
       else
         error_json 400, msg: current_user
-      end
-    end
-
-    post '/me/verify' do
-      if current_user.verify! params["code"]
-        success_json data: current_user.as_json.merge(conversations: current_user.conversations)
-      else
-        error_json 400, msg: "incorrect code"
       end
     end
   end
