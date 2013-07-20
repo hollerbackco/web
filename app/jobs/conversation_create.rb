@@ -11,7 +11,7 @@ class ConversationCreate
         id: user.id,
         username: user.username
       },
-      :total_invited_count => params[:invites].count,
+      :total_invited_count => invites.count,
       :already_users_count => conversation.members.count
     })
   end
