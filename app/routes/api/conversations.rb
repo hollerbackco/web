@@ -33,8 +33,13 @@ module HollerbackApp
       end
 
       invites = params["invites"]
+      if invites.is_a? String
+        invites = invites.split(",")
+      end
+
       parts = params["parts"]
       conversations = []
+
 
       for number in invites
         conversation = nil
@@ -69,6 +74,9 @@ module HollerbackApp
       end
 
       invites = params["invites"]
+      if invites.is_a? String
+        invites = invites.split(",")
+      end
       name = params["name"]
       name = nil if params["name"] == "<null>" #TODO: iOs sometimes sends a null value
       conversation = nil
