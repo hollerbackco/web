@@ -5,6 +5,10 @@ module Hollerback
     def initialize(user,convo,numbers)
       self.inviter = user
       self.conversation = convo
+
+      if numbers.is_a? String
+        numbers = numbers.split(",")
+      end
       self.phones = numbers
     end
 
