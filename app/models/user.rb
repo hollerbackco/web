@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  include Hollerback::SecurePassword
+
   #has_secure_password
   attr_accessible :name, :email, :phone, :username,
     :password, :password_confirmation, :phone_normalized,
@@ -22,7 +24,6 @@ class User < ActiveRecord::Base
   validates :username, presence: true
 
   #validates :name, presence: true
-  #validates :username, presence: true, uniqueness: true
   #validates :email, presence: true, uniqueness: true
   #validates_format_of :email, with: /.+@.+\..+/i
 
@@ -71,6 +72,10 @@ class User < ActiveRecord::Base
     else
       nil
     end
+  end
+
+  def self.authenticate_with_email(email, password)
+    user = User.find_by_email(email).try(:authenticate, password)
   end
 
   def self.authenticate_with_access_token(access_token)

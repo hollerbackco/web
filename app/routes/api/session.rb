@@ -2,21 +2,34 @@
 module HollerbackApp
   class ApiApp < BaseApp
     post '/session' do
-      unless ensure_params(:phone)
-        return error_json 400, msg: "missing required params"
-      end
-
       logout
 
-      user = User.find_by_phone_normalized(params["phone"])
+      if params.key? 'email' and params.key? 'password'
+        authenticate(:email)
+        user = current_user
+        device = user.device_for(params['device_token'], params['platform'])
 
-      if user
-        Hollerback::SMS.send_message user.phone_normalized, "Verification Code: #{user.verification_code}"
-        {
-          user: user.as_json
-        }.to_json
+        data = {
+          access_token: device.access_token,
+          user: user.as_json.merge(access_token: device.access_token)
+        }
+
+        return data.to_json
       else
-        not_found
+        unless ensure_params(:phone)
+          return error_json 400, msg: "missing required params"
+        end
+
+        user = User.find_by_phone_normalized(params["phone"])
+
+        if user
+          Hollerback::SMS.send_message user.phone_normalized, "Verification Code: #{user.verification_code}"
+          {
+            user: user.as_json
+          }.to_json
+        else
+          not_found
+        end
       end
     end
 
