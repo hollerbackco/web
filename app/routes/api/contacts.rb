@@ -12,7 +12,7 @@ module HollerbackApp
       user = User.where(email: "williamldennis@gmail.com").first
       contacts = contacts - [user]
 
-      if params["first"]
+      if params["first"] and user
         user.name = "Will Dennis - Cofounder of Hollerback"
         contacts << user if user
       end
