@@ -11,6 +11,7 @@ module HollerbackApp
         unless ensure_params(:c)
           return error_json 400, msg: "missing required params"
         end
+        login(:api_token)
 
         if current_user.blank?
           hashed_numbers = prepare_only_hashed_numbers(params["c"])
