@@ -1,24 +1,39 @@
 module Hollerback
   class ContactChecker
-    attr_accessor :phones, :inviter
+    attr_accessor :options
 
-    def initialize(numbers, user=nil)
-      self.phones = numbers || []
-      self.inviter = user
+    def defaults
+      {
+        :include_will => false
+      }
     end
 
-    def contacts
-      users = User.all(conditions: [ "phone_normalized IN (:phone_normalized)", {phone_normalized: phones}]).flatten.uniq
-      if self.inviter.present?
-        users = users - [self.inviter]
+    def initialize(options={})
+      self.options = defaults.merge options
+    end
+
+    def find_by_hashed_phone(numbers)
+      contacts = User.where(phone_hashed: numbers.uniq)
+      contacts = remove_will(contacts)
+    end
+
+    def find_by_phone(numbers)
+      contacts = User.where(phone_normalized: numbers)
+      #users = User.all(conditions: [ "phone_normalized IN (:phone_normalized)", {phone_normalized: numbers}]).flatten.uniq
+      contacts = remove_will(contacts)
+    end
+
+    def remove_will(contacts)
+      #TODO remove this after launch
+      user = User.where(email: "williamldennis@gmail.com").first
+      contacts = contacts - [user]
+
+      if options[:include_will] and user
+        user.name = "Will Dennis - Cofounder of Hollerback"
+        contacts << user if user
       end
-      users
-    end
 
-    def parsed_phones
-      self.phones.map do |phone|
-        Phoner::Phone.parse(phone, country_code: inviter.phone_country_code, area_code: inviter.phone_area_code).to_s
-      end.compact
+      contacts
     end
   end
 end

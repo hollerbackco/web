@@ -21,7 +21,7 @@ module Hollerback
     end
 
     def contacts_on_hollerback
-      Contact.joins(:users).where("contacts.user_id = ?", user.id).where("users.phone_hashed = contacts.phone_hashed").uniq
+      Contact.joins(:user).where("contacts.user_id = ?", user.id).where("users.phone_hashed = contacts.phone_hashed").uniq
     end
   end
 end

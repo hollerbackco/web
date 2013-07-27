@@ -4,6 +4,7 @@ class CreateContacts < ActiveRecord::Migration
       t.integer :user_id
       t.string :phone_hashed
       t.string :name
+      t.timestamps
     end
     add_index :contacts, :phone_hashed
     add_index :contacts, [:user_id, :phone_hashed]

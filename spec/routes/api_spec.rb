@@ -123,7 +123,16 @@ describe 'API ROUTES |' do
 
     result = JSON.parse(last_response.body)
 
-    p result
+    secondary_subject.username.should == result['data'][0]["username"]
+
+    last_response.should be_ok
+  end
+
+  it 'GET contacts/check | return contacts' do
+    get '/contacts/check', :c => [{"n" => secondary_subject.name, "p" => secondary_subject.phone_hashed}]
+
+    result = JSON.parse(last_response.body)
+
     secondary_subject.username.should == result['data'][0]["username"]
 
     last_response.should be_ok
