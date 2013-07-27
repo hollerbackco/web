@@ -6,7 +6,7 @@ class Contact < ActiveRecord::Base
   delegate :username, to: :user
 
   def as_json(options={})
-    options = options.merge(:only => [:name, :created_at])
+    options = options.merge(:only => [:name, :created_at, :phone_hashed])
     options = options.merge(:methods => [:username])
     super(options)
   end
