@@ -30,7 +30,7 @@ describe User do
     user.verified?.should be_false
   end
 
-  it "should return an isVerified attribute in json object" do
-    user.as_json.key?(:isVerified).should be_true
+  it "should return a hashed phone" do
+    user.phone_hashed.should_not be_nil
   end
 end
