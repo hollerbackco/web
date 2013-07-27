@@ -1,8 +1,9 @@
+require 'digest/md5'
 class User < ActiveRecord::Base
   include Hollerback::SecurePassword
 
   #has_secure_password
-  attr_accessible :name, :email, :phone, :username,
+  attr_accessible :name, :email, :phone, :phone_hashed, :username,
     :password, :password_confirmation, :phone_normalized,
     :device_token, :last_app_version
 
@@ -13,6 +14,7 @@ class User < ActiveRecord::Base
   has_many :conversations, through: :memberships
   has_many :videos, through: :conversations
   has_many :sent_videos, foreign_key: "user_id", class_name: "Video"
+  has_many :contacts
 
   before_create :set_access_token
   before_create :set_verification_code
@@ -86,6 +88,13 @@ class User < ActiveRecord::Base
     end
   end
 
+  def phone_hashed
+    return self[:phone_hashed] if self[:phone_hashed].present?
+
+    self.phone_hashed = Digest::MD5.hexdigest(phone_normalized)
+    save && self.phone_hashed
+  end
+
   def phone=(phone)
     self.phone_normalized = Phoner::Phone.parse(phone).to_s
     super
@@ -130,9 +139,7 @@ class User < ActiveRecord::Base
 
   def as_json(options={})
     #TODO: uncomment when we add this to the signup flow
-    options = options.merge(:only => [:id, :phone, :phone_normalized, :username, :name, :created_at, :updated_at])
-    options = options.merge(:methods => :isVerified)
-    #options = options.merge(:except => [:verification_code, :device_token])
+    options = options.merge(:only => [:id, :phone_normalized, :username, :name, :created_at])
     super(options)
   end
 

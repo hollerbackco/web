@@ -1,11 +1,13 @@
 class CreateContacts < ActiveRecord::Migration
   def change
     create_table :contacts do |t|
-      t.id :user_id
-      t.string :hashed_phone
+      t.integer :user_id
+      t.string :phone_hashed
       t.string :name
     end
-    add_index :contacts, :hashed_phone
-    add_index :contacts, [:user_id, :hashed_phone]
+    add_index :contacts, :phone_hashed
+    add_index :contacts, [:user_id, :phone_hashed]
+    add_column :users, :phone_hashed, :string
+    add_index :users, :phone_hashed
   end
 end

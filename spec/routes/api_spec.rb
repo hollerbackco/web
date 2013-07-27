@@ -123,6 +123,7 @@ describe 'API ROUTES |' do
 
     result = JSON.parse(last_response.body)
 
+    p result
     secondary_subject.username.should == result['data'][0]["username"]
 
     last_response.should be_ok
