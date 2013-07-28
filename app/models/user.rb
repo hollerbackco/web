@@ -139,7 +139,7 @@ class User < ActiveRecord::Base
 
   def as_json(options={})
     #TODO: uncomment when we add this to the signup flow
-    options = options.merge(:only => [:id, :phone_normalized, :username, :name, :created_at])
+    options = options.merge(:only => [:id, :phone, :phone_normalized, :username, :name, :created_at])
     super(options)
   end
 
