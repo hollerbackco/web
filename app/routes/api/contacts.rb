@@ -11,16 +11,16 @@ module HollerbackApp
         unless ensure_params(:c)
           return error_json 400, msg: "missing required params"
         end
-        login(:api_token)
 
-        if current_user.blank?
-          hashed_numbers = prepare_only_hashed_numbers(params["c"])
-          contacts =  Hollerback::ContactChecker.new.find_by_hashed_phone(hashed_numbers)
-        else
+        if params.key? "access_token"
+          login(:api_token)
           contacts = prepare_contacts(params["c"])
           contact_book = Hollerback::ContactBook.new(current_user)
           contact_book.update(contacts)
           contacts = contact_book.contacts_on_hollerback
+        else
+          hashed_numbers = prepare_only_hashed_numbers(params["c"])
+          contacts =  Hollerback::ContactChecker.new.find_by_hashed_phone(hashed_numbers)
         end
 
         contacts
