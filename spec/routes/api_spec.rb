@@ -138,6 +138,16 @@ describe 'API ROUTES |' do
     last_response.should be_ok
   end
 
+  it 'GET contacts/check | return contacts with access_token' do
+    get '/contacts/check', :access_token => access_token, :c => [{"n" => secondary_subject.name, "p" => secondary_subject.phone_hashed}]
+
+    result = JSON.parse(last_response.body)
+
+    secondary_subject.name.should == result['data'][0]["name"]
+
+    last_response.should be_ok
+  end
+
   it 'GET me | error message when not authenticated' do
     get '/me'
     last_response.should_not be_ok

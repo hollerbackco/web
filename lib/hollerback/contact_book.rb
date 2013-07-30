@@ -14,6 +14,7 @@ module Hollerback
           phone = contact_params["phone"]
 
           contact = Contact.where(user_id: user.id, phone_hashed: phone).first_or_create
+
           contact.name = name
           contact.save
         end
@@ -21,7 +22,7 @@ module Hollerback
     end
 
     def contacts_on_hollerback
-      Contact.joins(:user).where("contacts.user_id = ?", user.id).where("users.phone_hashed = contacts.phone_hashed").uniq
+      contacts = Contact.joins(:aliased_user).where("contacts.user_id = ?", user.id)
     end
   end
 end

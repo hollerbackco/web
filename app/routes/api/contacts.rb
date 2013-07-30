@@ -16,6 +16,7 @@ module HollerbackApp
           login(:api_token)
           contacts = prepare_contacts(params["c"])
           contact_book = Hollerback::ContactBook.new(current_user)
+          p contacts
           contact_book.update(contacts)
           contacts = contact_book.contacts_on_hollerback
         else

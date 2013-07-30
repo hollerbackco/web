@@ -3,9 +3,11 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 describe Hollerback::ContactBook do
   before(:all) do
     @user ||= FactoryGirl.create(:user)
+    @second_user ||= FactoryGirl.create(:user)
   end
 
   let(:user) { @user }
+  let(:second_user) { @second_user }
   let(:contact_book) { Hollerback::ContactBook.new(user)}
 
   it "should have an empty contact book" do
@@ -19,8 +21,8 @@ describe Hollerback::ContactBook do
         "phone" => "hashedphonenumberhere"
       },
       {
-        "name" => user.username,
-        "phone" => user.phone_hashed
+        "name" => second_user.username,
+        "phone" => second_user.phone_hashed
       }
     ])
 
