@@ -28,6 +28,7 @@ describe 'API ROUTES |' do
     10.times do
       @user.conversations.create
     end
+
     @user.conversations.each do |conversation|
       25.times do
         video = conversation.videos.create(:filename => "hello.mp4")
@@ -37,21 +38,46 @@ describe 'API ROUTES |' do
     end
 
     @second_user ||= FactoryGirl.create(:user)
+    @conversation = @user.conversations.last
+    @access_token = @user.devices.first.access_token 
+    @second_token = @second_user.devices.first.access_token 
+  end
+
+  before(:each) do
+    VideoStitchRequest.jobs.clear
   end
 
   let(:subject) { @user }
   let(:secondary_subject) { @second_user }
-  let(:conversation) { @user.conversations.last }
-  let(:access_token) { @user.devices.first.access_token }
-  let(:second_token) { @second_user.devices.first.access_token }
+  let(:conversation) { @conversation }
+  let(:access_token) { @access_token }
+  let(:second_token) { @second_token }
 
   it 'shows an index' do
     get ''
     last_response.should be_ok
   end
 
+  it 'POST verify | should return access_token' do
+    post '/verify', phone: subject.phone_normalized, code: subject.verification_code,
+      :platform => "android", :device_token => "hello"
+    result = JSON.parse(last_response.body)
+    last_response.should be_ok
+    result['access_token'].should_not be_nil
+    result['user']['access_token'].should_not be_nil
+  end
+
+  it 'POST verify | should fail: requires params' do
+    post '/verify'
+
+    result = JSON.parse(last_response.body)
+    last_response.should_not be_ok
+    result['meta']['msg'].should_not be_blank
+    result['meta']['errors'].is_a?(Array).should be_true
+  end
+
   it 'POST register | should fail: requires params' do
-    post '/register', :email => "test@test.com", :password => "jhejkf"
+    post '/register'
 
     result = JSON.parse(last_response.body)
     last_response.should_not be_ok
@@ -60,59 +86,26 @@ describe 'API ROUTES |' do
   end
 
   it 'POST register | creates a user' do
-    post '/register', :email => "test@test.com", :password => "helloah", :name => "myname", :phone => "8587614144"
+    post '/register', :username => "myname", :phone => "8587614144"
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
-    puts result['access_token']
-    puts result['user']['access_token']
-    result['access_token'].should_not be_nil
-    result['user']['access_token'].should_not be_nil
   end
 
-  it 'POST session | responds with an access_token' do
+  it 'POST session | should respond with success phone number' do
     device_count = subject.devices.count
-    post '/session', :email => subject.email, :password => subject.password,
-      :platform => "android", :device_token => "hello"
+    post '/session', :phone => subject.phone_normalized
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
-    puts result['access_token']
-    puts result['user']['access_token']
-    result['access_token'].should_not be_nil
-    result['user']['access_token'].should_not be_nil
-    subject.reload.devices.count.should == device_count + 1
   end
 
-  it 'POST session | responds with an access_token for no platorm' do
+  it 'POST session | should allow signin with email and password' do
     device_count = subject.devices.count
-    post '/session', :email => subject.email, :password => subject.password
+    post '/session', :email => subject.email, :password => "HELLO"
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
-    puts result['access_token']
-    puts result['user']['access_token']
-    result['access_token'].should_not be_nil
-    result['user']['access_token'].should_not be_nil
-    subject.reload.devices.count.should == device_count + 1
-  end
-
-  it 'POST session | responds with the same access_token for no platorm' do
-    device_count = subject.devices.count
-    post '/session', :email => subject.email, :password => subject.password
-
-    result = JSON.parse(last_response.body)
-    last_response.should be_ok
-    puts result['access_token']
-    puts result['user']['access_token']
-    result['access_token'].should_not be_nil
-    result['user']['access_token'].should_not be_nil
-    subject.reload.devices.count.should == device_count
-  end
-
-  it 'POST session | returns 403 when incorrect password' do
-    post '/session', :email => subject.email, :password => "#{subject.password}kj"
-    last_response.should_not be_ok
   end
 
   it 'DELETE session | deletes the device' do
@@ -126,7 +119,27 @@ describe 'API ROUTES |' do
   end
 
   it 'GET contacts/check | return users from an array or phonenumbers' do
-    get '/contacts/check', :access_token => access_token, :numbers => [[secondary_subject.phone_normalized]]
+    get '/contacts/check', :numbers => [[secondary_subject.phone_normalized]]
+
+    result = JSON.parse(last_response.body)
+
+    secondary_subject.username.should == result['data'][0]["username"]
+
+    last_response.should be_ok
+  end
+
+  it 'GET contacts/check | return contacts' do
+    get '/contacts/check', :c => [{"n" => secondary_subject.name, "p" => secondary_subject.phone_hashed}]
+
+    result = JSON.parse(last_response.body)
+
+    secondary_subject.username.should == result['data'][0]["username"]
+
+    last_response.should be_ok
+  end
+
+  it 'GET contacts/check | return contacts with access_token' do
+    get '/contacts/check', :access_token => access_token, :c => [{"n" => secondary_subject.name, "p" => secondary_subject.phone_hashed}]
 
     result = JSON.parse(last_response.body)
 
@@ -141,21 +154,12 @@ describe 'API ROUTES |' do
   end
 
   it 'POST me | updates the user' do
-    post '/me', :access_token => access_token, :name => "jeff"
+    post '/me', :access_token => access_token, :username => "jeff"
     last_response.should be_ok
 
     result = JSON.parse(last_response.body)
 
-    subject.name.should_not == result['data']['name']
-    #because its not reloaded yet
-    subject.reload.name.should == result['data']['name']
-  end
-
-  it 'POST me | verifies code' do
-    post '/me/verify', :access_token => access_token, :code => subject.verification_code
-    last_response.should be_ok
-
-    subject.reload.verified?.should be_true
+    subject.reload.username.should == result['data']['username']
   end
 
 
@@ -228,6 +232,30 @@ describe 'API ROUTES |' do
     subject.conversations.reload.count.should == conversations_count
   end
 
+  it 'POST me/conversations/batch | should create multiple conversations' do
+    parts = [
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.0.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.1.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.2.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.3.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.4.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.5.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.6.mp4"
+    ]
+
+    conversations_count = subject.conversations.count
+    post '/me/conversations/batch', :access_token => access_token,
+      "invites[]" => [secondary_subject.phone_normalized, "+18888888888"],
+      :parts => parts
+
+    result = JSON.parse(last_response.body)
+    result['data'].count.should == 2
+
+    last_response.should be_ok
+    subject.conversations.reload.count.should == conversations_count + 2
+  end
+
+
   it 'GET me/conversations/:id | get a specific conversation' do
     get "/me/conversations/#{conversation.id}", :access_token => access_token
 
@@ -253,7 +281,6 @@ describe 'API ROUTES |' do
 
     last_response.should be_ok
     VideoStitchRequest.jobs.size.should == 1
-    VideoStitchRequest.jobs.clear
   end
 
   it 'POST me/conversations/:id/videos/parts | requires parts param' do

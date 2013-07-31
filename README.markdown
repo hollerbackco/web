@@ -10,12 +10,13 @@ http://dl.dropboxusercontent.com/u/1579953/talks/modern_architecture.pdf
 
 TODO
 - install graphite/statsd to start measuring performance and monitor server
+
 activity
 
+1. Main web api;
+2. Sidekiq background workers;
+3. Poller services listens to video-stitch-ready sqs queue. Marks stitched;
 
-1. Main web api
-2. Sidekiq background workers
-3. Poller services listens to video-stitch-ready sqs queue. Marks stitched
 videos as complete.
 
 API for HollerbackApp

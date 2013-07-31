@@ -34,7 +34,7 @@ class Conversation < ActiveRecord::Base
     if discluded_user.present?
       people = members - [discluded_user]
     end
-    people.any? ? people.map {|user| user.name.split(" ").first}.join(", ") : nil
+    people.any? ? people.map {|user| user.username }.join(", ") : nil
   end
 
   def name(discluded_user=nil)

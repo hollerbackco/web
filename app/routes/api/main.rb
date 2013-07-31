@@ -8,10 +8,6 @@ module HollerbackApp
       end
     end
 
-    before '/contacts*' do
-      authenticate(:api_token)
-    end
-
     not_found do
       error_json 404, "not found"
     end
@@ -35,14 +31,6 @@ module HollerbackApp
         success_json data: current_user.as_json.merge(conversations: current_user.conversations)
       else
         error_json 400, msg: current_user
-      end
-    end
-
-    post '/me/verify' do
-      if current_user.verify! params["code"]
-        success_json data: current_user.as_json.merge(conversations: current_user.conversations)
-      else
-        error_json 400, msg: "incorrect code"
       end
     end
   end

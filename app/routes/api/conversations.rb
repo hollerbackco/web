@@ -25,6 +25,47 @@ module HollerbackApp
       success_json data: {conversations: conversations}
     end
 
+    # creates one conversation for each number supplied in the invites params.
+    # => each conversation will have a video created from the supplied parts params.
+    post '/me/conversations/batch' do
+      unless ensure_params(:invites, :parts)
+        return error_json 400, msg: "missing required params"
+      end
+
+      invites = params["invites"]
+      if invites.is_a? String
+        invites = invites.split(",")
+      end
+
+      parts = params["parts"]
+      conversations = []
+
+
+      for number in invites
+        conversation = nil
+
+        success = Conversation.transaction do
+          conversation = current_user.conversations.create(creator: current_user)
+          inviter = Hollerback::ConversationInviter.new(current_user, conversation, [number])
+          inviter.invite
+
+          video = conversation.videos.create(user: current_user)
+          VideoStitchRequest.perform_async(parts, video.id)
+        end
+
+        if success
+          ConversationCreate.perform_async(current_user.id, conversation.id, [number])
+          conversations << conversation
+        end
+      end
+
+      if conversations.any?
+        success_json data: conversations.map {|conversation| conversation_json(conversation) }
+      else
+        error_json 400, for: conversation, msg: "problem creating conversations"
+      end
+    end
+
     # params
     #   invites: array of phone numbers
     post '/me/conversations' do
@@ -32,27 +73,22 @@ module HollerbackApp
         return error_json 400, msg: "missing invites param"
       end
 
+      invites = params["invites"]
+      if invites.is_a? String
+        invites = invites.split(",")
+      end
+      name = params["name"]
+      name = nil if params["name"] == "<null>" #TODO: iOs sometimes sends a null value
       conversation = nil
 
       success = Conversation.transaction do
-        conversation = current_user.conversations.create(creator: current_user)
-        if params.key? "name" and params["name"] != "<null>"
-          conversation.name = params["name"]
-          conversation.save
-        end
-        inviter = Hollerback::ConversationInviter.new(current_user, conversation, params["invites"])
+        conversation = current_user.conversations.create(creator: current_user, name: name)
+        inviter = Hollerback::ConversationInviter.new(current_user, conversation, invites)
         inviter.invite
       end
 
       if success
-        Keen.publish("conversations:create", {
-          :user => {
-            id: current_user.id,
-            username: current_user.username
-          },
-          :total_invited_count => params[:invites].count,
-          :already_users_count => conversation.members.count
-        })
+        ConversationCreate.perform_async(current_user.id, conversation.id, invites)
       end
 
       if conversation and conversation.errors.blank?

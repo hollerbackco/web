@@ -18,7 +18,8 @@ module Hollerback
             inviter: inviter,
             conversation: conversation
           )
-          #todo: send a text message to non users
+
+          #TODO: send a text message to non users
           #Hollerback::SMS.send_message phone, "#{inviter.name} has invited you to Hollerback"
         end
       end

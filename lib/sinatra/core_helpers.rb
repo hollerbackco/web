@@ -13,7 +13,10 @@ module Sinatra
     def ensure_params(*args)
       return catch(:truthy) {
         args.each do |arg|
-          throw(:truthy, false) unless ensure_param(arg)
+          unless ensure_param arg
+            p "request error: missing param \"#{arg}\""
+            throw(:truthy, false)
+          end
         end
 
         throw(:truthy, true)
