@@ -67,6 +67,12 @@ class User < ActiveRecord::Base
     Conversation.joins(:members).where("users.id" => [self])
   end
 
+  def also_known_as(obj={})
+    user = obj[:for]
+    contact = contacts.where(phone_hashed: user.phone_hashed).first
+    contact.present? ? contact.name : user.username
+  end
+
   def self.authenticate(phone, code)
     user = User.find_by_phone_normalized(phone)
     if user and user.verify(code)

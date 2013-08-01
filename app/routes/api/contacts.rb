@@ -15,8 +15,10 @@ module HollerbackApp
         if params.key? "access_token"
           login(:api_token)
           contacts = prepare_contacts(params["c"])
+          hashed_numbers = prepare_only_hashed_numbers(params["c"])
+
+          #UpdateContactBook.perform_async(current_user.id, contacts)
           contact_book = Hollerback::ContactBook.new(current_user)
-          p contacts
           contact_book.update(contacts)
           contacts = contact_book.contacts_on_hollerback
         else

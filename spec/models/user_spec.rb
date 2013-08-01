@@ -33,4 +33,13 @@ describe User do
   it "should return a hashed phone" do
     user.phone_hashed.should_not be_nil
   end
+
+  it "should return standard username if no alias exists" do
+    user.also_known_as(for: user).should == user.username
+  end
+
+  it "should return an alias for user" do
+    @contact = Contact.create(user_id: @user.id, phone_hashed: @user.phone_hashed, name: "testname")
+    user.also_known_as(for: user).should == "testname"
+  end
 end
