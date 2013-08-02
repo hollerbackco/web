@@ -24,8 +24,8 @@
   %thead
     %tr
       %td Id
-      %td Name
-      %td Email
+      %td Username
+      %td Verify Code
       %td Phone
       %td Conversations
       %td Videos
@@ -35,8 +35,8 @@
     - @users.each do |user|
       %tr
         %td= user.id
-        %td= user.name
-        %td= user.email
+        %td= user.username
+        %td= user.verification_code
         %td= user.phone_normalized
         %td
           = user.conversations.count

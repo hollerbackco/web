@@ -21,9 +21,9 @@ describe User do
     user.devices.first.access_token.should_not be_nil
   end
 
-  it "should generate a verification thats 6 characters in length" do
+  it "should generate a verification thats 4 characters in length" do
     user.verification_code.should_not be_nil
-    user.verification_code.length.should == 6
+    user.verification_code.to_s.length.should == 4
   end
 
   it "should not be verified before verifying" do
