@@ -69,7 +69,7 @@ class User < ActiveRecord::Base
 
   def also_known_as(obj={})
     user = obj[:for]
-    contact = contacts.where(phone_hashed: user.phone_hashed).first
+    contact = user.contacts.where(phone_hashed: phone_hashed).first
     contact.present? ? contact.name : user.username
   end
 
