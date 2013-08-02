@@ -127,6 +127,11 @@ class User < ActiveRecord::Base
     self.verification_code == code
   end
 
+  def reset_verification_code!
+    set_verification_code
+    save!
+  end
+
   def verification_code
     if self[:verification_code].blank?
       set_verification_code
@@ -146,6 +151,7 @@ class User < ActiveRecord::Base
   def as_json(options={})
     #TODO: uncomment when we add this to the signup flow
     options = options.merge(:only => [:id, :phone, :phone_normalized, :username, :name, :created_at])
+    options = options.merge(:methods => [:phone_hashed])
     super(options)
   end
 
@@ -159,6 +165,6 @@ class User < ActiveRecord::Base
   end
 
   def set_verification_code
-    self.verification_code = SecureRandom.hex(3)
+    self.verification_code = SecureRandom.random_number(8999) + 1000
   end
 end
