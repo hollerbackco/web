@@ -31,7 +31,7 @@ describe 'API ROUTES |' do
 
     @user.conversations.each do |conversation|
       25.times do
-        video = conversation.videos.create(:filename => "hello.mp4")
+        video = conversation.videos.create(user: @user, :filename => "hello.mp4")
         video.in_progress = false
         video.save
       end
