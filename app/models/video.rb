@@ -68,9 +68,13 @@ class Video < ActiveRecord::Base
   end
 
   def as_json_for_user(viewer)
-    as_json.merge({
+    name = ""
+    if user.present?
+      name = user.also_known_as(for: viewer)
+    end
+    obj = as_json.merge({
       isRead: !unread?(viewer),
-      username: user.also_known_as(for: viewer)
+      username: name
     })
   end
 
