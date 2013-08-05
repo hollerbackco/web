@@ -67,7 +67,7 @@ module HollerbackApp
             user: {id: current_user.id, username: current_user.username}
           })
 
-          success_json data: video
+          success_json data: video.as_json_for_user(current_user)
         else
           error_json 400, for: video
         end
