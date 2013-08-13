@@ -26,7 +26,7 @@ module Sinatra
     def conversation_json(conversation, updated_at=nil)
       cache_key = "user/#{current_user.id}/conversations/#{conversation.id}-#{conversation.updated_at}"
 
-      HollerbackApp::BaseApp.settings.cache.fetch(cache_key, 1.hour) do
+      #HollerbackApp::BaseApp.settings.cache.fetch(cache_key, 1.hour) do
         obj = conversation.as_json(root: false).merge({
           "unread_count" => conversation.videos_for(current_user).unread_by(current_user).count,
           "name" => conversation.name(current_user),
@@ -52,7 +52,7 @@ module Sinatra
         end
 
         obj
-      end
+      #end
     end
 
     def success_json(opts={})
