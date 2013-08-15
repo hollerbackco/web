@@ -32,7 +32,6 @@ module HollerbackApp
       p "params:"
       p params
 
-
       conversation = current_user.conversations.find(params[:id])
       video = conversation.videos.create(user: current_user)
 
@@ -41,7 +40,12 @@ module HollerbackApp
           Video.bucket.objects[key].url_for(:read, :expires => 1.month, :secure => false).to_s
         end
       elsif params.key? "part_urls"
-        params[:part_urls]
+        params[:part_urls].map do |arn|
+          arn = arn.split("/", 2)
+          bucket = arn[0]
+          key = arn[1]
+          Video.bucket_by_name(bucket).objects[key].url_for(:read, :expires => 1.month, :secure => false).to_s
+        end
       else
         []
       end
