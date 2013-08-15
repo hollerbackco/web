@@ -83,6 +83,10 @@ class Video < ActiveRecord::Base
     super(options)
   end
 
+  def self.bucket_by_name(name)
+    AWS::S3.new.buckets[name]
+  end
+
   def self.bucket
     @bucket ||= AWS::S3.new.buckets[BUCKET_NAME]
   end
