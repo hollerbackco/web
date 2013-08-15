@@ -29,11 +29,24 @@ module HollerbackApp
       if !ensure_params :parts
         return error_json 400, msg: "missing parts param"
       end
+      p "params:"
+      p params
+
 
       conversation = current_user.conversations.find(params[:id])
       video = conversation.videos.create(user: current_user)
 
-      VideoStitchRequest.perform_async(params[:parts], video.id)
+      urls = if params.key? "parts"
+        params[:parts].map do |key|
+          Video.bucket.objects[key].url_for(:read, :expires => 1.month, :secure => false).to_s
+        end
+      elsif params.key? "part_urls"
+        params[:part_urls]
+      else
+        []
+      end
+
+      VideoStitchRequest.perform_async(urls, video.id)
 
       success_json data: video
     end

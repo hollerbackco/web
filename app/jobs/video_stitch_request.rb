@@ -1,14 +1,12 @@
 class VideoStitchRequest
   include Sidekiq::Worker
 
-  def perform(files, video_id, output_key=nil)
+  def perform(urls, video_id, output_key=nil)
     video = Video.find(video_id)
     if video
       if output_key.present?
         label = labelify(output_key)
       end
-
-      urls = files.map {|key| get_url(key) }.flatten
 
       queue.send_message({
         parts: urls,
@@ -19,14 +17,6 @@ class VideoStitchRequest
   end
 
   private
-
-  def get_url(key)
-    bucket.objects[key].url_for(:read, :expires => 1.month, :secure => false).to_s
-  end
-
-  def bucket
-    @bucket ||= AWS::S3.new.buckets[Video::BUCKET_NAME]
-  end
 
   def queue
     @queue ||= if Sinatra::Base.production?
