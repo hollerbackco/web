@@ -26,9 +26,6 @@ module HollerbackApp
     end
 
     post '/me/conversations/:id/videos/parts' do
-      if !ensure_params :parts
-        return error_json 400, msg: "missing parts param"
-      end
       p "params:"
       p params
 
@@ -47,6 +44,7 @@ module HollerbackApp
           Video.bucket_by_name(bucket).objects[key].url_for(:read, :expires => 1.month, :secure => false).to_s
         end
       else
+        return error_json 400, msg: "missing parts param"
         []
       end
 
