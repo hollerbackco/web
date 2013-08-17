@@ -31,7 +31,7 @@ module Hollerback
       end.compact
     end
 
-    def self.parse(user,numbers)
+    def self.parse(user, numbers)
       numbers.map do |phone|
         Phoner::Phone.parse(phone, country_code: user.phone_country_code, area_code: user.phone_area_code).to_s
       end.compact
