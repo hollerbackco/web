@@ -23,6 +23,25 @@ class Conversation < ActiveRecord::Base
     end
   end
 
+  def unread_videos_for(user)
+    videos_for(user).unread_by(user)
+  end
+
+  def clear_unread_for(user)
+    unread_videos = videos_for(user).unread_by(user)
+    unread_videos.each do |video|
+      video.mark_as_read! for: user
+    end
+
+    key = "user/#{user.id}/conversations/#{self.id}-#{self.updated_at}"
+    HollerbackApp::BaseApp.settings.cache.delete key
+
+    user.memcache_key_touch
+    user.devices.ios.each do |device|
+      APNS.send_notification(device.token, badge: user.unread_videos.count)
+    end
+  end
+
   # all conversations with a name that is set.
   def group?
     members.count > 2 or self[:name].present?

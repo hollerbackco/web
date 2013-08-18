@@ -232,6 +232,13 @@ describe 'API ROUTES |' do
     subject.conversations.reload.count.should == conversations_count
   end
 
+  it 'POST me/conversations/:id/watch_all | clear all video notifications' do
+    c = secondary_subject.conversations.reload.first
+    post "/me/conversations/#{c.id}/watch_all", access_token: second_token
+
+    last_response.should be_ok
+  end
+
   it 'POST me/conversations/batch | should create multiple conversations' do
     parts = [
       "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.0.mp4",

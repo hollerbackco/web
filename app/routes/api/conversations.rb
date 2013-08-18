@@ -113,13 +113,18 @@ module HollerbackApp
     post '/me/conversations/:id/leave' do
       membership = current_user.memberships.where({
         conversation_id: params[:id]
-
       }).first
       if membership.destroy
         success_json data: nil
       else
         error_json 400, msg: "conversation could not be deleted"
       end
+    end
+
+    post '/me/conversations/:id/watch_all' do
+      conversation = current_user.conversations.find(params[:id])
+      conversation.clear_unread_for(current_user)
+      success_json data: nil
     end
 
     get '/me/conversations/:conversation_id/invites' do
