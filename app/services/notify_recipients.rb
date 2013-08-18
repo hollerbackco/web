@@ -7,14 +7,21 @@ module Hollerback
 
     def run
       @recipients.each do |recipient|
-        notify @video, recipient
+        notify_push @video, recipient
+        notify_mqtt @video, recipient
         touch_cache recipient
       end
     end
 
     private
 
-    def notify(video, person)
+    def notify_mqtt(video, person)
+      MQTT::Client.connect('23.23.249.106') do |c|
+        c.publish("user/#{person.id}/video"), video.as_json.to_json)
+      end
+    end
+
+    def notify_push(video, person)
       data = {
         conversation_id: video.conversation.id,
         video_id: video.id,
