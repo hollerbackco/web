@@ -113,6 +113,7 @@ GEM
     method_source (0.8.1)
     mini_magick (3.5.0)
       subexec (~> 0.2.1)
+    mqtt (0.0.9)
     multi_json (1.7.6)
     multi_xml (0.5.3)
     newrelic_rpm (3.6.2.96)
@@ -284,6 +285,7 @@ DEPENDENCIES
   i18n
   keen
   mini_magick
+  mqtt
   newrelic_rpm
   omniauth
   omniauth-twitter
