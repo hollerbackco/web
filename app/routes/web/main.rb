@@ -44,13 +44,12 @@ module HollerbackApp
       end
     end
 
-    get '/beta/team/:branch' do
+    get '/beta/test/:branch' do
       url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-#{params[:branch]}.plist")
       redirect "itms-services://?action=download-manifest&url=#{url}"
     end
 
     get '/beta/:party' do
-
       party = params[:party]
 
       if Sinatra::Base.production? and ! params.key? :test
@@ -61,7 +60,7 @@ module HollerbackApp
 
       if params[:party] == "teamhollerback"
         app_link.increment!(:downloads_count)
-        url = URI.escape("https://s3.amazonaws.com/hollerback-app-dev/distro/HollerbackAppEnterprise-Stage.plist")
+        url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-staging.plist")
         redirect "itms-services://?action=download-manifest&url=#{url}"
       elsif app_link.usable?
         app_link.increment!(:downloads_count)
