@@ -45,7 +45,7 @@ module Sinatra
           video.as_json_for_user(current_user)
         end
 
-        if conversation.videos.any?
+        if conversation.videos_for(current_user).any?
           video = conversation.videos_for(current_user).first
           if video.filename.present?
             obj["most_recent_video_url"] =  video.url
