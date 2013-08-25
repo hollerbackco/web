@@ -45,10 +45,12 @@ module Sinatra
           video.as_json_for_user(current_user)
         end
 
-        if conversation.videos.any?
+        if conversation.videos_for(current_user).any?
           video = conversation.videos_for(current_user).first
-          obj["most_recent_video_url"] =  video.url
-          obj["most_recent_thumb_url"] =  video.thumb_url
+          if video.filename.present?
+            obj["most_recent_video_url"] =  video.url
+            obj["most_recent_thumb_url"] =  video.thumb_url
+          end
         end
 
         obj
