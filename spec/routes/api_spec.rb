@@ -173,18 +173,6 @@ describe 'API ROUTES |' do
     conversations.should be_a_kind_of(Array)
   end
 
-  it 'GET me/conversations | should paginate' do
-    limit = 1
-
-    get '/me/conversations', :access_token => access_token, :page => 1, :perPage => limit
-
-    result = JSON.parse(last_response.body)
-    conversations = result['data']['conversations']
-
-    last_response.should be_ok
-    conversations.count.should ==  limit
-  end
-
   it 'GET me/conversations | updated_at' do
     get '/me/conversations', :access_token => access_token, :updated_at => Time.now
 
@@ -264,11 +252,12 @@ describe 'API ROUTES |' do
 
 
   it 'GET me/conversations/:id | get a specific conversation' do
-    get "/me/conversations/#{conversation.id}", :access_token => access_token
+    c = subject.memberships.first
+    get "/me/conversations/#{c.id}", :access_token => access_token
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
-    result['data']['name'].should == subject.conversations.find(conversation.id).name(subject)
+    result['data']['name'].should == subject.memberships.find(c.id).name
   end
 
   it 'POST me/conversations/:id/videos/parts | sends a video' do
@@ -301,16 +290,16 @@ describe 'API ROUTES |' do
   end
 
   it 'POST me/conversations/:id/videos | sends a video' do
-    c = secondary_subject.conversations.reload.first
+    c = secondary_subject.memberships.reload.first
 
     post "/me/conversations/#{c.id}/videos", access_token: second_token, filename: 'video1.mp4'
 
     last_response.should be_ok
-    c.reload.videos.first.filename.should == "video1.mp4"
+    c.reload.messages.should_not be_empty
   end
 
   it 'POST me/conversations/:id/videos | requires filename param' do
-    c = secondary_subject.conversations.reload.first
+    c = secondary_subject.memberships.first
 
     post "/me/conversations/#{c.id}/videos", access_token: second_token
 
@@ -321,25 +310,25 @@ describe 'API ROUTES |' do
   end
 
   it "GET me/conversations/:id/videos | should get all videos" do
-    #expect{subject.conversations.find(conversation.id)}.to_not raise_error(::ActiveRecord::RecordNotFound)
+    c = subject.memberships.first
+    get "/me/conversations/#{c.id}/videos", :access_token => access_token
 
-    get "/me/conversations/#{conversation.id}/videos", :access_token => access_token
-
-    videos_count = conversation.videos_for(subject).reload.count
+    messages_count = c.messages.count
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
 
-    result["data"].count.should == videos_count
+    result["data"].count.should == messages_count
   end
 
   it "GET me/conversations/:id/videos | should paginate and default to 10" do
-    get "/me/conversations/#{conversation.id}/videos", :access_token => access_token, :page => 1
+    c = secondary_subject.memberships.first
+    get "/me/conversations/#{c.id}/videos", :access_token => second_token, :page => 1
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
 
-    result["data"].count.should == 10
+    result["data"].count.should == 1
     result["meta"]["last_page"].should be_false
   end
 
@@ -351,12 +340,12 @@ describe 'API ROUTES |' do
   end
 
   it 'POST me/videos/:id/read | user reads a video' do
-    conversation = subject.conversations.reload.first
-    video = conversation.videos.first
-    video.unread?(subject).should be_true
+    c = secondary_subject.memberships.first
+    message = c.messages.first
+    message.unseen?.should be_true
 
-    post "/me/videos/#{video.id}/read", access_token: access_token
+    post "/me/videos/#{message.id}/read", access_token: second_token
     last_response.should be_ok
-    video.reload.unread?(subject).should be_false
+    message.reload.unread?(subject).should be_false
   end
 end

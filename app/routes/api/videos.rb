@@ -1,28 +1,35 @@
 module HollerbackApp
   class ApiApp < BaseApp
-    get '/me/conversations/:conversation_id/videos/:id/user' do
+    get '/me/conversations/:conversation_id/videos' do
       begin
-        conversation = current_user.conversations.find(params[:conversation_id])
-        video = conversation.videos.find params[:id]
+        ConversationRead.perform_async(current_user.id)
+        membership = current_user.memberships.find(params[:conversation_id])
 
-        success_json data: video.user
+        messages = membership.messages.scoped
+
+        if params[:page]
+          messages = messages.paginate(:page => params[:page], :per_page => (params["perPage"] || 10))
+          last_page = messages.current_page == messages.total_pages
+        end
+
+        success_json({
+          data: messages.as_json,
+          meta: {
+            last_page: last_page
+          }
+        })
       rescue ActiveRecord::RecordNotFound
         not_found
       end
     end
 
     post '/me/videos/:id/read' do
-      video = Video.find(params[:id])
-      video.mark_as_read! for: current_user
-      conversation = video.conversation
+      message = Message.find(params[:id])
+      message.seen!
 
-      #TODO make sure this doesnt get reset before video is marked as read.
-      current_user.memcache_key_touch
-      key = "user/#{current_user.id}/conversations/#{conversation.id}-#{conversation.updated_at}"
-      HollerbackApp::BaseApp.settings.cache.delete key
-      VideoRead.perform_async(video.id, current_user.id)
+      VideoRead.perform_async(message.id, current_user.id)
 
-      success_json data: video.as_json_for_user(current_user).merge(conversation: conversation_json(conversation))
+      success_json data: message.as_json
     end
 
     post '/me/conversations/:id/videos/parts' do
@@ -38,9 +45,7 @@ module HollerbackApp
         end
       elsif params.key? "part_urls"
         params[:part_urls].map do |arn|
-          arn = arn.split("/", 2)
-          bucket = arn[0]
-          key = arn[1]
+          bucket, key = arn.split("/", 2)
           Video.bucket_by_name(bucket).objects[key].url_for(:read, :expires => 1.month, :secure => false).to_s
         end
       else
@@ -59,30 +64,23 @@ module HollerbackApp
       end
 
       begin
-        conversation = current_user.conversations.find(params[:id])
-        video = conversation.videos.build(
+        # the id sent in the url is a reference to the users meembership model
+        membership = current_user.memberships.find(params[:id])
+        conversation = membership.conversation
+
+        # generate the piece of content
+        video = Video.new(
           user: current_user,
+          conversation: conversation,
           filename: params[:filename]
         )
 
         if video.save
-          video.ready!
-          conversation.touch
-          current_user.memcache_key_touch
-          Hollerback::NotifyRecipients.new(video).run
+          publisher = ContentPublisher.new(membership)
+          publisher.publish(video)
+          p video.as_json
 
-          #todo: move this to async job
-          Keen.publish("video:create", {
-            id: video.id,
-            receivers_count: (conversation.members.count - 1),
-            conversation: {
-              id: conversation.id,
-              videos_count: conversation.videos.count
-            },
-            user: {id: current_user.id, username: current_user.username}
-          })
-
-          success_json data: video.as_json_for_user(current_user)
+          success_json data: publisher.sender_message.as_json
         else
           error_json 400, for: video
         end

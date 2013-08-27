@@ -60,10 +60,6 @@ class Conversation < ActiveRecord::Base
     people.any? ? name.join(", ") : nil
   end
 
-  def name(discluded_user=nil)
-    self[:name] || member_names(discluded_user) || "(#{invites.count}) Invited"
-  end
-
   def involved_phones
     members.map(&:phone_normalized) + invites.map(&:phone)
   end
