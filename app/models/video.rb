@@ -33,9 +33,9 @@ class Video < ActiveRecord::Base
 
   def url
     return "" if filename.blank?
-    HollerbackApp::BaseApp.settings.cache.fetch("video-url-#{id}", 1.week) do
-      video_object.url_for(:read, :expires => 1.month, :secure => false).to_s
-    end
+    #HollerbackApp::BaseApp.settings.cache.fetch("video-url-#{id}", 1.week) do
+    video_object.public_url
+    #end
   end
 
   def stream_url
@@ -43,24 +43,24 @@ class Video < ActiveRecord::Base
     streamname.present? ? stream_object.url_for(:read, :expires => 1.month, :secure => false).to_s : ""
   end
 
-  def image_url
-    return "" if filename.blank?
-    HollerbackApp::BaseApp.settings.cache.fetch("video-image-url-#{id}", 1.week) do
-      image_object.exists? ? image_object.url_for(:read, :expires => 1.month, :secure => false).to_s : ""
-    end
-  end
-
   def thumb_url
     return "" if filename.blank?
     return "" unless thumb_object.exists?
 
-    HollerbackApp::BaseApp.settings.cache.fetch("video-thumb-url-#{id}", 1.week) do
-      thumb_object.url_for(:read, :expires => 1.month, :secure => false).to_s
-    end
+    #HollerbackApp::BaseApp.settings.cache.fetch("video-thumb-url-#{id}", 1.week) do
+    thumb_object.public_url
+    #end
   end
 
   def metadata
     video_object.metadata
+  end
+
+  def content_hash
+    {
+      url: url,
+      thumb_url: thumb_url
+    }
   end
 
   def self.video_urls
@@ -97,10 +97,6 @@ class Video < ActiveRecord::Base
 
   private
 
-  def stream_object
-    self.class.stream_bucket.objects[streamname]
-  end
-
   def video_object
     self.class.bucket.objects[filename]
   end
@@ -108,10 +104,5 @@ class Video < ActiveRecord::Base
   def thumb_object
     thumb = filename.split(".").first << "-thumb.png"
     self.class.bucket.objects[thumb]
-  end
-
-  def image_object
-    image = filename.split(".").first << "-image.png"
-    self.class.bucket.objects[image]
   end
 end

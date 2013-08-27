@@ -1,13 +1,14 @@
 class CreateMessages < ActiveRecord::Migration
-  class Message < ActiveRecord::Base
+  class ::Message < ActiveRecord::Base
     belongs_to :membership
-    belongs_to :content
+    serialize :content, ActiveRecord::Coders::Hstore
   end
 
   def up
     create_table :messages do |t|
       t.integer :membership_id
       t.boolean :is_sender
+      t.integer :sender_id
       t.string :sender_name
       t.string :content_guid
       t.hstore :content
@@ -17,6 +18,8 @@ class CreateMessages < ActiveRecord::Migration
       t.timestamps
     end
     add_index :messages, :membership_id
+    add_index :messages, :sent_at
+    create_messages
   end
 
   def down
@@ -27,31 +30,33 @@ class CreateMessages < ActiveRecord::Migration
 
   def create_messages
     ActiveRecord::Base.record_timestamps = false
-    Video.all.each do |video|
-      next if video.converation.blank?
+    counter = 0
+    counter2 = 0
+    Video.reorder("created_at ASC").all.each do |video|
+      p counter = counter + 1
+      next if video.conversation.blank?
       next if video.filename.blank?
       next if video.user.blank?
 
+      conversation = video.conversation
       conversation.members.each do |member|
-        conversation = video.conversation
         sender = video.user
-        membership = Membership.first(:conversation_id => conversation.id, :user_id => member.id)
+        membership = Membership.where(:conversation_id => conversation.id, :user_id => member.id).first
 
-        Message.new(
+        message = ::Message.create(
           membership_id: membership.id,
           is_sender: (sender == member),
+          sender_id: sender.id,
           sender_name: sender.also_known_as(for: member),
           content_guid: video.id,
-          content: {
-            url: video.url,
-            thumb_url: video.thumb_url
-          },
+          content: video.content_hash,
           seen_at: Time.now,
           sent_at: video.created_at,
           created_at: video.created_at,
           updated_at: Time.now,
           deleted_at: nil
         )
+        p "m#{counter2 = counter2 + 1}"
       end
     end
     ActiveRecord::Base.record_timestamps = true

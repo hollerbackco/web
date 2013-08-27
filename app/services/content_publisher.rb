@@ -31,10 +31,7 @@ class ContentPublisher
       is_sender: is_sender,
       sender_name: sender.also_known_as(for: member),
       content_guid: content.id,
-      content: {
-        url: content.url,
-        thumb_url: content.thumb_url
-      },
+      content: content.content_hash,
       seen_at: seen_at,
       sent_at: content.created_at
     }

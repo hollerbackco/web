@@ -9,6 +9,8 @@ class Membership < ActiveRecord::Base
 
   delegate :invites, :members, to: :conversation
 
+  before_create { |record| record.last_message_at = Time.now }
+
   def recipient_memberships
     conversations.memberships - [self]
   end
@@ -19,14 +21,28 @@ class Membership < ActiveRecord::Base
 
   # todo: cache this
   def name
-    conversation.name || auto_generated_name
+    update_conversation if self[:name].blank?
+    self[:name]
+  end
+
+  def update_conversation
+    class << self
+      def record_timestamps; false; end
+    end
+
+    self.name = conversation.name || auto_generated_name
+    save!
+
+    class << self
+      def record_timestamps; super; end
+    end
   end
 
   def auto_generated_name
     if others.blank?
       "#{conversation.invites.count} Invited"
     else
-      others.map {|other| other.also_known_as(:for => user)}
+      others.map {|other| other.also_known_as(:for => user)}.join(", ").truncate(100).trim
     end
   end
 
