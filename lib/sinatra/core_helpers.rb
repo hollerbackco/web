@@ -31,9 +31,7 @@ module Sinatra
       end
 
       {
-        meta: {
-          code: 200
-        },
+        meta: meta,
         data: data
       }.to_json
     end

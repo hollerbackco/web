@@ -1,6 +1,7 @@
 module HollerbackApp
   class ApiApp < BaseApp
     get '/me/sync' do
+      last_sync_at = Time.now
       updated_at = Time.parse(params[:updated_at]) if params[:updated_at]
 
       syncable = [Membership, Message]
@@ -13,7 +14,14 @@ module HollerbackApp
         sync_objects = sync_objects.concat(objects)
       end
 
-      success_json data: sync_objects.as_json
+      data = success_json(
+        meta: {
+          last_sync_at: last_sync_at
+        },
+        data: sync_objects.as_json
+      )
+      puts data
+      data
     end
   end
 end

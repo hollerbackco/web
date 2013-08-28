@@ -95,7 +95,7 @@ class Membership < ActiveRecord::Base
   def to_sync
     {
       type: "conversation",
-      obj: as_json
+      sync: as_json
     }
   end
 end
