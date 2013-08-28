@@ -19,6 +19,9 @@ class CreateMessages < ActiveRecord::Migration
     end
     add_index :messages, :membership_id
     add_index :messages, :sent_at
+
+    add_column :memberships, :last_message_at, :datetime
+    add_index :memberships, :last_message_at
     create_messages
   end
 

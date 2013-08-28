@@ -3,9 +3,7 @@ class ChangeMemberships < ActiveRecord::Migration
     change_table :memberships do |t|
       t.string :name
       t.string :thumb_url
-      t.datetime :last_message_at
     end
-    add_index :memberships, :last_message_at
     update_memberships
   end
 
