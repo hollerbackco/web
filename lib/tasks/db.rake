@@ -40,7 +40,6 @@ db_namespace = namespace :db do
   end
 end
 
-
 module Hollerback
   module Tasks
     module DatabaseTasks

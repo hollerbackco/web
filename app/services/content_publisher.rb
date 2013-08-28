@@ -6,12 +6,13 @@ class ContentPublisher
     @conversation = membership.conversation
   end
 
-  def publish(content)
+  def publish(content, opts={})
+    options = {notify: true, analytics: true}.merge(opts)
     self.messages = conversation.memberships.map do |m|
       send_to(m, content)
     end
-    notify_recipients(messages)
-    publish_analytics(content)
+    notify_recipients(messages) if options[:notify]
+    publish_analytics(content) if options[:analytics]
   end
 
   def send_to(membership, content)

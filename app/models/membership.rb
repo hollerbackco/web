@@ -4,15 +4,34 @@
 class Membership < ActiveRecord::Base
   belongs_to :user
   belongs_to :conversation
-
   has_many :messages
+  has_many :unseen_messages, foreign_key: "membership_id", class_name: "Message", conditions: {seen_at: nil}
 
   delegate :invites, :members, to: :conversation
 
+  default_scope { order("last_message_at DESC") }
+
   before_create { |record| record.last_message_at = Time.now }
 
+  scope :updated_since, lambda {|updated_at| where("memberships.updated_at > ?", updated_at)}
+
+  def self.sync_objects(opts={})
+    raise ArgumentError if opts[:user].blank? and !opts[:user].is_a? User
+    options =  {
+      :since => nil,
+    }.merge(opts)
+
+    collection = options[:user].memberships
+
+    if options[:since]
+      collection = collection.updated_since(options[:since])
+    end
+
+    collection.map(&:to_sync)
+  end
+
   def recipient_memberships
-    conversations.memberships - [self]
+    conversation.memberships - [self]
   end
 
   def others
@@ -21,11 +40,11 @@ class Membership < ActiveRecord::Base
 
   # todo: cache this
   def name
-    update_conversation if self[:name].blank?
+    update_conversation_name if self[:name].blank?
     self[:name]
   end
 
-  def update_conversation
+  def update_conversation_name
     class << self
       def record_timestamps; false; end
     end
@@ -42,7 +61,7 @@ class Membership < ActiveRecord::Base
     if others.blank?
       "#{conversation.invites.count} Invited"
     else
-      others.map {|other| other.also_known_as(:for => user)}.join(", ").truncate(100).trim
+      others.map {|other| other.also_known_as(:for => user)}.join(", ").truncate(100).strip
     end
   end
 
@@ -64,8 +83,19 @@ class Membership < ActiveRecord::Base
   end
   alias_method :unread_count, :unseen_count
 
+  def update_unseen!
+    touch
+  end
+
   def as_json(options={})
     options = options.merge(methods: [:name, :unread_count, :is_group])
     super(options)
+  end
+
+  def to_sync
+    {
+      type: "conversation",
+      obj: as_json
+    }
   end
 end

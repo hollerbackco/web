@@ -11,9 +11,11 @@ class User < ActiveRecord::Base
 
   has_many :devices, autosave: true
   has_many :memberships
+  has_many :messages, through: :memberships
+  has_many :unseen_messages, through: :memberships
   has_many :conversations, through: :memberships
-  has_many :videos, through: :conversations
-  has_many :sent_videos, foreign_key: "user_id", class_name: "Video"
+  #has_many :videos, through: :conversations
+  #has_many :sent_videos, foreign_key: "user_id", class_name: "Video"
   has_many :contacts
 
   before_create :set_access_token
@@ -57,10 +59,6 @@ class User < ActiveRecord::Base
   #todo get rid of this
   def access_token
     devices.general.any? ? devices.general.first.access_token : ""
-  end
-
-  def unread_videos
-    videos.unread_by(self)
   end
 
   def member_of
@@ -114,9 +112,6 @@ class User < ActiveRecord::Base
     phoner.present? ? phoner.country_code : "1"
   end
 
-  def phoner
-    @phoner ||= Phoner::Phone.parse(phone_normalized)
-  end
 
   def verified?
     self.verification_code.blank?
@@ -156,6 +151,10 @@ class User < ActiveRecord::Base
   end
 
   private
+
+  def phoner
+    @phoner ||= Phoner::Phone.parse(phone_normalized)
+  end
 
   def set_access_token
     self.access_token = loop do

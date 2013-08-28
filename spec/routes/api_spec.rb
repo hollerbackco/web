@@ -25,15 +25,16 @@ describe 'API ROUTES |' do
   before(:all) do
     @user ||= FactoryGirl.create(:user)
 
-    10.times do
+    3.times do
       @user.conversations.create
     end
 
     @user.conversations.each do |conversation|
-      25.times do
-        video = conversation.videos.create(user: @user, :filename => "hello.mp4")
-        video.in_progress = false
-        video.save
+      membership = Membership.where(user_id: @user.id, conversation_id: conversation.id).first
+      10.times do
+        video = conversation.videos.create(user: @user, :filename => "hello.mp4", in_progress: false)
+        publisher = ContentPublisher.new(membership)
+        publisher.publish(video, notify: false, analytics: false)
       end
     end
 
@@ -162,6 +163,25 @@ describe 'API ROUTES |' do
     subject.reload.username.should == result['data']['username']
   end
 
+  it 'GET me/sync | gets a list of syncable objects' do
+    get '/me/sync', :access_token => access_token
+    last_response.should be_ok
+
+    result = JSON.parse(last_response.body)
+    count = subject.reload.memberships.count + subject.messages.limit(100).count
+    count.should == result['data'].count
+  end
+
+  it 'GET me/sync | only get latest sync objects' do
+    membership = subject.memberships.first
+    Message.create(:membership_id => membership.id)
+
+    get '/me/sync', :access_token => access_token, :updated_at => Time.now
+    last_response.should be_ok
+
+    result = JSON.parse(last_response.body)
+    result['data'].count.should == 2
+  end
 
   it 'GET me/conversations | gets users conversations' do
     get '/me/conversations', :access_token => access_token
@@ -171,16 +191,6 @@ describe 'API ROUTES |' do
 
     last_response.should be_ok
     conversations.should be_a_kind_of(Array)
-  end
-
-  it 'GET me/conversations | updated_at' do
-    get '/me/conversations', :access_token => access_token, :updated_at => Time.now
-
-    result = JSON.parse(last_response.body)
-    conversations = result['data']['conversations']
-
-    last_response.should be_ok
-    conversations.count.should == 0
   end
 
   it 'POST me/conversations | create a conversation' do

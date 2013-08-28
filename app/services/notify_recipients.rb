@@ -31,7 +31,7 @@ module Hollerback
         sender_name: user.name
       }
 
-      badge_count = person.unread_videos.count
+      badge_count = person.messages.unseen.count
 
       person.devices.ios.each do |device|
         APNS.send_notification(device.token, {
