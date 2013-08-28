@@ -87,7 +87,7 @@ class Membership < ActiveRecord::Base
   end
   alias_method :unread_count, :unseen_count
 
-  def update_unseen!
+  def update_seen!
     touch
   end
 

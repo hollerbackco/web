@@ -21,7 +21,7 @@ class ChangeMemberships < ActiveRecord::Migration
       p m.name
       m.most_recent_thumb_url = message.thumb_url
       m.last_message_at = message.sent_at
-      m.save
+      m.save!
     end
   end
 end

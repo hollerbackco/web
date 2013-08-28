@@ -37,13 +37,15 @@ class Message < ActiveRecord::Base
   end
 
   def unseen?
-    membership.update_unseen!
     seen_at.blank?
   end
 
   def seen!
-    seen_at = Time.now
-    save!
+    self.class.transaction do
+      membership.update_seen!
+      seen_at = Time.now
+      save!
+    end
   end
 
   def delete!
