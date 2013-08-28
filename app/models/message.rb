@@ -24,10 +24,6 @@ class Message < ActiveRecord::Base
     collection.map(&:to_sync)
   end
 
-  def videos
-    messages
-  end
-
   def conversation_id
     membership_id
   end
@@ -63,7 +59,7 @@ class Message < ActiveRecord::Base
   end
 
   def as_json(options={})
-    options = options.merge(:methods => [:url, :thumb_url, :conversation_id, :videos])
+    options = options.merge(:methods => [:url, :thumb_url, :conversation_id])
     options = options.merge(:except => [:membership_id])
     super(options).merge({isRead: !unseen?})
   end

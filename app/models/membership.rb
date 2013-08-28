@@ -65,6 +65,10 @@ class Membership < ActiveRecord::Base
     end
   end
 
+  def videos
+    messages
+  end
+
   def unseen?
     messages.unseen.present?
   end
@@ -88,7 +92,7 @@ class Membership < ActiveRecord::Base
   end
 
   def as_json(options={})
-    options = options.merge(methods: [:name, :unread_count, :is_group])
+    options = options.merge(methods: [:name, :unread_count, :is_group, :videos])
     super(options)
   end
 
