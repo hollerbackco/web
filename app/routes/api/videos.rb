@@ -36,8 +36,8 @@ module HollerbackApp
       p "params:"
       p params
 
-      conversation = current_user.conversations.find(params[:id])
-      video = conversation.videos.create(user: current_user)
+      membership = current_user.memberships.find(params[:id])
+      video = membership.conversation.videos.create(user: current_user)
 
       urls = if params.key? "parts"
         params[:parts].map do |key|
