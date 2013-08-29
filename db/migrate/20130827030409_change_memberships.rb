@@ -13,6 +13,7 @@ class ChangeMemberships < ActiveRecord::Migration
   end
 
   def update_memberships
+    ActiveRecord::Base.record_timestamps = false
     Membership.all.each do |m|
       next if m.messages.empty?
       message = m.messages.first
@@ -24,5 +25,6 @@ class ChangeMemberships < ActiveRecord::Migration
       p m.most_recent_thumb_url
       m.save!
     end
+    ActiveRecord::Base.record_timestamps = true
   end
 end
