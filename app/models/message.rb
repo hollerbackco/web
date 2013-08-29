@@ -46,15 +46,18 @@ class Message < ActiveRecord::Base
 
   def seen!
     self.class.transaction do
-      membership.update_seen!
+      #membership.update_seen!
       seen_at = Time.now
       save!
     end
   end
 
   def delete!
-    deleted_at = Time.now
-    save!
+    self.class.transaction do
+      #membership.update_seen!
+      deleted_at = Time.now
+      save!
+    end
   end
 
   def to_sync
