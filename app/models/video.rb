@@ -2,9 +2,11 @@ class Video < ActiveRecord::Base
   if Sinatra::Base.production?
     STREAM_BUCKET = "hb-streams"
     BUCKET_NAME = "hollerback-app-dev"
+    CLOUDFRONT = "http://d2qyqd6d7y0u0k.cloudfront.net"
   else
     STREAM_BUCKET = "hb-streams"
     BUCKET_NAME = "hollerback-app-dev"
+    CLOUDFRONT = "http://d2qyqd6d7y0u0k.cloudfront.net"
   end
 
   attr_accessible :filename, :user, :conversation, :in_progress
@@ -34,21 +36,17 @@ class Video < ActiveRecord::Base
   def url
     return "" if filename.blank?
     #HollerbackApp::BaseApp.settings.cache.fetch("video-url-#{id}", 1.week) do
-    video_object.public_url
+    #video_object.public_url
+    [CLOUDFRONT_URL, video_object.key].join("/")
     #end
-  end
-
-  def stream_url
-    return "" if filename.blank?
-    streamname.present? ? stream_object.url_for(:read, :expires => 1.month, :secure => false).to_s : ""
   end
 
   def thumb_url
     return "" if filename.blank?
-    return "" unless thumb_object.exists?
+    #return "" unless thumb_object.exists?
 
     #HollerbackApp::BaseApp.settings.cache.fetch("video-thumb-url-#{id}", 1.week) do
-    thumb_object.public_url
+    [CLOUDFRONT_URL, thumb_object.key].join("/")
     #end
   end
 
@@ -89,10 +87,6 @@ class Video < ActiveRecord::Base
 
   def self.bucket
     @bucket ||= AWS::S3.new.buckets[BUCKET_NAME]
-  end
-
-  def self.stream_bucket
-    @stream_bucket ||= AWS::S3.new.buckets[STREAM_BUCKET]
   end
 
   private
