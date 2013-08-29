@@ -5,7 +5,11 @@ class Message < ActiveRecord::Base
   scope :unseen, where(:seen_at => nil)
   scope :updated_since, lambda {|updated_at| where("messages.updated_at > ?", updated_at)}
 
-  after_create {|record| membership.last_message_at = record.sent_at; membership.save }
+  after_create do |record|
+    record.membership.last_message_at = record.sent_at
+    record.membership.most_recent_thumb_url = record.thumb_url
+    record.membership.save
+  end
 
   def self.sync_objects(opts={})
     raise ArgumentError if opts[:user].blank?
