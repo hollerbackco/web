@@ -2,9 +2,11 @@ class Video < ActiveRecord::Base
   if Sinatra::Base.production?
     STREAM_BUCKET = "hb-streams"
     BUCKET_NAME = "hollerback-app-dev"
+    CLOUDFRONT_URL = "http://d2qyqd6d7y0u0k.cloudfront.net"
   else
     STREAM_BUCKET = "hb-streams"
     BUCKET_NAME = "hollerback-app-dev"
+    CLOUDFRONT_URL = "http://d2qyqd6d7y0u0k.cloudfront.net"
   end
 
   attr_accessible :filename, :user, :conversation, :in_progress
@@ -33,9 +35,10 @@ class Video < ActiveRecord::Base
 
   def url
     return "" if filename.blank?
-    HollerbackApp::BaseApp.settings.cache.fetch("video-url-#{id}", 1.week) do
-      video_object.url_for(:read, :expires => 1.month, :secure => false).to_s
-    end
+    [CLOUDFRONT_URL, video_object.key].join("/")
+    #HollerbackApp::BaseApp.settings.cache.fetch("video-url-#{id}", 1.week) do
+      #video_object.url_for(:read, :expires => 1.month, :secure => false).to_s
+    #end
   end
 
   def stream_url
@@ -52,11 +55,12 @@ class Video < ActiveRecord::Base
 
   def thumb_url
     return "" if filename.blank?
-    return "" unless thumb_object.exists?
+    #return "" unless thumb_object.exists?
 
-    HollerbackApp::BaseApp.settings.cache.fetch("video-thumb-url-#{id}", 1.week) do
-      thumb_object.url_for(:read, :expires => 1.month, :secure => false).to_s
-    end
+    [CLOUDFRONT_URL, thumb_object.key].join("/")
+    #HollerbackApp::BaseApp.settings.cache.fetch("video-thumb-url-#{id}", 1.week) do
+      #thumb_object.url_for(:read, :expires => 1.month, :secure => false).to_s
+    #end
   end
 
   def metadata
