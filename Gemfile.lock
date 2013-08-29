@@ -14,6 +14,10 @@ GEM
       activesupport (= 3.2.12)
       arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
+    activerecord-postgres-hstore (0.7.6)
+      activerecord (>= 3.1)
+      pg-hstore (>= 1.1.5)
+      rake
     activesupport (3.2.12)
       i18n (~> 0.6)
       multi_json (~> 1.0)
@@ -130,6 +134,7 @@ GEM
       omniauth-oauth (~> 1.0)
     open4 (1.3.0)
     pg (0.15.1)
+    pg-hstore (1.2.0)
     phone (1.1)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
@@ -263,6 +268,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
+  activerecord-postgres-hstore
   apns
   awesome_nested_set
   aws-sdk

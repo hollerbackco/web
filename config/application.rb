@@ -4,6 +4,8 @@ require 'sinatra/multi_route'
 
 module HollerbackApp
   class BaseApp < ::Sinatra::Base
+    register ::Sinatra::ActiveRecordExtension
+
     set :app_root, File.expand_path(".")
 
     # Setup db
@@ -51,6 +53,5 @@ HollerbackApp::BaseApp.load_lib
 HollerbackApp::BaseApp.helpers ::Sinatra::Warden::Helpers
 HollerbackApp::BaseApp.helpers ::Sinatra::CoreHelpers
 HollerbackApp::BaseApp.register Sinatra::MultiRoute
-HollerbackApp::BaseApp.register ::Sinatra::ActiveRecordExtension
-HollerbackApp::BaseApp.register ::Sinatra::ActiveRecordExtension
+#HollerbackApp::BaseApp.register ::Sinatra::ActiveRecordExtension
 HollerbackApp::BaseApp.load_config

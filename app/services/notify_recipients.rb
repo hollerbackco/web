@@ -1,37 +1,41 @@
 module Hollerback
   class NotifyRecipients
-    def initialize(video)
-      @video = video
-      @recipients = video.recipients
+    attr_accessor :messages
+
+    def initialize(messages)
+      @messages = messages
     end
 
     def run
-      @recipients.each do |recipient|
-        notify_push @video, recipient
-        notify_mqtt @video, recipient
-        touch_cache recipient
+      messages.each do |message|
+        recipient = message.membership.user
+        notify_push message, recipient
+        notify_mqtt message, recipient
       end
     end
 
     private
 
-    def notify_mqtt(video, person)
+    def notify_mqtt(message, person)
       MQTT::Client.connect('23.23.249.106') do |c|
-        c.publish("user/#{person.id}/video", video.as_json.to_json)
+        c.publish("user/#{person.id}/video", message.as_json.to_json)
       end
     end
 
-    def notify_push(video, person)
+    def notify_push(message, person)
+      user = message.membership.user
+      conversation = message.membership.conversation
       data = {
-        conversation_id: video.conversation.id,
-        video_id: video.id,
-        sender_name: video.user.name
+        conversation_id: conversation.id,
+        video_id: message.id,
+        sender_name: user.name
       }
-      badge_count = person.unread_videos.count
+
+      badge_count = person.messages.unseen.count
 
       person.devices.ios.each do |device|
         APNS.send_notification(device.token, {
-          alert: video.user.also_known_as(for: person),
+          alert: user.also_known_as(for: person),
           badge: badge_count,
           sound: "default",
           other: {
@@ -45,10 +49,6 @@ module Hollerback
           data: data
         )
       end
-    end
-
-    def touch_cache(user)
-      user.memcache_key_touch
     end
   end
 end

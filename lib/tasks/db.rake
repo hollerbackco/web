@@ -1,4 +1,4 @@
-namespace :db do
+db_namespace = namespace :db do
   desc 'Create the database defined in config/database.yml for the current APP_ENV'
   task :create do
     Hollerback::Tasks::DatabaseTasks.create_database
@@ -14,17 +14,29 @@ namespace :db do
   end
 
   desc 'Rolls the schema back to the previous version (specify steps w/ STEP=n).'
-  task :rollback => [:environment, :load_config] do
+  task :rollback do
     step = ENV['STEP'] ? ENV['STEP'].to_i : 1
     ActiveRecord::Migrator.rollback(ActiveRecord::Migrator.migrations_paths, step)
-    db_namespace['_dump'].invoke
+    db_namespace['schema:dump'].invoke
   end
 
   # desc 'Pushes the schema to the next version (specify steps w/ STEP=n).'
   task :forward => [:environment, :load_config] do
     step = ENV['STEP'] ? ENV['STEP'].to_i : 1
     ActiveRecord::Migrator.forward(ActiveRecord::Migrator.migrations_paths, step)
-    db_namespace['_dump'].invoke
+    db_namespace['schema:dump'].invoke
+  end
+
+  namespace :schema do
+    desc 'Create a db/schema.rb file that is portable against any DB supported by AR'
+    task :dump do
+      require 'active_record/schema_dumper'
+      filename = ENV['SCHEMA'] || File.join("#{HollerbackApp::BaseApp.app_root}/db", 'schema.rb')
+      File.open(filename, "w:utf-8") do |file|
+        ActiveRecord::SchemaDumper.dump(ActiveRecord::Base.connection, file)
+      end
+      db_namespace['schema:dump'].reenable
+    end
   end
 end
 
