@@ -2,11 +2,11 @@ class Video < ActiveRecord::Base
   if Sinatra::Base.production?
     STREAM_BUCKET = "hb-streams"
     BUCKET_NAME = "hollerback-app-dev"
-    CLOUDFRONT = "http://d2qyqd6d7y0u0k.cloudfront.net"
+    CLOUDFRONT_URL = "http://d2qyqd6d7y0u0k.cloudfront.net"
   else
     STREAM_BUCKET = "hb-streams"
     BUCKET_NAME = "hollerback-app-dev"
-    CLOUDFRONT = "http://d2qyqd6d7y0u0k.cloudfront.net"
+    CLOUDFRONT_URL = "http://d2qyqd6d7y0u0k.cloudfront.net"
   end
 
   attr_accessible :filename, :user, :conversation, :in_progress
