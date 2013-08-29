@@ -7,7 +7,7 @@ class Membership < ActiveRecord::Base
   has_many :messages
   has_many :unseen_messages, foreign_key: "membership_id", class_name: "Message", conditions: {seen_at: nil}
 
-  delegate :invites, :members, to: :conversation
+  delegate :invites, to: :conversation
 
   default_scope { order("last_message_at DESC") }
 
@@ -36,6 +36,10 @@ class Membership < ActiveRecord::Base
 
   def others
     conversation.members - [user]
+  end
+
+  def members
+    others.map {|other| {id: other.id, name: other.also_known_as(for: user) } } 
   end
 
   # todo: cache this
@@ -92,7 +96,7 @@ class Membership < ActiveRecord::Base
   end
 
   def as_json(options={})
-    options = options.merge(methods: [:name, :unread_count, :is_group, :videos])
+    options = options.merge(methods: [:name, :unread_count, :is_group, :videos, :members])
     super(options)
   end
 
