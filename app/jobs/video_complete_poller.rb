@@ -12,7 +12,7 @@ class VideoCompletePoller
 
       if video = Video.find(data["video_id"])
         video.update_attributes(filename: data["output"], in_progress: false)
-        membership = Membership.where(conversation_id: video.converation_id, user_id: video.user_id).first
+        membership = Membership.where(conversation_id: video.conversation_id, user_id: video.user_id).first
         publisher = ContentPublisher.new(membership)
         publisher.publish(video)
       end
