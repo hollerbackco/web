@@ -97,7 +97,12 @@ class Membership < ActiveRecord::Base
 
   def as_json(options={})
     options = options.merge(methods: [:name, :unread_count, :is_group, :videos, :members])
-    super(options)
+    options = options.merge(except: [:updated_at])
+    obj = super(options)
+
+    # TODO cleanup updated_at [hacky][ios]
+    # override updated_at timestamp to allow for correct sorting on older versions of the ios app
+    obj.merge({updated_at: last_message_at})
   end
 
   def to_sync
