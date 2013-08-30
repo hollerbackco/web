@@ -70,7 +70,8 @@ class Membership < ActiveRecord::Base
   end
 
   def videos
-    messages
+    # TODO cleanup and no longer have this in the json
+    messages.limit(10)
   end
 
   def unseen?
@@ -96,7 +97,7 @@ class Membership < ActiveRecord::Base
   end
 
   def as_json(options={})
-    options = options.merge(methods: [:name, :unread_count, :is_group, :videos, :members])
+    options = options.merge(methods: [:name, :unread_count, :is_group, :videos])
     options = options.merge(except: [:updated_at])
     obj = super(options)
 
