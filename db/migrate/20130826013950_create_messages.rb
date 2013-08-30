@@ -21,12 +21,16 @@ class CreateMessages < ActiveRecord::Migration
     add_index :messages, :sent_at
 
     add_column :memberships, :last_message_at, :datetime
+    add_column :memberships, :most_recent_thumb_url, :string
+
     add_index :memberships, :last_message_at
     create_messages
   end
 
   def down
     drop_table :messages
+    remove_column :memberships, :last_message_at
+    remove_column :memberships, :most_recent_thumb_url
   end
 
   private
@@ -35,7 +39,7 @@ class CreateMessages < ActiveRecord::Migration
     ActiveRecord::Base.record_timestamps = false
     counter = 0
     counter2 = 0
-    Video.reorder("created_at ASC").all.each do |video|
+    Video.unscoped.find_each do |video|
       p counter = counter + 1
       next if video.conversation.blank?
       next if video.filename.blank?
@@ -59,6 +63,7 @@ class CreateMessages < ActiveRecord::Migration
           updated_at: Time.now,
           deleted_at: nil
         )
+
         p "m#{counter2 = counter2 + 1}"
       end
     end

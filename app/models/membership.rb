@@ -39,7 +39,7 @@ class Membership < ActiveRecord::Base
   end
 
   def members
-    others.map {|other| {id: other.id, name: other.also_known_as(for: user) } } 
+    others.map {|other| {id: other.id, name: other.also_known_as(for: user) } }
   end
 
   # todo: cache this
@@ -70,7 +70,8 @@ class Membership < ActiveRecord::Base
   end
 
   def videos
-    messages
+    # TODO cleanup and no longer have this in the json
+    messages.limit(10)
   end
 
   def unseen?
@@ -87,7 +88,7 @@ class Membership < ActiveRecord::Base
   alias_method :is_group, :group?
 
   def unseen_count
-    messages.unseen.present?
+    messages.unseen.count
   end
   alias_method :unread_count, :unseen_count
 

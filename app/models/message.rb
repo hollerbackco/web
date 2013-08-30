@@ -11,6 +11,10 @@ class Message < ActiveRecord::Base
     record.membership.save
   end
 
+  def sender?
+    is_sender
+  end
+
   def self.sync_objects(opts={})
     raise ArgumentError if opts[:user].blank?
     options = {
@@ -32,6 +36,12 @@ class Message < ActiveRecord::Base
     membership_id
   end
 
+  def user
+    {
+      name: sender_name
+    }
+  end
+
   def url
     content["url"]
   end
@@ -46,17 +56,17 @@ class Message < ActiveRecord::Base
 
   def seen!
     self.class.transaction do
-      #membership.update_seen!
-      seen_at = Time.now
-      save!
+      membership.touch
+      self.seen_at = Time.now
+      self.save!
     end
   end
 
   def delete!
     self.class.transaction do
-      #membership.update_seen!
-      deleted_at = Time.now
-      save!
+      membership.touch
+      self.deleted_at = Time.now
+      self.save!
     end
   end
 
@@ -68,7 +78,7 @@ class Message < ActiveRecord::Base
   end
 
   def as_json(options={})
-    options = options.merge(:methods => [:url, :thumb_url, :conversation_id])
+    options = options.merge(:methods => [:url, :thumb_url, :conversation_id, :user])
     options = options.merge(:except => [:membership_id])
     super(options).merge({isRead: !unseen?})
   end

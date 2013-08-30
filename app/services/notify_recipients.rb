@@ -9,7 +9,9 @@ module Hollerback
     def run
       messages.each do |message|
         recipient = message.membership.user
-        notify_push message, recipient
+        unless message.sender?
+          notify_push message, recipient
+        end
         notify_mqtt message, recipient
       end
     end
@@ -18,7 +20,7 @@ module Hollerback
 
     def notify_mqtt(message, person)
       MQTT::Client.connect('23.23.249.106') do |c|
-        c.publish("user/#{person.id}/video", message.as_json.to_json)
+        c.publish("user/#{person.id}/video", message.to_sync.to_json)
       end
     end
 
@@ -26,16 +28,16 @@ module Hollerback
       user = message.membership.user
       conversation = message.membership.conversation
       data = {
-        conversation_id: conversation.id,
+        conversation_id: membership.id,
         video_id: message.id,
-        sender_name: user.name
+        sender_name: message.sender_name
       }
 
       badge_count = person.messages.unseen.count
 
       person.devices.ios.each do |device|
         APNS.send_notification(device.token, {
-          alert: user.also_known_as(for: person),
+          alert: message.sender_name,
           badge: badge_count,
           sound: "default",
           other: {
