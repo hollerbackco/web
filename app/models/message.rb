@@ -46,7 +46,7 @@ class Message < ActiveRecord::Base
 
   def seen!
     self.class.transaction do
-      #membership.update_seen!
+      membership.touch
       seen_at = Time.now
       save!
     end
@@ -54,7 +54,7 @@ class Message < ActiveRecord::Base
 
   def delete!
     self.class.transaction do
-      #membership.update_seen!
+      membership.touch
       deleted_at = Time.now
       save!
     end
