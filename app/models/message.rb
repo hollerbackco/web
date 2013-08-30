@@ -32,6 +32,10 @@ class Message < ActiveRecord::Base
     membership_id
   end
 
+  def name
+    sender_name
+  end
+
   def url
     content["url"]
   end
@@ -68,7 +72,7 @@ class Message < ActiveRecord::Base
   end
 
   def as_json(options={})
-    options = options.merge(:methods => [:url, :thumb_url, :conversation_id])
+    options = options.merge(:methods => [:url, :thumb_url, :conversation_id, :name])
     options = options.merge(:except => [:membership_id])
     super(options).merge({isRead: !unseen?})
   end
