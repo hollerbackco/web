@@ -1,5 +1,5 @@
 class CreateMessages < ActiveRecord::Migration
-  class ::Message < ActiveRecord::Base
+  class Message < ActiveRecord::Base
     belongs_to :membership
     serialize :content, ActiveRecord::Coders::Hstore
   end
@@ -46,7 +46,7 @@ class CreateMessages < ActiveRecord::Migration
         sender = video.user
         membership = Membership.where(:conversation_id => conversation.id, :user_id => member.id).first
 
-        message = ::Message.create(
+        message = Message.new(
           membership_id: membership.id,
           is_sender: (sender == member),
           sender_id: sender.id,
@@ -59,6 +59,7 @@ class CreateMessages < ActiveRecord::Migration
           updated_at: Time.now,
           deleted_at: nil
         )
+
         p "m#{counter2 = counter2 + 1}"
       end
     end
