@@ -11,6 +11,10 @@ class Message < ActiveRecord::Base
     record.membership.save
   end
 
+  def sender?
+    is_sender
+  end
+
   def self.sync_objects(opts={})
     raise ArgumentError if opts[:user].blank?
     options = {

@@ -88,7 +88,7 @@ class Membership < ActiveRecord::Base
   alias_method :is_group, :group?
 
   def unseen_count
-    messages.unseen.present?
+    messages.unseen.count
   end
   alias_method :unread_count, :unseen_count
 

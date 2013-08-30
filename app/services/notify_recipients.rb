@@ -9,7 +9,9 @@ module Hollerback
     def run
       messages.each do |message|
         recipient = message.membership.user
-        notify_push message, recipient
+        unless message.sender?
+          notify_push message, recipient
+        end
         notify_mqtt message, recipient
       end
     end
