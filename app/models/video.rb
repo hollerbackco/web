@@ -1,16 +1,14 @@
 class Video < ActiveRecord::Base
   if Sinatra::Base.production?
-    STREAM_BUCKET = "hb-streams"
     BUCKET_NAME = "hollerback-app-dev"
     CLOUDFRONT_URL = "http://d2qyqd6d7y0u0k.cloudfront.net"
   else
-    STREAM_BUCKET = "hb-streams"
     BUCKET_NAME = "hollerback-app-dev"
     CLOUDFRONT_URL = "http://d2qyqd6d7y0u0k.cloudfront.net"
   end
 
   attr_accessible :filename, :user, :conversation, :in_progress
-  acts_as_readable :on => :created_at
+  #acts_as_readable :on => :created_at
 
   belongs_to :user
   belongs_to :conversation
@@ -23,7 +21,6 @@ class Video < ActiveRecord::Base
 
   # prepare the video
   def ready!
-    self.mark_as_read! for: user
     self.in_progress = false
     save!
   end
@@ -63,17 +60,6 @@ class Video < ActiveRecord::Base
 
   def self.video_urls
     bucket.objects.map {|o| o.url_for(:read)}
-  end
-
-  def as_json_for_user(viewer)
-    name = ""
-    if user.present?
-      name = user.also_known_as(for: viewer)
-    end
-    obj = as_json.merge({
-      isRead: !unread?(viewer),
-      username: name
-    })
   end
 
   def as_json(options={})
