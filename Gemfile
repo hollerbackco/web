@@ -19,7 +19,6 @@ gem 'redis'
 gem 'dalli'
 
 #model
-gem 'unread'
 gem 'awesome_nested_set'
 gem 'will_paginate'
 

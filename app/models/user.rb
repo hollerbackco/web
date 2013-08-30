@@ -7,22 +7,15 @@ class User < ActiveRecord::Base
     :password, :password_confirmation, :phone_normalized,
     :device_token, :last_app_version
 
-  acts_as_reader
-
   has_many :devices, autosave: true
   has_many :memberships
   has_many :messages, through: :memberships
   has_many :unseen_messages, through: :memberships
   has_many :conversations, through: :memberships
-  #has_many :videos, through: :conversations
-  #has_many :sent_videos, foreign_key: "user_id", class_name: "Video"
   has_many :contacts
 
   before_create :set_access_token
   before_create :set_verification_code
-
-  #todo: remove this
-  #before_validation :set_username, on: :create
 
   validates :phone, presence: true, uniqueness: true
   validates :username, presence: true
