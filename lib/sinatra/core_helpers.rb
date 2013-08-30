@@ -23,40 +23,6 @@ module Sinatra
       }
     end
 
-    def conversation_json(conversation, updated_at=nil)
-      cache_key = "user/#{current_user.id}/conversations/#{conversation.id}-#{conversation.updated_at}"
-
-      HollerbackApp::BaseApp.settings.cache.fetch(cache_key, 1.hour) do
-        obj = conversation.as_json(root: false).merge({
-          "unread_count" => conversation.videos_for(current_user).unread_by(current_user).count,
-          "name" => conversation.name(current_user),
-          "members" => conversation.members.as_json,
-          "invites" => conversation.invites.as_json,
-          "is_group" => conversation.group?
-        })
-
-        scope = conversation.videos_for(current_user)
-        scope = scope.limit(10)
-        unless updated_at.nil?
-          scope = scope.where("videos.updated_at > ?", updated_at)
-        end
-
-        obj["videos"] = scope.map do |video|
-          video.as_json_for_user(current_user)
-        end
-
-        if conversation.videos_for(current_user).any?
-          video = conversation.videos_for(current_user).first
-          if video.filename.present?
-            obj["most_recent_video_url"] =  video.url
-            obj["most_recent_thumb_url"] =  video.thumb_url
-          end
-        end
-
-        obj
-      end
-    end
-
     def success_json(opts={})
       data = opts.delete(:data)
       meta = {code: 200}
@@ -65,9 +31,7 @@ module Sinatra
       end
 
       {
-        meta: {
-          code: 200
-        },
+        meta: meta,
         data: data
       }.to_json
     end

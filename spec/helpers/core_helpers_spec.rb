@@ -13,7 +13,6 @@ class CoreHelpersTest
 end
 
 describe 'Core helpers' do
-
   before do
     @user ||= User.create!(
       username: "helpers",
@@ -31,9 +30,4 @@ describe 'Core helpers' do
   let(:user) { @user }
   let(:conversation) { @conversation }
 
-  it "creates the correct json object" do
-    obj = subject.conversation_json(@conversation)
-
-    obj["name"].should == "(0) Invited"
-  end
 end

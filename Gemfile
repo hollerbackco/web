@@ -12,6 +12,7 @@ gem "rack-reverse-proxy", :require => "rack/reverse_proxy"
 
 #database
 gem 'activerecord'
+gem 'activerecord-postgres-hstore'
 gem 'sinatra-activerecord'
 gem 'pg'
 gem 'redis'

@@ -1,27 +1,31 @@
 module Hollerback
   class ConversationInviter
-    attr_accessor :inviter, :conversation, :phones
+    attr_accessor :inviter, :conversation, :phones, :name
 
-    def initialize(user,convo,numbers)
+    def initialize(user, numbers, name=nil)
       self.inviter = user
-      self.conversation = convo
       self.phones = numbers
+      self.name = name
     end
 
     def invite
-      parsed_phones.each do |phone|
-        if users = User.where(phone_normalized: phone) and users.any?
-          conversation.members << users.first
-        else
-          Invite.create(
-            phone: phone.first,
-            inviter: inviter,
-            conversation: conversation
-          )
+      success = Conversation.transaction do
+        self.conversation = create_conversation
+        parsed_phones.each do |phone|
+          if users = User.where(phone_normalized: phone) and users.any?
+            conversation.members << users.first
+          else
+            Invite.create(
+              phone: phone.first,
+              inviter: inviter,
+              conversation: conversation
+            )
 
-          #TODO: send a text message to non users
-          #Hollerback::SMS.send_message phone, "#{inviter.name} has invited you to Hollerback"
+            #TODO: send a text message to non users
+            #Hollerback::SMS.send_message phone, "#{inviter.name} has invited you to Hollerback"
+          end
         end
+        run_analytics
       end
     end
 
@@ -35,6 +39,24 @@ module Hollerback
       numbers.map do |phone|
         Phoner::Phone.parse(phone, country_code: user.phone_country_code, area_code: user.phone_area_code).to_s
       end.compact
+    end
+
+    def errors
+      conversation.errors
+    end
+
+    def inviter_membership
+      conversation.memberships.find(:first, conditions: {user_id: inviter.id})
+    end
+
+    private
+
+    def create_conversation
+      inviter.conversations.create(creator: inviter, name: name)
+    end
+
+    def run_analytics
+      ConversationCreate.perform_async(inviter.id, conversation.id, phones)
     end
   end
 end
