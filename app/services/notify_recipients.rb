@@ -37,7 +37,7 @@ module Hollerback
 
       person.devices.ios.each do |device|
         APNS.send_notification(device.token, {
-          alert: user.also_known_as(for: person),
+          alert: message.sender_name,
           badge: badge_count,
           sound: "default",
           other: {
