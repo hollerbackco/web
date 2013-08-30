@@ -8,7 +8,7 @@ module HollerbackApp
         messages = membership.messages.scoped
 
         if params[:page]
-          messages = messages.paginate(:page => params[:page], :per_page => (params["perPage"] || 10))
+          messages = messages.paginate(:page => params[:page], :per_page => (params[:perPage] || 10))
           last_page = messages.current_page == messages.total_pages
         end
 

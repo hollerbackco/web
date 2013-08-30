@@ -231,7 +231,7 @@ describe 'API ROUTES |' do
   end
 
   it 'POST me/conversations/:id/watch_all | clear all video notifications' do
-    c = secondary_subject.conversations.reload.first
+    c = secondary_subject.memberships.reload.first
     post "/me/conversations/#{c.id}/watch_all", access_token: second_token
 
     last_response.should be_ok
@@ -281,7 +281,7 @@ describe 'API ROUTES |' do
       "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.6.mp4"
     ]
 
-    post "/me/conversations/#{secondary_subject.conversations.first.id}/videos/parts",
+    post "/me/conversations/#{secondary_subject.memberships.first.id}/videos/parts",
       access_token: second_token,
       parts: parts
 
@@ -290,7 +290,7 @@ describe 'API ROUTES |' do
   end
 
   it 'POST me/conversations/:id/videos/parts | requires parts param' do
-    post "/me/conversations/#{secondary_subject.conversations.first.id}/videos/parts", access_token: second_token
+    post "/me/conversations/#{secondary_subject.memberships.first.id}/videos/parts", access_token: second_token
 
     result = JSON.parse(last_response.body)
     last_response.should_not be_ok
@@ -331,14 +331,14 @@ describe 'API ROUTES |' do
     result["data"].count.should == messages_count
   end
 
-  it "GET me/conversations/:id/videos | should paginate and default to 10" do
-    c = secondary_subject.memberships.first
-    get "/me/conversations/#{c.id}/videos", :access_token => second_token, :page => 1
+  it "GET me/conversations/:id/videos | should paginate" do
+    c = subject.memberships.first
+    get "/me/conversations/#{c.id}/videos", :access_token => access_token, :page => 1, :perPage => 5
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
 
-    result["data"].count.should == 1
+    result["data"].count.should == 5
     result["meta"]["last_page"].should be_false
   end
 
