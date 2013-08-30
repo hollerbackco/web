@@ -32,8 +32,10 @@ class Message < ActiveRecord::Base
     membership_id
   end
 
-  def name
-    sender_name
+  def user
+    {
+      name: sender_name
+    }
   end
 
   def url
@@ -51,16 +53,16 @@ class Message < ActiveRecord::Base
   def seen!
     self.class.transaction do
       membership.touch
-      seen_at = Time.now
-      save!
+      self.seen_at = Time.now
+      self.save!
     end
   end
 
   def delete!
     self.class.transaction do
       membership.touch
-      deleted_at = Time.now
-      save!
+      self.deleted_at = Time.now
+      self.save!
     end
   end
 
@@ -72,7 +74,7 @@ class Message < ActiveRecord::Base
   end
 
   def as_json(options={})
-    options = options.merge(:methods => [:url, :thumb_url, :conversation_id, :name])
+    options = options.merge(:methods => [:url, :thumb_url, :conversation_id, :user])
     options = options.merge(:except => [:membership_id])
     super(options).merge({isRead: !unseen?})
   end
