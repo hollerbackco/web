@@ -39,7 +39,7 @@ class Membership < ActiveRecord::Base
   end
 
   def members
-    others.map {|other| {id: other.id, name: other.also_known_as(for: user) } } 
+    others.map {|other| {id: other.id, name: other.also_known_as(for: user) } }
   end
 
   # todo: cache this
@@ -97,7 +97,7 @@ class Membership < ActiveRecord::Base
   end
 
   def as_json(options={})
-    options = options.merge(methods: [:name, :unread_count, :is_group, :videos])
+    options = options.merge(methods: [:name, :unread_count, :is_group, :videos, :members])
     options = options.merge(except: [:updated_at])
     obj = super(options)
 
