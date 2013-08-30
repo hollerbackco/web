@@ -21,12 +21,16 @@ class CreateMessages < ActiveRecord::Migration
     add_index :messages, :sent_at
 
     add_column :memberships, :last_message_at, :datetime
+    add_column :memberships, :most_recent_thumb_url, :string
+
     add_index :memberships, :last_message_at
     create_messages
   end
 
   def down
     drop_table :messages
+    remove_column :memberships, :last_message_at
+    remove_column :memberships, :most_recent_thumb_url
   end
 
   private

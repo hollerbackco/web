@@ -2,14 +2,12 @@ class ChangeMemberships < ActiveRecord::Migration
   def up
     change_table :memberships do |t|
       t.string :name
-      t.string :most_recent_thumb_url
     end
     update_memberships
   end
 
   def down
     remove_column :memberships, :name
-    remove_column :memberships, :most_recent_thumb_url
   end
 
   def update_memberships
