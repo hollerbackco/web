@@ -20,7 +20,7 @@ module Hollerback
 
     def notify_mqtt(message, person)
       MQTT::Client.connect('23.23.249.106') do |c|
-        c.publish("user/#{person.id}/video", message.as_json.to_json)
+        c.publish("user/#{person.id}/video", message.to_sync.to_json)
       end
     end
 
