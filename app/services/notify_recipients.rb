@@ -28,7 +28,7 @@ module Hollerback
       user = message.membership.user
       conversation = message.membership.conversation
       data = {
-        conversation_id: membership.id,
+        conversation_id: message.membership.id,
         video_id: message.id,
         sender_name: message.sender_name
       }

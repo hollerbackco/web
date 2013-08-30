@@ -194,19 +194,19 @@ describe 'API ROUTES |' do
   end
 
   it 'POST me/conversations | create a conversation' do
-    conversations_count = subject.conversations.count
+    count = subject.memberships.count
     post '/me/conversations', :access_token => access_token, "invites[]" => [secondary_subject.phone_normalized,"+18888888888"]
 
     result = JSON.parse(last_response.body)
 
     last_response.should be_ok
-    subject.conversations.reload.count.should == conversations_count + 1
-    subject.conversations.find(result["data"]["id"]).invites.count.should == 1
+    subject.memberships.reload.count.should == count + 1
+    subject.memberships.find(result["data"]["id"]).invites.count.should == 1
   end
 
   it 'POST me/conversations | create a conversation with a title' do
     name = "this should be a title"
-    conversations_count = subject.conversations.count
+    count = subject.memberships.count
     post '/me/conversations',
       :access_token => access_token,
       "invites[]" => [secondary_subject.phone_normalized,"+18887777777"],
@@ -215,11 +215,11 @@ describe 'API ROUTES |' do
     result = JSON.parse(last_response.body)
 
     last_response.should be_ok
-    subject.conversations.reload.find_by_name(name).should_not be_nil
+    subject.memberships.reload.find_by_name(name).should_not be_nil
   end
 
   it 'POST me/conversations | return error if no invites sent' do
-    conversations_count = subject.conversations.count
+    count = subject.memberships.count
     post '/me/conversations', :access_token => access_token
 
     result = JSON.parse(last_response.body)
@@ -227,7 +227,7 @@ describe 'API ROUTES |' do
     last_response.should_not be_ok
     result['meta']['code'].should == 400
     result['meta']['msg'].should == "missing invites param"
-    subject.conversations.reload.count.should == conversations_count
+    subject.memberships.reload.count.should == count
   end
 
   it 'POST me/conversations/:id/watch_all | clear all video notifications' do
@@ -343,19 +343,21 @@ describe 'API ROUTES |' do
   end
 
   it 'POST me/conversations/:id/leave | leave a group' do
-    expect{subject.conversations.find(conversation.id)}.to_not raise_error(::ActiveRecord::RecordNotFound)
-    post "/me/conversations/#{conversation.id}/leave", access_token: access_token
+    c = subject.memberships.first
+    post "/me/conversations/#{c.id}/leave", access_token: access_token
 
-    expect{subject.conversations.reload.find(conversation.id)}.to raise_error(::ActiveRecord::RecordNotFound)
+    expect{subject.memberships.reload.find(c.id)}.to raise_error(::ActiveRecord::RecordNotFound)
   end
 
   it 'POST me/videos/:id/read | user reads a video' do
     c = secondary_subject.memberships.first
     message = c.messages.first
+    message.seen_at = nil
+    message.save
     message.unseen?.should be_true
 
     post "/me/videos/#{message.id}/read", access_token: second_token
     last_response.should be_ok
-    message.reload.unread?(subject).should be_false
+    message.reload.unseen?.should be_false
   end
 end

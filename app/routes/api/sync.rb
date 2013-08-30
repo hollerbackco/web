@@ -20,7 +20,6 @@ module HollerbackApp
         },
         data: sync_objects.as_json
       )
-      puts data
       data
     end
   end
