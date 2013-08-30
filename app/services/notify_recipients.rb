@@ -30,7 +30,7 @@ module Hollerback
       data = {
         conversation_id: conversation.id,
         video_id: message.id,
-        sender_name: user.name
+        sender_name: message.sender_name
       }
 
       badge_count = person.messages.unseen.count
