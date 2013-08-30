@@ -39,7 +39,7 @@ class CreateMessages < ActiveRecord::Migration
     ActiveRecord::Base.record_timestamps = false
     counter = 0
     counter2 = 0
-    Video.reorder("created_at ASC").find_each do |video|
+    Video.find_each do |video|
       p counter = counter + 1
       next if video.conversation.blank?
       next if video.filename.blank?
