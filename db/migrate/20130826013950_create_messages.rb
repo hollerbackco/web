@@ -50,7 +50,7 @@ class CreateMessages < ActiveRecord::Migration
         sender = video.user
         membership = Membership.where(:conversation_id => conversation.id, :user_id => member.id).first
 
-        message = ::Message.new(
+        message = ::Message.create(
           membership_id: membership.id,
           is_sender: (sender == member),
           sender_id: sender.id,
