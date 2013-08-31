@@ -15,9 +15,9 @@
         %td= video.user.username
         %td= video.conversation.name
         %td= video.conversation.member_names
+        %td= video.filename
         %td
-          = video.filename
-        %td= video.created_at
+          %span.date{"data-time" => (video.created_at.to_i * 1000)}= video.created_at
 
 %h1 Users
 %table.table.table-bordered
@@ -28,7 +28,7 @@
       %td Verify Code
       %td Phone
       %td Conversations
-      %td Videos
+      %td Videos (S/R)
       %td Created At
       %td App Version
   %tbody
@@ -38,9 +38,21 @@
         %td= user.username
         %td= user.verification_code
         %td= user.phone_normalized
+        %td= user.memberships.count
+        %td= "#{user.messages.sent.count}/#{user.messages.received.count}"
         %td
-          = user.conversations.count
-        %td
-          = user.sent_videos.count
-        %td= user.created_at
+          %span.date{"data-time" => (user.created_at.to_i * 1000)}= user.created_at
         %td= user.last_app_version
+
+:javascript
+  $(document).ready(function() {
+    var datecopy = $(".date");
+
+    datecopy.each(function(el) {
+      var timeString = $(this).attr("data-time");
+      var unixTimestamp = parseInt(timeString);
+      var date = new Date(unixTimestamp);
+
+      $(this).html(date.toLocaleString());
+    })
+  })

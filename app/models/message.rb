@@ -3,6 +3,8 @@ class Message < ActiveRecord::Base
   serialize :content, ActiveRecord::Coders::Hstore
 
   scope :unseen, where(:seen_at => nil)
+  scope :received, where("is_sender IS NOT TRUE")
+  scope :sent, where("is_sender IS TRUE")
   scope :updated_since, lambda {|updated_at| where("messages.updated_at > ?", updated_at)}
 
   after_create do |record|
