@@ -10,7 +10,11 @@ module HollerbackApp
       haml :index, layout: false
     end
 
-    get '/video' do
+    get '/video/:id' do
+      params[:id]
+      @video = Video.find(params[:id])
+      @video_url = 
+      @thumb_url = 
       haml :video
     end
 

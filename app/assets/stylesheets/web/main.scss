@@ -1,12 +1,6 @@
 @import 'compass';
 $border: #eee;
 
-@font-face {
-  font-family: MuseoSans;
-  src: font_url('MuseoSans_500.otf');
-  font-weight: 500;
-}
-
 ::-webkit-input-placeholder { /* WebKit browsers */
     color:    #666;
     font-weight: normal;
@@ -37,39 +31,37 @@ input[type=submit].primary {
   color: #fff;
 }
 
-.button.primary:hover,
-input[type=submit].primary:hover,
-.button.primary:focus,
-input[type=submit].primary:focus {
-  background: #0fa2e8;
-}
-
 
 .alert {
   text-align: left;
   color: green;
 }
 
-body, .button {
-  font-family: MuseoSans, Times, serif;
+body {
+  background: #0da7fd;
+  font-family: "Helvetica Neue", "Helvetica", arial, sans-serif;
+  color: #fff;
+  margin: 0 25px;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: MuseoSans, Times, serif;
+  font-family: "Helvetica Neue", "Helvetica", arial, sans-serif;
   font-weight: normal;
 }
 
 header {
-  border-bottom: 1px solid $border;
+  text-align: center;
+  &> div {
+    display: inline-block;
+  }
 }
-
 
 section.content {
   h2 {
     font-size: 1.8em;
-    padding: 10px 0;
-    border-bottom: 1px solid $border;
+    padding: 0 0 1em;
     margin-bottom: 0;
+    text-align: center;
   }
 
   .video-container {
@@ -80,13 +72,16 @@ section.content {
       display: block;
       margin: 0;
       padding: 0;
+      height: 100%;
+      width: 100%;
     }
 
   }
+
   .explain {
     text-align: left;
-    margin: 30px 20px;
     font-size: 20px;
+    margin: 1em 0;
   }
 
   .form {

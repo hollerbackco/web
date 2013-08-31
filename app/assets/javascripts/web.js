@@ -3,5 +3,6 @@
 //= require backbone-min
 //= require bootstrap-modal
 //= require handlebars.runtime
+//= require retina
 //= require_tree ./web/templates
 //= require_tree ./web

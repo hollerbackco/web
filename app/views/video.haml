@@ -1,12 +1,13 @@
 %section.content
-  %h2 video message from jeff:
+  %h2
+    %strong jeff
+    is using hollerback
+
   .video-container
-    = video_tag "/video.mp4"
+    = video_tag "/jeff.mp4"
+
+  .explain
+    {{name}} is waiting for your response on Hollerback. It's Free.
+
   .actions
-    .caption sent using hollerback for iphone
-    .primary-action.action-button.primary.button.with-image
-      %img{src: image_path("hollerback-banana-app-icon.png")}
-      %span.push get the app to reply
-    .secondary-action
-      %a{href: "/waitlist"} no iphone?
-    .caption it's fun and free!
+    .ios-store {{available on the app store}}
