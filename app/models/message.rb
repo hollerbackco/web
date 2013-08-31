@@ -8,9 +8,10 @@ class Message < ActiveRecord::Base
   scope :updated_since, lambda {|updated_at| where("messages.updated_at > ?", updated_at)}
 
   after_create do |record|
-    record.membership.last_message_at = record.sent_at
-    record.membership.most_recent_thumb_url = record.thumb_url
-    record.membership.save
+    m = record.membership
+    m.last_message_at = record.sent_at
+    m.most_recent_thumb_url = record.thumb_url
+    m.save
   end
 
   def sender?
