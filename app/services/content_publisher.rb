@@ -1,9 +1,13 @@
 class ContentPublisher
-  attr_accessor :membership, :conversation, :messages
+  include Sinatra::CoreHelpers
+
+  attr_accessor :membership, :conversation, :messages, :is_first_message, :sender
 
   def initialize(membership)
     @membership = membership
+    @sender = @membership.user
     @conversation = membership.conversation
+    @is_first_message = (@conversation.videos.count == 1)
   end
 
   def publish(content, opts={})
@@ -13,10 +17,10 @@ class ContentPublisher
     end
     notify_recipients(messages) if options[:notify]
     publish_analytics(content) if options[:analytics]
+    sms_invite(conversation, content) if is_first_message
   end
 
   def send_to(membership, content)
-    sender = content.user
     member = membership.user
 
     membership.touch
@@ -59,5 +63,15 @@ class ContentPublisher
       },
       user: {id: content.user.id, username: content.user.username}
     })
+  end
+
+  def sms_invite(phones, content)
+    p "sms invite"
+    conversation.invites.map(&:phone).each do |phone|
+      msg = "#{sender.username} sent you a message on hollerback. #{video_share_url content}"
+      p msg
+      #TODO: send a text message to non users
+      Hollerback::SMS.send_message phone, msg
+    end
   end
 end

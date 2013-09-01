@@ -21,7 +21,7 @@
     %meta{ :name => "apple-mobile-web-app-status-bar-style", :content => "black"}
 
     = stylesheet_tag "web"
-    = javascript_tag "landing"
+    = javascript_tag "web"
     = tracking_code(:account => settings.google_analytics_key)
 
     :javascript
@@ -35,12 +35,12 @@
 
   %body
     .container
-      %header
-        %h1.title.clearfix
-          = image_tag "hollerback-logo.png"
-          .subtitle free video messaging
       %section
         = yield
+      %header
+        %h1.title.clearfix
+          .logo= image_tag "bananarang-icon.png"
+          .wordmark= image_tag "hollerback-wordmark.png"
 
     -#  asynchronous google analytics: mathiasbynens.be/notes/async-analytics-snippet
     :javascript
