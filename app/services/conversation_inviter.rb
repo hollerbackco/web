@@ -16,11 +16,10 @@ module Hollerback
             conversation.members << users.first
           else
             Invite.create(
-              phone: phone.first,
+              phone: phone,
               inviter: inviter,
               conversation: conversation
             )
-
           end
         end
         run_analytics
