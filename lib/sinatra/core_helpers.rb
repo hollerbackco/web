@@ -9,6 +9,10 @@ module Sinatra
       params[arg.to_s].present?
     end
 
+    def video_share_url(video)
+      "http://www.hollerback.co/from/#{video.user.username}/#{video.to_code}"
+    end
+
     # checks an array of params from the params hash
     def ensure_params(*args)
       return catch(:truthy) {

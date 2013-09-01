@@ -75,6 +75,15 @@ class Video < ActiveRecord::Base
     @bucket ||= AWS::S3.new.buckets[BUCKET_NAME]
   end
 
+  def to_code
+    (id + 999999999).to_s(24)
+  end
+
+  def self.find_by_code(code)
+    code = code.to_i(24) - 999999999
+    find(code)
+  end
+
   private
 
   def video_object

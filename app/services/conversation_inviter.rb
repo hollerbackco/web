@@ -16,13 +16,10 @@ module Hollerback
             conversation.members << users.first
           else
             Invite.create(
-              phone: phone.first,
+              phone: phone,
               inviter: inviter,
               conversation: conversation
             )
-
-            #TODO: send a text message to non users
-            #Hollerback::SMS.send_message phone, "#{inviter.name} has invited you to Hollerback"
           end
         end
         run_analytics
