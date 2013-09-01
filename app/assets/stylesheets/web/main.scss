@@ -41,7 +41,7 @@ body {
   background: #0da7fd;
   font-family: "Helvetica Neue", "Helvetica", arial, sans-serif;
   color: #fff;
-  margin: 25px;
+  margin: 15px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -74,6 +74,22 @@ section.content {
       z-index: 10;
       display: block;
     }
+
+    .watermark {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 11;
+
+      .wordmark {
+        width: 115px;
+
+        img {
+          width: 100%;
+        }
+      }
+    }
+
     .play-icon {
       position: absolute;
       top: 10px;
@@ -118,7 +134,7 @@ section.content {
 
   .explain {
     text-align: left;
-    font-size: 20px;
+    font-size: 1.15em;
     margin: 1em 0;
   }
 
