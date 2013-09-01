@@ -17,8 +17,8 @@ class Conversation < ActiveRecord::Base
   alias_method :is_group, :group?
 
   def member_names(discluded_user=nil)
-    name = members.map {|user| user.username }.join(",")
-    members.any? ? name.join(", ") : nil
+    names = members.map {|user| user.username }.join(",")
+    members.any? ? names : nil
   end
 
   def involved_phones
