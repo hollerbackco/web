@@ -1,9 +1,9 @@
 %section.content
-  %h2
-    %strong= @name
-    is using hollerback
-
   .video-container
+    .watermark.clearfix
+      .wordmark= image_tag "hollerback-wordmark.png"
+    .instructions
+      tap to play
     %img.poster{src: @thumb_url, width: "100%"}
     .play-icon= image_tag "play-icon.png"
     %video{poster: @thumb_url, preload: "auto", controls: "controls"}
