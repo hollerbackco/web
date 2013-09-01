@@ -66,9 +66,9 @@ class ContentPublisher
   end
 
   def sms_invite(phones, content)
-    p "sms invite"
     conversation.invites.map(&:phone).each do |phone|
       msg = "#{sender.username} sent you a message on hollerback. #{video_share_url content}"
+      p phone
       p msg
       #TODO: send a text message to non users
       Hollerback::SMS.send_message phone, msg
