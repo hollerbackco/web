@@ -10,11 +10,13 @@ module HollerbackApp
       haml :index, layout: false
     end
 
-    get '/video/:id' do
-      params[:id]
-      @video = Video.find(params[:id])
-      @video_url = 
-      @thumb_url = 
+    get '/from/:username/:id' do
+      video = Video.find_by_code(params[:id])
+      not_found if video.user.username != params[:username]
+
+      @name = video.user.username
+      @video_url = video.url
+      @thumb_url = video.thumb_url
       haml :video
     end
 

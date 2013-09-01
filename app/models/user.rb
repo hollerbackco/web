@@ -16,9 +16,11 @@ class User < ActiveRecord::Base
 
   before_create :set_access_token
   before_create :set_verification_code
+  before_create :downcase_username
 
   validates :phone, presence: true, uniqueness: true
-  validates :username, presence: true
+  validates :phone_normalized, presence: true, uniqueness: true
+  validates :username, presence: true, format: {with: /^([a-zA-Z](_?[a-zA-Z0-9]+)*_?|_([a-zA-Z0-9]+_?)*)$/i}, uniqueness: true
 
   #validates :name, presence: true
   #validates :email, presence: true, uniqueness: true
@@ -154,6 +156,10 @@ class User < ActiveRecord::Base
       access_token = ::Hollerback::Random.friendly_token(40)
       break access_token unless User.find_by_access_token(access_token)
     end
+  end
+
+  def downcase_username
+    self.username.downcase!
   end
 
   def set_verification_code

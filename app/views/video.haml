@@ -1,13 +1,28 @@
 %section.content
   %h2
-    %strong jeff
+    %strong= @name
     is using hollerback
 
   .video-container
-    = video_tag "/jeff.mp4"
+    %img.poster{src: @thumb_url, width: "100%"}
+    .play-icon= image_tag "play-icon.png"
+    %video{poster: @thumb_url, preload: "auto", controls: "controls"}
+      %source{src: @video_url, type: "video/mp4"}
 
   .explain
-    {{name}} is waiting for your response on Hollerback. It's Free.
+    %strong #{@name}
+    is waiting for your response on Hollerback. It's Free.
 
   .actions
-    .ios-store {{available on the app store}}
+    .store-badge.ios-store
+      %a{href: "http://www.hollerback.co/beta/test/staging"}= image_tag "appstore.png"
+
+  :javascript
+    window.onload = function() {
+      var video = document.getElementsByTagName('video')[0];
+      var poster = document.getElementsByClassName('poster')[0];
+      poster.onclick = function() {
+        $(".video-container").addClass("playing")
+        video.play();
+      };
+    };
