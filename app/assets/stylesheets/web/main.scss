@@ -90,6 +90,15 @@ section.content {
       }
     }
 
+    .instructions {
+      position: absolute;
+      z-index: 11;
+      text-align: center;
+      bottom: 15px;
+      width: 100%;
+      color: #fff;
+    }
+
     .play-icon {
       position: absolute;
       top: 10px;
@@ -112,6 +121,10 @@ section.content {
     }
 
     &.playing {
+      .instructions {
+        display: none;
+      }
+
       .poster {
         opacity: 0;
       }
