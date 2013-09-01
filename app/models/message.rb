@@ -1,5 +1,6 @@
 class Message < ActiveRecord::Base
   belongs_to :membership
+  belongs_to :video, :foreign_key => "content_guid"
   serialize :content, ActiveRecord::Coders::Hstore
 
   scope :unseen, where(:seen_at => nil)
@@ -53,6 +54,11 @@ class Message < ActiveRecord::Base
     content["thumb_url"]
   end
 
+  # TODO get rid of this
+  def filename
+    video.filename
+  end
+
   def unseen?
     seen_at.blank?
   end
@@ -81,7 +87,7 @@ class Message < ActiveRecord::Base
   end
 
   def as_json(options={})
-    options = options.merge(:methods => [:url, :thumb_url, :conversation_id, :user])
+    options = options.merge(:methods => [:url, :thumb_url, :conversation_id, :user, :filename])
     options = options.merge(:except => [:membership_id])
     super(options).merge({isRead: !unseen?})
   end
