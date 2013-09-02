@@ -97,7 +97,7 @@ class Membership < ActiveRecord::Base
 
   def as_json(options={})
     options = options.merge(methods: [:name, :unread_count, :is_group, :videos, :members])
-    options = options.merge(except: [:updated_at])
+    options = options.merge(except: [:updated_at, :conversation_id])
     obj = super(options)
 
     # TODO cleanup updated_at [hacky][ios]
