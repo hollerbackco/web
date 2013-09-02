@@ -22,11 +22,11 @@ class VideoStitchRequest
 
   def fetch_urls(urls)
     if urls.key? "parts"
-      urls[:parts].map do |key|
+      urls["parts"].map do |key|
         Video.bucket.objects[key].url_for(:read, :expires => 1.month, :secure => false).to_s
       end
     elsif urls.key? "part_urls"
-      urls[:part_urls].map do |arn|
+      urls["part_urls"].map do |arn|
         bucket, key = arn.split("/", 2)
         Video.bucket_by_name(bucket).objects[key].url_for(:read, :expires => 1.month, :secure => false).to_s
       end
