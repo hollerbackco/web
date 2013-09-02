@@ -10,14 +10,18 @@
       %td Created At
   %tbody
     - @videos.each do |video|
-      %tr
-        %td= video.id
-        %td= video.user.username
-        %td= video.conversation.name
-        %td= video.conversation.member_names
-        %td= video.filename
-        %td
-          %span.date{"data-time" => (video.created_at.to_i * 1000)}= video.created_at
+      - if video.user.blank?
+        %tr
+          %td blank user
+      - else
+        %tr
+          %td= video.id
+          %td= video.user.username
+          %td= video.conversation.name
+          %td= video.conversation.member_names
+          %td= video.filename
+          %td
+            %span.date{"data-time" => (video.created_at.to_i * 1000)}= video.created_at
 
 %h1 Users
 %table.table.table-bordered
