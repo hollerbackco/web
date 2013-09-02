@@ -20,7 +20,7 @@ class User < ActiveRecord::Base
 
   validates :phone, presence: true, uniqueness: true
   validates :phone_normalized, presence: true, uniqueness: true
-  validates :username, presence: true, format: {with: /^([a-zA-Z](_?[a-zA-Z0-9]+)*_?|_([a-zA-Z0-9]+_?)*)$/i}, uniqueness: true
+  validates :username, presence: true, uniqueness: true
 
   #validates :name, presence: true
   #validates :email, presence: true, uniqueness: true
@@ -106,7 +106,6 @@ class User < ActiveRecord::Base
   def phone_country_code
     phoner.present? ? phoner.country_code : "1"
   end
-
 
   def verified?
     self.verification_code.blank?

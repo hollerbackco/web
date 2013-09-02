@@ -1,8 +1,6 @@
 class ChangeMemberships < ActiveRecord::Migration
   def up
-    change_table :memberships do |t|
-      t.string :name
-    end
+    add_column :memberships, :name, :string
     update_memberships
   end
 

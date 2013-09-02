@@ -23,6 +23,7 @@ describe 'API ROUTES |' do
   end
 
   before(:all) do
+    DatabaseCleaner.clean!
     @user ||= FactoryGirl.create(:user)
 
     3.times do
@@ -32,8 +33,8 @@ describe 'API ROUTES |' do
     @user.conversations.each do |conversation|
       membership = Membership.where(user_id: @user.id, conversation_id: conversation.id).first
       10.times do
-        video = conversation.videos.create(user: @user, :filename => "hello.mp4", in_progress: false)
         publisher = ContentPublisher.new(membership)
+        video = conversation.videos.create(user: @user, :filename => "hello.mp4", in_progress: false)
         publisher.publish(video, notify: false, analytics: false)
       end
     end
@@ -130,7 +131,7 @@ describe 'API ROUTES |' do
   end
 
   it 'GET contacts/check | return contacts' do
-    get '/contacts/check', :c => [{"n" => secondary_subject.name, "p" => secondary_subject.phone_hashed}]
+    get '/contacts/check', :c => [{"n" => secondary_subject.username, "p" => secondary_subject.phone_hashed}]
 
     result = JSON.parse(last_response.body)
 
@@ -140,11 +141,11 @@ describe 'API ROUTES |' do
   end
 
   it 'GET contacts/check | return contacts with access_token' do
-    get '/contacts/check', :access_token => access_token, :c => [{"n" => secondary_subject.name, "p" => secondary_subject.phone_hashed}]
+    get '/contacts/check', :access_token => access_token, :c => [{"n" => secondary_subject.username, "p" => secondary_subject.phone_hashed}]
 
     result = JSON.parse(last_response.body)
 
-    secondary_subject.name.should == result['data'][0]["name"]
+    secondary_subject.username.should == result['data'][0]["username"]
 
     last_response.should be_ok
   end
@@ -174,7 +175,9 @@ describe 'API ROUTES |' do
 
   it 'GET me/sync | only get latest sync objects' do
     membership = subject.memberships.first
-    Message.create(:membership_id => membership.id)
+    publisher = ContentPublisher.new(membership)
+    video = conversation.videos.create(user: subject, :filename => "hello.mp4", in_progress: false)
+    publisher.publish(video, notify: false, analytics: false)
 
     get '/me/sync', :access_token => access_token, :updated_at => Time.now
     last_response.should be_ok
@@ -320,7 +323,7 @@ describe 'API ROUTES |' do
   end
 
   it "GET me/conversations/:id/videos | should get all videos" do
-    c = subject.memberships.first
+    c = subject.memberships.last
     get "/me/conversations/#{c.id}/videos", :access_token => access_token
 
     messages_count = c.messages.count
@@ -332,7 +335,7 @@ describe 'API ROUTES |' do
   end
 
   it "GET me/conversations/:id/videos | should paginate" do
-    c = subject.memberships.first
+    c = subject.memberships.last
     get "/me/conversations/#{c.id}/videos", :access_token => access_token, :page => 1, :perPage => 5
 
     result = JSON.parse(last_response.body)

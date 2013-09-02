@@ -18,6 +18,7 @@ class Message < ActiveRecord::Base
     is_sender
   end
 
+
   def self.sync_objects(opts={})
     raise ArgumentError if opts[:user].blank?
     options = {
@@ -53,6 +54,14 @@ class Message < ActiveRecord::Base
     content["thumb_url"]
   end
 
+  # TODO get rid of this
+  def video
+    Video.find(content_guid.to_i)
+  end
+  def filename
+    video.filename
+  end
+
   def unseen?
     seen_at.blank?
   end
@@ -81,7 +90,7 @@ class Message < ActiveRecord::Base
   end
 
   def as_json(options={})
-    options = options.merge(:methods => [:url, :thumb_url, :conversation_id, :user])
+    options = options.merge(:methods => [:url, :thumb_url, :conversation_id, :user, :filename])
     options = options.merge(:except => [:membership_id])
     super(options).merge({isRead: !unseen?})
   end
