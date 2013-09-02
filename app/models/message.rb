@@ -1,6 +1,5 @@
 class Message < ActiveRecord::Base
   belongs_to :membership
-  belongs_to :video, :foreign_key => "content_guid"
   serialize :content, ActiveRecord::Coders::Hstore
 
   scope :unseen, where(:seen_at => nil)
@@ -18,6 +17,7 @@ class Message < ActiveRecord::Base
   def sender?
     is_sender
   end
+
 
   def self.sync_objects(opts={})
     raise ArgumentError if opts[:user].blank?
@@ -55,6 +55,9 @@ class Message < ActiveRecord::Base
   end
 
   # TODO get rid of this
+  def video
+    Video.find(content_guid.to_i)
+  end
   def filename
     video.filename
   end

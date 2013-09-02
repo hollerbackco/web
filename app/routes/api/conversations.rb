@@ -24,9 +24,6 @@ module HollerbackApp
     # params
     #   invites: array of phone numbers
     post '/me/conversations' do
-      p "params"
-      p params
-
       unless ensure_params(:invites)
         return error_json 400, msg: "missing invites param"
       end
@@ -35,14 +32,19 @@ module HollerbackApp
       if invites.is_a? String
         invites = invites.split(",")
       end
+
       name = params["name"]
       name = nil if params["name"] == "<null>" #TODO: iOs sometimes sends a null value
-      conversation = nil
 
       inviter = Hollerback::ConversationInviter.new(current_user, invites, name)
 
       if inviter.invite
-        success_json data: inviter.inviter_membership
+        urls = params.select {|key,value| ["parts", "part_urls"].include? key }
+        unless urls.blank?
+          video = inviter.conversation.videos.create(user: current_user)
+          VideoStitchRequest.perform_async(video.id, urls)
+        end
+        success_json data: inviter.inviter_membership.as_json
       else
         error_json 400, for: inviter, msg: "problem updating"
       end
