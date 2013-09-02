@@ -6,10 +6,6 @@ class VideoStitchRequest
     urls = fetch_urls(obj)
 
     if video
-      if output_key.present?
-        label = labelify(output_key)
-      end
-
       queue.send_message({
         parts: urls,
         output: "#{Video.random_label}",
