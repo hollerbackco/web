@@ -102,14 +102,6 @@ describe 'API ROUTES |' do
     last_response.should be_ok
   end
 
-  it 'POST session | should allow signin with email and password' do
-    device_count = subject.devices.count
-    post '/session', :email => subject.email, :password => "HELLO"
-
-    result = JSON.parse(last_response.body)
-    last_response.should be_ok
-  end
-
   it 'DELETE session | deletes the device' do
     user = FactoryGirl.create(:user)
     device_count = user.devices.count

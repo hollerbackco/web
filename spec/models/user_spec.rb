@@ -5,6 +5,10 @@ describe User do
     @user ||= FactoryGirl.create(:user)
   end
 
+  after(:all) do
+    DatabaseCleaner.clean!
+  end
+
   let(:user) { @user }
 
   it "should have a device" do
@@ -41,5 +45,20 @@ describe User do
   it "should return an alias for user" do
     @contact = Contact.create(user_id: @user.id, phone_hashed: @user.phone_hashed, name: "testname")
     user.also_known_as(for: user).should == "testname"
+  end
+
+  describe "muting of users" do
+    it "should have an empty list at first" do
+      user.muted_users.is_a?(Array).should be_true
+    end
+
+    it "should allow muting/unmuting" do
+      second_user = FactoryGirl.create(:user)
+      user.muted?(second_user).should be_false
+      user.mute! second_user
+      user.muted?(second_user).should be_true
+      user.unmute! second_user
+      user.muted?(second_user).should be_false
+    end
   end
 end
