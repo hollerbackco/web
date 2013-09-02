@@ -107,7 +107,6 @@ class User < ActiveRecord::Base
     phoner.present? ? phoner.country_code : "1"
   end
 
-
   def verified?
     self.verification_code.blank?
   end

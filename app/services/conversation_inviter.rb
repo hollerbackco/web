@@ -11,7 +11,7 @@ module Hollerback
     def invite
       success = Conversation.transaction do
         self.conversation = create_conversation
-        parsed_phones.each do |phone|
+        phones.each do |phone|
           if users = User.where(phone_normalized: phone) and users.any?
             conversation.members << users.first
           else
@@ -43,7 +43,7 @@ module Hollerback
     end
 
     def inviter_membership
-      conversation.memberships.find(:first, conditions: {user_id: inviter.id})
+      inviter.memberships.find(:first, conditions: {conversation_id: conversation.id})
     end
 
     private

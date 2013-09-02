@@ -5,7 +5,6 @@ class Membership < ActiveRecord::Base
   belongs_to :user
   belongs_to :conversation
   has_many :messages
-  has_many :unseen_messages, foreign_key: "membership_id", class_name: "Message", conditions: {seen_at: nil}
 
   delegate :invites, to: :conversation
 

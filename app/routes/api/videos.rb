@@ -33,27 +33,15 @@ module HollerbackApp
     end
 
     post '/me/conversations/:id/videos/parts' do
-      p "params:"
-      p params
+      if !params.key?("parts") and !params.key?("part_urls") 
+        return error_json 400, msg: "missing parts param"
+      end
+      urls = params.select {|key,value| ["parts", "part_urls"].include? key }
 
       membership = current_user.memberships.find(params[:id])
       video = membership.conversation.videos.create(user: current_user)
 
-      urls = if params.key? "parts"
-        params[:parts].map do |key|
-          Video.bucket.objects[key].url_for(:read, :expires => 1.month, :secure => false).to_s
-        end
-      elsif params.key? "part_urls"
-        params[:part_urls].map do |arn|
-          bucket, key = arn.split("/", 2)
-          Video.bucket_by_name(bucket).objects[key].url_for(:read, :expires => 1.month, :secure => false).to_s
-        end
-      else
-        return error_json 400, msg: "missing parts param"
-        []
-      end
-
-      VideoStitchRequest.perform_async(urls, video.id)
+      VideoStitchRequest.perform_async(video.id, urls)
 
       success_json data: video
     end
@@ -78,7 +66,6 @@ module HollerbackApp
         if video.save
           publisher = ContentPublisher.new(membership)
           publisher.publish(video)
-          p video.as_json
 
           success_json data: publisher.sender_message.as_json
         else
