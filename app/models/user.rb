@@ -8,8 +8,10 @@ class User < ActiveRecord::Base
     :device_token, :last_app_version
 
   has_many :devices, autosave: true
-  has_many :memberships
-  has_many :messages, through: :memberships
+  has_many :memberships, :dependent => :destroy
+  has_many :messages, through: :memberships, :dependent => :destroy
+  has_many :videos, :dependent => :destroy
+
   has_many :unseen_messages, through: :memberships
   has_many :conversations, through: :memberships
   has_many :contacts

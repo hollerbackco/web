@@ -12,6 +12,7 @@ class Video < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :conversation
+  has_many :messages, :foreign_key => "content_guid", :dependent => :destroy
 
   default_scope order("created_at DESC")
 
