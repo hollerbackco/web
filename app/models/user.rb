@@ -2,6 +2,9 @@ require 'digest/md5'
 class User < ActiveRecord::Base
   include Hollerback::SecurePassword
 
+  # array of blocked users
+  serialize :muted, Array
+
   #has_secure_password
   attr_accessible :name, :email, :phone, :phone_hashed, :username,
     :password, :password_confirmation, :phone_normalized,
@@ -24,9 +27,32 @@ class User < ActiveRecord::Base
   validates :phone_normalized, presence: true, uniqueness: true
   validates :username, presence: true, uniqueness: true
 
-  #validates :name, presence: true
-  #validates :email, presence: true, uniqueness: true
-  #validates_format_of :email, with: /.+@.+\..+/i
+
+  def muted?(user)
+    user = User.find(user) if user.is_a? Integer
+
+    self[:muted].include? user.id
+  end
+
+  def mute!(user)
+    user = User.find(user) if user.is_a? Integer
+    return true if muted?(user)
+
+    self[:muted] << user.id
+    save!
+  end
+
+  def unmute!(user)
+    user = User.find(user) if user.is_a? Integer
+    return true if !muted?(user)
+
+    self[:muted].delete(user.id)
+    save!
+  end
+
+  def muted_users
+    muted.map {|uid| User.find(uid) }
+  end
 
   def memcache_key_touch
     HollerbackApp::BaseApp.settings.cache.set("user/#{id}/memcache-id", self.memcache_id + 1)

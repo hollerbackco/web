@@ -102,14 +102,6 @@ describe 'API ROUTES |' do
     last_response.should be_ok
   end
 
-  it 'POST session | should allow signin with email and password' do
-    device_count = subject.devices.count
-    post '/session', :email => subject.email, :password => "HELLO"
-
-    result = JSON.parse(last_response.body)
-    last_response.should be_ok
-  end
-
   it 'DELETE session | deletes the device' do
     user = FactoryGirl.create(:user)
     device_count = user.devices.count
@@ -162,6 +154,20 @@ describe 'API ROUTES |' do
     result = JSON.parse(last_response.body)
 
     subject.reload.username.should == result['data']['username']
+  end
+
+  it 'POST me/users/:id/mute | mute user' do
+    post "/me/users/#{secondary_subject.id}/mute", :access_token => access_token
+    last_response.should be_ok
+
+    subject.reload.muted?(secondary_subject).should be_true
+  end
+
+  it 'POST me/users/:id/unmute | unmute user' do
+    post "/me/users/#{secondary_subject.id}/unmute", :access_token => access_token
+    last_response.should be_ok
+
+    subject.reload.muted?(secondary_subject).should be_false
   end
 
   it 'GET me/sync | gets a list of syncable objects' do
