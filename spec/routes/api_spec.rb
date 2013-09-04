@@ -156,6 +156,20 @@ describe 'API ROUTES |' do
     subject.reload.username.should == result['data']['username']
   end
 
+  it 'POST me/users/:id/mute | mute user' do
+    post "/me/users/#{secondary_subject.id}/mute", :access_token => access_token
+    last_response.should be_ok
+
+    subject.reload.muted?(secondary_subject).should be_true
+  end
+
+  it 'POST me/users/:id/unmute | unmute user' do
+    post "/me/users/#{secondary_subject.id}/unmute", :access_token => access_token
+    last_response.should be_ok
+
+    subject.reload.muted?(secondary_subject).should be_false
+  end
+
   it 'GET me/sync | gets a list of syncable objects' do
     get '/me/sync', :access_token => access_token
     last_response.should be_ok
