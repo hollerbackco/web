@@ -26,8 +26,9 @@ module Hollerback
     end
 
     def xtea
-      key = "5410031E652142FEC303EB175CDDEE50"
-      @xtea ||= ::Xtea.new(key)
+      #key = "5410031E652142FEC303EB175CDDEE50"
+      key = "30313435453133303132353645463234"
+      @xtea ||= ::Xtea.new(key, 64)
     end
 
     def notify_push(message, person)
