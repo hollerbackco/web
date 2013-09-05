@@ -14,7 +14,7 @@ class ContentPublisher
     options = {notify: true, analytics: true}.merge(opts)
     self.messages = conversation.memberships.map do |m|
       send_to(m, content)
-    end
+    end.compact
     notify_recipients(messages) if options[:notify]
     publish_analytics(content) if options[:analytics]
     sms_invite(conversation, content) if is_first_message
@@ -22,6 +22,8 @@ class ContentPublisher
 
   def send_to(membership, content)
     member = membership.user
+    # check to see that the user actually exists
+    return nil if member.blank?
 
     membership.touch
 
@@ -68,8 +70,6 @@ class ContentPublisher
   def sms_invite(phones, content)
     conversation.invites.map(&:phone).each do |phone|
       msg = "#{sender.username} sent you a message on hollerback. #{video_share_url content}"
-      p phone
-      p msg
       #TODO: send a text message to non users
       Hollerback::SMS.send_message phone, msg
     end
