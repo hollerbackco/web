@@ -20,8 +20,15 @@ module Hollerback
 
     def notify_mqtt(message, person)
       MQTT::Client.connect('23.23.249.106') do |c|
-        c.publish("user/#{person.id}/video", message.to_sync.to_json)
+        data = [message.to_sync, message.membership.to_sync]
+        c.publish("user/#{person.id}/sync", xtea.encrypt(data.to_json))
       end
+    end
+
+    def xtea
+      #key = "5410031E652142FEC303EB175CDDEE50"
+      key = "30313435453133303132353645463234"
+      @xtea ||= ::Xtea.new(key, 64)
     end
 
     def notify_push(message, person)
