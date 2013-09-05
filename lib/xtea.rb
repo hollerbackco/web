@@ -31,9 +31,7 @@ class Xtea
   end
 
   def encrypt(s)
-    p s
     data = pad(s).unpack('L*')
-    p data
     data = data.each_slice(2).to_a.each {|v|
       sum = 0
       @n.times {
@@ -42,15 +40,12 @@ class Xtea
         v[1] = (v[1] + (((v[0]<<4 ^ v[0]>>5) + v[0]) ^ (sum + @key[sum>>11 & 3]))) & MASK
       }
     }
-
-    p data
     data.flatten.pack('L*')
   end
 
   def pad(s)
     padd = (8 - (s.bytesize % 8))
     s << ("\n" * padd) if padd
-    p s
     s
   end
 end
