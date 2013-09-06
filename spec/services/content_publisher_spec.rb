@@ -12,10 +12,22 @@ describe ContentPublisher do
   end
 
   subject {ContentPublisher.new(@membership)}
+  let(:membership) {@membership}
+  let(:conversation) {@membership.conversation}
 
   it "should publish and return messages" do
     video = FactoryGirl.create(:video)
     subject.publish(video)
     subject.messages.should_not be_empty
+  end
+
+  it "should not publish a message to muted users" do
+    user = FactoryGirl.create(:user)
+    conversation.members << user
+    user.mute! membership.user
+
+    video = FactoryGirl.create(:video)
+    subject.publish(video)
+    subject.messages.count.should == conversation.members.count - 1
   end
 end
