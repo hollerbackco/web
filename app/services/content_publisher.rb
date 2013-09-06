@@ -22,8 +22,12 @@ class ContentPublisher
 
   def send_to(membership, content)
     member = membership.user
+
     # check to see that the user actually exists
     return nil if member.blank?
+
+    # dont send message if the user has been muted
+    return nil if member.muted?(sender)
 
     membership.touch
 
