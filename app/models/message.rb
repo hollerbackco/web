@@ -30,7 +30,7 @@ class Message < ActiveRecord::Base
     collection = if options[:since]
       collection.updated_since(options[:since])
     else
-      collection.limit(100)
+      collection.limit(10)
     end
 
     collection.map(&:to_sync)
