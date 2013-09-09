@@ -29,6 +29,8 @@ class VideoCompletePoller
         SQSLogger.logger.info " -- Already delivered #{video.id}"
       end
     end
+  rescue ActiveRecord::RecordNotFound
+    p " -- No video found"
   end
 
   def delivered?(video)
