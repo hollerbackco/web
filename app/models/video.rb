@@ -12,9 +12,13 @@ class Video < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :conversation
-  has_many :messages, :foreign_key => "content_guid", :dependent => :destroy
+  #has_many :messages, :foreign_key => "content_guid", :dependent => :destroy
 
   default_scope order("created_at DESC")
+
+  after_destroy do |record|
+    Message.where(:content_guid => record.id.to_s).destroy_all
+  end
 
   def self.random_label
     "#{SecureRandom.hex(1).upcase}/#{SecureRandom.uuid.upcase}"
