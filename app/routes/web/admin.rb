@@ -18,6 +18,7 @@ module HollerbackApp
 
     get '/madmin' do
       @users = User.all
+      @broken = Video.where(:filename => nil)
       @videos = Video.limit(25)
       haml "admin/index".to_sym, layout: "layouts/admin".to_sym
     end
