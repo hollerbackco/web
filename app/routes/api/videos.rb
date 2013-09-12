@@ -39,9 +39,14 @@ module HollerbackApp
       urls = params.select {|key,value| ["parts", "part_urls"].include? key }
 
       membership = current_user.memberships.find(params[:id])
-      video = membership.conversation.videos.create(user: current_user)
 
+      video = membership.conversation.videos.create(user: current_user)
       VideoStitchRequest.perform_async(video.id, urls)
+
+      #mark messages as read
+      membership.messages.unseen.each do |message|
+        VideoRead.perform_async(message.id, current_user.id)
+      end
 
       success_json data: video
     end
