@@ -44,8 +44,10 @@ module HollerbackApp
       VideoStitchRequest.perform_async(video.id, urls)
 
       #mark messages as read
-      membership.messages.unseen.each do |message|
-        VideoRead.perform_async(message.id, current_user.id)
+      if params.key? "reply"
+        membership.messages.unseen.each do |message|
+          VideoRead.perform_async(message.id, current_user.id)
+        end
       end
 
       success_json data: video
