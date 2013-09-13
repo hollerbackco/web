@@ -46,6 +46,7 @@ module HollerbackApp
       #mark messages as read
       if params.key? "reply"
         membership.messages.unseen.each do |message|
+          message.seen!
           VideoRead.perform_async(message.id, current_user.id)
         end
       end
