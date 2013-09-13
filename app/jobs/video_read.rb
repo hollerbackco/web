@@ -23,6 +23,7 @@ class VideoRead
 
     def notify_mqtt(message, person)
       MQTT::Client.connect(remote_host: '23.23.249.106', username: "UXiXTS1wiaZ7", password: "G4tkwWMOXa8V") do |c|
+        p "send a mqtt push"
         data = [message.to_sync, message.membership.to_sync]
         c.publish("user/#{person.id}/sync", xtea.encrypt(data.to_json), false, 1)
       end
