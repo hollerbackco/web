@@ -11,7 +11,7 @@ class VideoRead
       id: video_id,
       user: {id: current_user.id, username: current_user.username} })
 
-    notify_mqtt(message, message.membership.user)
+    notify_mqtt(message, current_user)
 
     unwatched_count = current_user.messages.unseen.count
     current_user.devices.ios.each do |device|
@@ -29,8 +29,6 @@ class VideoRead
     end
 
     def xtea
-      #key = "5410031E652142FEC303EB175CDDEE50"
-      #key = "30313435453133303132353645463234"
       key = "8926AEC00DA47334F7A4F0689AA3E6B4"
       @xtea ||= ::Xtea.new(key, 64)
     end
