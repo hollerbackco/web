@@ -10,7 +10,9 @@ class Message < ActiveRecord::Base
   after_create do |record|
     m = record.membership
     m.last_message_at = record.sent_at
-    m.most_recent_thumb_url = record.thumb_url
+    unless record.sender?
+      m.most_recent_thumb_url = record.thumb_url
+    end
     m.save
   end
 
