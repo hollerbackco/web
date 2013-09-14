@@ -15,7 +15,6 @@ class User < ActiveRecord::Base
   has_many :messages, through: :memberships, :dependent => :destroy
   has_many :videos, :dependent => :destroy
 
-  has_many :unseen_messages, through: :memberships
   has_many :conversations, through: :memberships
   has_many :contacts
 
@@ -27,6 +26,10 @@ class User < ActiveRecord::Base
   validates :phone_normalized, presence: true, uniqueness: true
   validates :username, presence: true, uniqueness: true
 
+
+  def unseen_memberships_count
+    messages.unseen.group_by(&:membership_id).length
+  end
 
   def muted?(user)
     user = User.find(user) if user.is_a? Integer
