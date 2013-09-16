@@ -31,6 +31,7 @@ class VideoRead
         p "send a mqtt push"
         data = messages.map(&:to_sync)
         data << messages.first.membership.to_sync
+        p data
         c.publish("user/#{person.id}/sync", xtea.encrypt(data.to_json), false, 1)
       end
     end
