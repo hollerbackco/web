@@ -5,6 +5,8 @@ class VideoRead
     current_user = User.find(user_id)
     messages = Message.find(message_ids)
 
+    read_messages(messages)
+
     notify_analytics(messages, current_user)
     notify_mqtt(messages, current_user)
     notify_apns(current_user)
