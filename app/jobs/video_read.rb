@@ -1,32 +1,44 @@
 class VideoRead
   include Sidekiq::Worker
 
-  def perform(video_id, user_id)
+  def perform(message_ids, user_id)
     current_user = User.find(user_id)
+    messages = Message.find(message_ids)
 
-    message = Message.find(video_id)
-    message.seen!
-
-    Keen.publish("video:watch", {
-      id: video_id,
-      user: {id: current_user.id, username: current_user.username} })
-
-    notify_mqtt(message, current_user)
-
-    unwatched_count = current_user.unseen_memberships_count
-    current_user.devices.ios.each do |device|
-      APNS.send_notification(device.token, badge: unwatched_count)
-    end
+    notify_analytics(messages)
+    notify_mqtt(messages, current_user)
+    notify_apns(current_user)
   end
 
   private
 
-    def notify_mqtt(message, person)
+    def read_messages(messages)
+      messages.each do |message|
+        message.seen!
+      end
+    end
+
+    def notify_analytics(messages)
+      messages.each do |message|
+        Keen.publish("video:watch", {
+          id: message.id,
+          user: {id: current_user.id, username: current_user.username} })
+      end
+    end
+
+    def notify_mqtt(messages, person)
       MQTT::Client.connect(remote_host: '23.23.249.106', username: "UXiXTS1wiaZ7", password: "G4tkwWMOXa8V") do |c|
         p "send a mqtt push"
-        data = [message.to_sync, message.membership.to_sync]
-        p data
+        data = messages.map(&:to_sync)
+        data = << messages.first.membership.to_sync
         c.publish("user/#{person.id}/sync", xtea.encrypt(data.to_json), false, 1)
+      end
+    end
+
+    def notify_apns(current_user)
+      unwatched_count = current_user.unseen_memberships_count
+      current_user.devices.ios.each do |device|
+        APNS.send_notification(device.token, badge: unwatched_count)
       end
     end
 

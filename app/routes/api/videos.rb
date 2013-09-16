@@ -27,13 +27,13 @@ module HollerbackApp
       message = Message.find(params[:id])
       message.seen!
 
-      VideoRead.perform_async(message.id, current_user.id)
+      VideoRead.perform_async([message.id], current_user.id)
 
       success_json data: message.as_json
     end
 
     post '/me/conversations/:id/videos/parts' do
-      if !params.key?("parts") and !params.key?("part_urls") 
+      if !params.key?("parts") and !params.key?("part_urls")
         return error_json 400, msg: "missing parts param"
       end
       urls = params.select {|key,value| ["parts", "part_urls"].include? key }
@@ -45,9 +45,8 @@ module HollerbackApp
 
       #mark messages as read
       if params.key? "reply"
-        membership.messages.unseen.each do |message|
-          VideoRead.perform_async(message.id, current_user.id)
-        end
+        ids = membership.messages.unseen.map(&:id)
+        VideoRead.perform_async(ids, current_user.id)
       end
 
       success_json data: video
