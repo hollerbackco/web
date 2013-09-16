@@ -5,7 +5,9 @@ class VideoRead
     current_user = User.find(user_id)
     messages = Message.find(message_ids)
 
-    notify_analytics(messages)
+    read_messages(messages)
+
+    notify_analytics(messages, current_user)
     notify_mqtt(messages, current_user)
     notify_apns(current_user)
   end
@@ -18,7 +20,7 @@ class VideoRead
       end
     end
 
-    def notify_analytics(messages)
+    def notify_analytics(messages, current_user)
       messages.each do |message|
         Keen.publish("video:watch", {
           id: message.id,
@@ -30,7 +32,8 @@ class VideoRead
       MQTT::Client.connect(remote_host: '23.23.249.106', username: "UXiXTS1wiaZ7", password: "G4tkwWMOXa8V") do |c|
         p "send a mqtt push"
         data = messages.map(&:to_sync)
-        data = << messages.first.membership.to_sync
+        data << messages.first.membership.to_sync
+        p data
         c.publish("user/#{person.id}/sync", xtea.encrypt(data.to_json), false, 1)
       end
     end
