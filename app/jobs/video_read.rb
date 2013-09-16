@@ -5,7 +5,7 @@ class VideoRead
     current_user = User.find(user_id)
     messages = Message.find(message_ids)
 
-    notify_analytics(messages)
+    notify_analytics(messages, current_user)
     notify_mqtt(messages, current_user)
     notify_apns(current_user)
   end
@@ -18,7 +18,7 @@ class VideoRead
       end
     end
 
-    def notify_analytics(messages)
+    def notify_analytics(messages, current_user)
       messages.each do |message|
         Keen.publish("video:watch", {
           id: message.id,
