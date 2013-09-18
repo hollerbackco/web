@@ -271,6 +271,7 @@ DEPENDENCIES
   awesome_nested_set
   aws-sdk
   bcrypt-ruby
+  celluloid
   coffee-script
   compass
   dalli

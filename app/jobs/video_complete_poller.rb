@@ -1,8 +1,11 @@
 class VideoCompletePoller
+  include Celluloid
+
   attr_accessor :queue
 
   def initialize(queue)
     @queue = queue
+    async.run
   end
 
   def run
