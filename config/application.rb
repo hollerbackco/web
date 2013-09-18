@@ -9,7 +9,7 @@ module HollerbackApp
     set :app_root, File.expand_path(".")
 
     # Setup db
-    set :database, ENV["DATABASE_URL"]
+    set :database, "#{ENV["DATABASE_URL"]}?pool=10"
     set :redis, ENV["REDISTOGO_URL"]
 
     dalli = if ENV["MEMCACHIER_SERVERS"]
