@@ -23,6 +23,29 @@ module HollerbackApp
       end
     end
 
+    get '/me/conversations/:conversation_id/history' do
+      begin
+        ConversationRead.perform_async(current_user.id)
+        membership = current_user.memberships.find(params[:conversation_id])
+
+        messages = membership.messages.seen.scoped
+
+        if params[:page]
+          messages = messages.paginate(:page => params[:page], :per_page => (params[:perPage] || 10))
+          last_page = messages.current_page == messages.total_pages
+        end
+
+        success_json({
+          data: messages.as_json,
+          meta: {
+            last_page: last_page
+          }
+        })
+      rescue ActiveRecord::RecordNotFound
+        not_found
+      end
+    end
+
     post '/me/videos/:id/read' do
       message = Message.find(params[:id])
       message.seen!

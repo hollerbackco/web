@@ -2,6 +2,7 @@ class Message < ActiveRecord::Base
   belongs_to :membership
   serialize :content, ActiveRecord::Coders::Hstore
 
+  scope :seen, where("seen_at is not null")
   scope :unseen, where(:seen_at => nil)
   scope :received, where("is_sender IS NOT TRUE")
   scope :sent, where("is_sender IS TRUE")
