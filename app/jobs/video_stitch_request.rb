@@ -1,7 +1,7 @@
 class VideoStitchRequest
   include Sidekiq::Worker
 
-  def perform(video_id, obj={})
+  def perform(video_id, obj={}, reply=false)
     video = Video.find(video_id)
     urls = fetch_urls(obj)
 
@@ -9,7 +9,8 @@ class VideoStitchRequest
       queue.send_message({
         parts: urls,
         output: "#{Video.random_label}",
-        video_id: video_id
+        video_id: video_id,
+        reply: reply
       }.to_json)
     end
   end

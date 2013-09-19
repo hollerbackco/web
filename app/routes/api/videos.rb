@@ -64,7 +64,7 @@ module HollerbackApp
       membership = current_user.memberships.find(params[:id])
 
       video = membership.conversation.videos.create(user: current_user)
-      VideoStitchRequest.perform_async(video.id, urls)
+      VideoStitchRequest.perform_async(video.id, urls, params.key?("reply"))
 
       #mark messages as read
       if params.key? "reply"
