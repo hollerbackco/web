@@ -1,6 +1,6 @@
 class Video < ActiveRecord::Base
   if Sinatra::Base.production?
-    BUCKET_NAME = "hollerback-app-dev"
+    BUCKET_NAME = "hb-media"
     CLOUDFRONT_URL = "http://d2qyqd6d7y0u0k.cloudfront.net"
   else
     BUCKET_NAME = "hollerback-app-dev"
