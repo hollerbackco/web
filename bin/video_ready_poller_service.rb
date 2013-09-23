@@ -26,5 +26,5 @@ SQSLogger.logger.info " -- Preparing \"#{queue_name}\" SQS Queue"
 queue = AWS::SQS.new.queues.create(queue_name)
 
 class CompletePollerGroup < Celluloid::SupervisionGroup; end;
-CompletePollerGroup.pool(VideoCompletePoller, as: :pollers, args: [queue], size: 10)
+CompletePollerGroup.pool(VideoCompletePoller, as: :pollers, args: [queue], size: 5)
 CompletePollerGroup.run

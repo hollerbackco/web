@@ -1,13 +1,14 @@
 class ContentPublisher
   include Sinatra::CoreHelpers
 
-  attr_accessor :membership, :conversation, :messages, :is_first_message, :sender
+  attr_accessor :membership, :conversation, :messages, :is_first_message, :sender, :is_reply
 
-  def initialize(membership)
+  def initialize(membership, is_reply=false)
     @membership = membership
     @sender = @membership.user
     @conversation = membership.conversation
     @is_first_message = (@conversation.videos.count == 1)
+    @is_reply = is_reply
   end
 
   def publish(content, opts={})
@@ -62,6 +63,7 @@ class ContentPublisher
   def publish_analytics(content)
     Keen.publish("video:create", {
       id: content.id,
+      is_reply: is_reply,
       receivers_count: (content.conversation.members.count - 1),
       conversation: {
         id: content.conversation.id,

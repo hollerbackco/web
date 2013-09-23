@@ -23,7 +23,7 @@ class VideoCompletePoller
         video.update_attributes(filename: data["output"], in_progress: false)
         membership = Membership.where(conversation_id: video.conversation_id, user_id: video.user_id).first
         if membership.present?
-          publisher = ContentPublisher.new(membership)
+          publisher = ContentPublisher.new(membership, data["reply"])
           publisher.publish(video)
         end
         mark_delivered(video)
