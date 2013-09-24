@@ -11,7 +11,7 @@ module Hollerback
     def invite
       success = Conversation.transaction do
         self.conversation = create_conversation
-        phones.each do |phone|
+        parsed_phones.each do |phone|
           if users = User.where(phone_normalized: phone) and users.any?
             user = users.first
             next if conversation.members.exists?(user)
