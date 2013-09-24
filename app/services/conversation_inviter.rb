@@ -13,7 +13,9 @@ module Hollerback
         self.conversation = create_conversation
         phones.each do |phone|
           if users = User.where(phone_normalized: phone) and users.any?
-            conversation.members << users.first
+            user = users.first
+            next if conversation.members.exists?(user)
+            conversation.members << user
           else
             Invite.create(
               phone: phone,
@@ -29,7 +31,7 @@ module Hollerback
     def parsed_phones
       self.phones.map do |phone|
         Phoner::Phone.parse(phone, country_code: inviter.phone_country_code, area_code: inviter.phone_area_code).to_s
-      end.compact
+      end.compact.uniq
     end
 
     def self.parse(user, numbers)
