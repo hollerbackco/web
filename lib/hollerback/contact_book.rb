@@ -1,10 +1,11 @@
 module Hollerback
   class ContactBook
-    attr_accessor :user, :contacts
+    attr_accessor :user, :contacts, :contact_ids
 
     def initialize(user)
       @user = user
       @contacts = user.contacts
+      @contact_ids = []
     end
 
     def update(obj=[])
@@ -17,12 +18,14 @@ module Hollerback
 
           contact.name = name
           contact.save
+          self.contact_ids << contact.id
         end
       end
     end
 
     def contacts_on_hollerback
-      contacts = Contact.joins(:aliased_user).where("contacts.user_id = ?", user.id)
+      contacts = Contact.joins(:aliased_user).where("contacts.id" => self.contact_ids).where("contacts.user_id = ?", user.id)
     end
+
   end
 end
