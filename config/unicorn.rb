@@ -18,7 +18,6 @@ after_fork do |server, worker|
   end
 
   if defined?(ActiveRecord::Base)
-    config['pool'] = ENV['DB_POOL'] || 5
-    ActiveRecord::Base.establish_connection(config)
+    ActiveRecord::Base.establish_connection
   end
 end
