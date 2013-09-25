@@ -3,8 +3,8 @@ class Video < ActiveRecord::Base
     BUCKET_NAME = "hb-media"
     CLOUDFRONT_URL = "http://d2qyqd6d7y0u0k.cloudfront.net"
   else
-    BUCKET_NAME = "hollerback-app-dev"
-    CLOUDFRONT_URL = "http://d2qyqd6d7y0u0k.cloudfront.net"
+    BUCKET_NAME = "hb-media-dev"
+    CLOUDFRONT_URL = "https://s3.amazonaws.com/hb-media-dev"
   end
 
   attr_accessible :filename, :user, :conversation, :in_progress

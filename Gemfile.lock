@@ -254,6 +254,7 @@ GEM
     uglifier (2.1.0)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
+    upsert (2.0.1)
     uuidtools (2.1.4)
     warden (1.2.1)
       rack (>= 1.0)
@@ -321,6 +322,7 @@ DEPENDENCIES
   tux
   twilio-ruby
   uglifier
+  upsert
   warden
   will_paginate
   yui-compressor
