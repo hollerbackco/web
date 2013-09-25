@@ -5,6 +5,8 @@ class Membership < ActiveRecord::Base
   belongs_to :user
   belongs_to :conversation
   has_many :messages
+  has_many :unseen_messages, :conditions => "seen_at is not null",
+    :class_name => "Message"
 
   delegate :invites, to: :conversation
 
@@ -20,7 +22,10 @@ class Membership < ActiveRecord::Base
       :since => nil,
     }.merge(opts)
 
-    collection = options[:user].memberships.includes(:messages)
+    collection = options[:user].memberships
+      .joins(:unseen_messages)
+      .group("memberships.id")
+      .select('memberships.*, count(messages) as unseen_count')
 
     if options[:since]
       collection = collection.updated_since(options[:since])
@@ -87,7 +92,7 @@ class Membership < ActiveRecord::Base
   alias_method :is_group, :group?
 
   def unseen_count
-    messages.unseen.count
+    unseen_messages.count
   end
   alias_method :unread_count, :unseen_count
 
