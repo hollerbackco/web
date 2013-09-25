@@ -20,7 +20,7 @@ class Membership < ActiveRecord::Base
       :since => nil,
     }.merge(opts)
 
-    collection = options[:user].memberships
+    collection = options[:user].memberships.includes(:messages)
 
     if options[:since]
       collection = collection.updated_since(options[:since])
