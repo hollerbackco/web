@@ -5,8 +5,6 @@ class Membership < ActiveRecord::Base
   belongs_to :user
   belongs_to :conversation
   has_many :messages
-  has_many :unseen_messages, :conditions => "seen_at is not null",
-    :class_name => "Message"
 
   delegate :invites, to: :conversation
 
@@ -23,7 +21,7 @@ class Membership < ActiveRecord::Base
     }.merge(opts)
 
     collection = options[:user].memberships
-      .joins(:unseen_messages)
+      .joins("LEFT OUTER JOIN messages ON memberships.id = messages.membership_id AND messages.seen_at is null")
       .group("memberships.id")
       .select('memberships.*, count(messages) as unseen_count')
 
@@ -92,7 +90,7 @@ class Membership < ActiveRecord::Base
   alias_method :is_group, :group?
 
   def unseen_count
-    unseen_messages.count
+    self["unseen_count"] || messages.unseen.count
   end
   alias_method :unread_count, :unseen_count
 

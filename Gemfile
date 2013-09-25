@@ -5,7 +5,7 @@ source 'http://gemcutter.org'
 gem 'rake'
 
 #server
-gem 'thin'
+gem 'unicorn'
 gem 'sinatra', :require => "sinatra/base"
 gem 'sinatra-contrib'
 gem "rack-reverse-proxy", :require => "rack/reverse_proxy"

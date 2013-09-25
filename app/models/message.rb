@@ -88,13 +88,15 @@ class Message < ActiveRecord::Base
   def to_sync
     {
       type: "message",
-      sync: as_json
+      sync: as_json(:methods => [:url, :thumb_url, :conversation_id, :user])
     }
   end
 
-  def as_json(options={})
+  def as_json(opts={})
+    options = {}
     options = options.merge(:methods => [:url, :thumb_url, :conversation_id, :user, :filename])
     options = options.merge(:except => [:membership_id])
+    options = options.merge(opts)
     super(options).merge({isRead: !unseen?})
   end
 end
