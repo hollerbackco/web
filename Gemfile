@@ -17,6 +17,7 @@ gem 'sinatra-activerecord'
 gem 'pg'
 gem 'redis'
 gem 'dalli'
+gem 'upsert'
 
 #model
 gem 'awesome_nested_set'
