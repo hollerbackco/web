@@ -110,7 +110,7 @@ class Membership < ActiveRecord::Base
   def to_sync
     {
       type: "conversation",
-      sync: as_json({methods: [:name, :unread_count, :is_group]})
+      sync: as_json({methods: [:name, :unread_count]})
     }
   end
 end
