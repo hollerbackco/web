@@ -5,7 +5,7 @@ class Membership < ActiveRecord::Base
   belongs_to :user
   belongs_to :conversation
   has_many :messages
-  has_many :unseen_messages, :conditions => "seen_at is not null",
+  has_many :unseen_messages, :conditions => {seen_at: nil},
     :class_name => "Message"
 
   delegate :invites, to: :conversation
