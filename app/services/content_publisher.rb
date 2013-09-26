@@ -13,9 +13,13 @@ class ContentPublisher
 
   def publish(content, opts={})
     options = {notify: true, analytics: true}.merge(opts)
-    self.messages = conversation.memberships.map do |m|
+
+    memberships = options.key?(:to) ? [options[:to]] : conversation.memberships
+
+    self.messages = memberships.map do |m|
       send_to(m, content)
     end.compact
+
     notify_recipients(messages) if options[:notify]
     publish_analytics(content) if options[:analytics]
     sms_invite(conversation, content) if is_first_message

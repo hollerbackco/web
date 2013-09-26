@@ -8,22 +8,8 @@ module HollerbackApp
       })
 
       if user.save
-        #device = user.device_for(params["device_token"], params["platform"])
+        UserRegister.perform_async(user.id)
 
-        invites = Invite.where(phone: params["phone"])
-        for invite in invites
-          invite.accept! user
-        end
-
-        Keen.publish("users:new", {
-          memberships: user.conversations.count
-        })
-
-        if Sinatra::Base.production?
-          Hollerback::SMS.send_message "+13033595357", "#{user.name} #{user.phone_normalized} signed up"
-        end
-
-        Hollerback::SMS.send_message user.phone_normalized, "Verification Code: #{user.verification_code}"
         {
           user: user.as_json
         }.to_json
