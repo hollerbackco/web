@@ -7,6 +7,7 @@ class UserRegister
     Invite.accept_all!(user)
 
     create_messages(user)
+    update_conversation_names(user)
 
     Keen.publish("users:new", {
       memberships: user.conversations.count
@@ -27,6 +28,12 @@ class UserRegister
       receiver_membership = Membership.where(conversation_id: content.conversation_id, user_id: user.id).first
       publisher = ContentPublisher.new(sender_membership)
       publisher.publish(content, to: receiver_membership, analytics: false)
+    end
+  end
+
+  def update_conversation_names(user)
+    user.conversations.each do |membership|
+      membership.update_conversation_name
     end
   end
 end

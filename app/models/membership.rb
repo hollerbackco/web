@@ -51,16 +51,8 @@ class Membership < ActiveRecord::Base
   end
 
   def update_conversation_name
-    class << self
-      def record_timestamps; false; end
-    end
-
     self.name = conversation.name || auto_generated_name
     save!
-
-    class << self
-      def record_timestamps; super; end
-    end
   end
 
   def auto_generated_name
