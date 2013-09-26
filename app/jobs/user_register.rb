@@ -32,7 +32,7 @@ class UserRegister
   end
 
   def update_conversation_names(user)
-    user.conversations.each do |membership|
+    Membership.where(:conversation_id => user.conversations.map(&:id)).each do |membership|
       membership.update_conversation_name
     end
   end
