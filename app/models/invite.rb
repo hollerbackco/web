@@ -20,4 +20,12 @@ class Invite < ActiveRecord::Base
       save!
     end
   end
+
+  def self.accept_all!(user,)
+    invites = Invite.where(phone: user.phone_normalized)
+
+    for invite in invites
+      invite.accept! user
+    end
+  end
 end
