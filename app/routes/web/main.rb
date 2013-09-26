@@ -70,7 +70,7 @@ module HollerbackApp
         redirect "itms-services://?action=download-manifest&url=#{url}"
       elsif app_link.usable?
         app_link.increment!(:downloads_count)
-        url = URI.escape("https://s3.amazonaws.com/hollerback-app-dev/distro/HollerbackApp-master.plist")
+        url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-master.plist")
         redirect "itms-services://?action=download-manifest&url=#{url}"
       else
         redirect "/"
