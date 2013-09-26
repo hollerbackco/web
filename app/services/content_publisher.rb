@@ -14,7 +14,7 @@ class ContentPublisher
   def publish(content, opts={})
     options = {notify: true, analytics: true}.merge(opts)
 
-    memberships = [options[:to]] || conservation.memberships
+    memberships = options.key?(:to) ? [options[:to]] : conservation.memberships
 
     self.messages = memberships.map do |m|
       send_to(m, content)
