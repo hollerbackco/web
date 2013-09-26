@@ -25,6 +25,7 @@ class Invite < ActiveRecord::Base
     invites = Invite.where(phone: user.phone_normalized)
 
     for invite in invites
+      next if conversation.members.exists?(user)
       invite.accept! user
     end
   end
