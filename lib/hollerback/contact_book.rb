@@ -18,7 +18,10 @@ module Hollerback
     end
 
     def contacts_on_hollerback
-      contacts = Contact.joins(:aliased_user).includes(:aliased_user).where("contacts.id" => self.contact_ids).where("contacts.user_id = ?", user.id)
+      contacts = Contact.joins(:aliased_user)
+        .includes(:aliased_user)
+        .where("contacts.id" => self.contact_ids)
+        .where("contacts.user_id = ?", user.id)
     end
 
     private
