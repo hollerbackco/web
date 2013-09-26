@@ -22,7 +22,7 @@ class UserRegister
 
   private
 
-  def receive_messages(user)
+  def create_messages(user)
     Video.where(:conversation_id => user.conversations.select(:id)).each do |content|
       sender_membership = Membership.where(conversation_id: content.conversation_id, user_id: content.user_id).first
       receiver_membership = Membership.where(conversation_id: content.conversation_id, user_id: user.id).first
