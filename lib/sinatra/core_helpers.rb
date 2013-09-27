@@ -1,16 +1,29 @@
 module Sinatra
   module CoreHelpers
+    WEEK_IN_SECONDS = 604800
+
     def t(*args)
       I18n.t(*args)
+    end
+
+    def create_video_share_url(video, phone)
+      value = [video.id, phone].to_json
+      token = shortlink_token
+      key = "links:#{token}"
+
+      REDIS.set(key, value)
+      REDIS.expire(key, WEEK_IN_SECONDS)
+
+      url = "http://www.hollerback.co/v/#{token}"
+    end
+
+    def shortlink_token
+      (Time.now.to_i + rand(36**8)).to_s(36)
     end
 
     # checks the params hash for a single argument as both !nil and !empty
     def ensure_param(arg)
       params[arg.to_s].present?
-    end
-
-    def video_share_url(video)
-      "http://www.hollerback.co/from/#{video.user.username}/#{video.to_code}"
     end
 
     # checks an array of params from the params hash

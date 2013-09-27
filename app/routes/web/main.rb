@@ -10,6 +10,7 @@ module HollerbackApp
       haml :index, layout: false
     end
 
+    #TODO deprecate, replaced by v/:token
     get '/from/:username/:id' do
       video = Video.find_by_code(params[:id])
       not_found if video.user.username != params[:username]
@@ -20,13 +21,24 @@ module HollerbackApp
       haml :video
     end
 
+    get '/v/:token' do
+      link_data = JSON.parse(REDIS.get("links:#{params[:token]}"))
+      video = Video.find(link_data[0])
+      phone = link_data[1]
+
+      actor = {phone: phone}
+
+      MetricsPublisher.delay.publish(actor, "invite:view")
+
+      @name = video.user.username
+      @video_url = video.url
+      @thumb_url = video.thumb_url
+      haml :video
+    end
+
     get '/waitlist' do
       haml :waitlist
     end
-
-    #get '/beta' do
-      #haml :test, layout: false
-    #end
 
     get '/android/:party' do
       party = params[:party]

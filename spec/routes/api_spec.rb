@@ -175,21 +175,25 @@ describe 'API ROUTES |' do
     last_response.should be_ok
 
     result = JSON.parse(last_response.body)
-    count = subject.reload.memberships.count + subject.messages.limit(100).count
+    count = subject.reload.memberships.count + subject.reload.messages.unseen.limit(100).count
     count.should == result['data'].count
   end
 
   it 'GET me/sync | only get latest sync objects' do
+    time = Time.parse(Time.now.to_s)
+
     membership = subject.memberships.first
     publisher = ContentPublisher.new(membership)
     video = conversation.videos.create(user: subject, :filename => "hello.mp4", in_progress: false)
     publisher.publish(video, notify: false, analytics: false)
+    count = subject.reload.memberships.updated_since(time).count + subject.reload.messages.updated_since(time).count
 
-    get '/me/sync', :access_token => access_token, :updated_at => Time.now
+    get '/me/sync', :access_token => access_token, :updated_at => time
     last_response.should be_ok
 
     result = JSON.parse(last_response.body)
-    result['data'].count.should == 2
+
+    result['data'].count.should == count
   end
 
   it 'GET me/conversations | gets users conversations' do

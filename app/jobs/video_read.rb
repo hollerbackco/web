@@ -22,9 +22,11 @@ class VideoRead
 
     def notify_analytics(messages, current_user)
       messages.each do |message|
-        Keen.publish("video:watch", {
-          id: message.id,
-          user: {id: current_user.id, username: current_user.username} })
+        data = {
+          message_id: message.id,
+          content_id: message.content_guid.to_i
+        }
+        MetricsPublisher.publish(current_user, "video:watch", data)
       end
     end
 
@@ -32,7 +34,6 @@ class VideoRead
       channel = "user/#{person.id}/sync"
       data = messages.map(&:to_sync)
       data << messages.first.membership.to_sync
-      p data
       Hollerback::MQTT.publish(channel, data)
     end
 

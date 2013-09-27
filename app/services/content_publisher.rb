@@ -65,23 +65,23 @@ class ContentPublisher
   end
 
   def publish_analytics(content)
-    Keen.publish("video:create", {
-      id: content.id,
+    data = {
+      content_id: content.id,
       is_reply: is_reply,
-      receivers_count: (content.conversation.members.count - 1),
+      receivers_count: (conversation.members.count - 1),
       conversation: {
-        id: content.conversation.id,
-        videos_count: content.conversation.videos.count
-      },
-      user: {id: content.user.id, username: content.user.username}
-    })
+        id: conversation.id,
+        videos_count: conversation.videos.count
+      }
+    }
+    MetricsPublisher.publish(content.user, "video:create", data)
   end
 
   def sms_invite(phones, content)
     conversation.invites.map(&:phone).each do |phone|
-      msg = "#{sender.username} sent you a message on hollerback. #{video_share_url content}"
-      #TODO: send a text message to non users
-      Hollerback::SMS.send_message phone, msg
+      url = create_video_share_url(content, phone)
+      msg = "#{sender.username} sent you a message on hollerback. #{url}"
+      Hollerback::SMS.send_message phone, msg, content.thumb_url
     end
   end
 end

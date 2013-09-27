@@ -9,16 +9,19 @@ module Hollerback
         @phone = phone
       end
 
-      def send_message(recipient, msg)
-        begin
-          @client.account.sms.messages.create(
-            from: @phone,
-            to: recipient,
-            body: msg
-          )
-        rescue
-          true
-        end
+      def send_message(recipient, msg, media_url=nil)
+        data = {
+          from: @phone,
+          to: recipient,
+          body: msg
+        }
+
+        #TODO: turn this on once twilio supports it
+        #if media_url
+          #data = data.merge(media_url: media_url)
+        #end
+
+        @client.account.messages.create(data)
       end
 
       def client(sid,token)
