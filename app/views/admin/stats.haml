@@ -21,7 +21,7 @@
     // Configure the Keen object with your Project ID and (optional) access keys.
   Keen.configure({
     projectId: "518194e13843312d5e000000",
-    readKey: "e5c4cca463c1b014077482bb36f989ec1fcd0d6ffe5acbd62723f6f19ce14c10c35640953e6be444f338ceb26e60f411e37620a3fe3a9dd598764ddd70faeab9c91534dbdfe3311f6b3e1e92f818b90adf131084e5c9fe9276d85242cfba083ecc8386bca7153290fb340ab12118c9a0"    // required for doing analysis
+    readKey: "#{ENV["KEEN_READ_KEY"]}"    // required for doing analysis
   });
 
   var showInviteFunnel = function() {
@@ -90,4 +90,6 @@
     users.draw(document.getElementById("active-users"), {
       label: "Users who watched a video"
     });
+
+
   });
