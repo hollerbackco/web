@@ -1,9 +1,7 @@
 %h1 Stats
-
 %article
   %h2 Invite Funnel
   #invite-funnel
-
 %article
   %h2 Active Users
   #active-users
@@ -22,7 +20,7 @@
 
     // Configure the Keen object with your Project ID and (optional) access keys.
   Keen.configure({
-    projectId: "518194e13843312d5e000000",
+    projectId: "#{ENV["KEEN_PROJECT_ID"]}",
     readKey: "#{ENV["KEEN_READ_KEY"]}"    // required for doing analysis
   });
 
