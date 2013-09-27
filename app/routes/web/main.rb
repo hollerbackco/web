@@ -28,7 +28,7 @@ module HollerbackApp
 
       actor = {phone: phone}
 
-      MetricsPublisher.delay.publish(actor, "invite/view")
+      MetricsPublisher.delay.publish(actor, "invite:view")
 
       @name = video.user.username
       @video_url = video.url
