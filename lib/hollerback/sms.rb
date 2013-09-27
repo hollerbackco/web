@@ -20,7 +20,7 @@ module Hollerback
             data = data.merge(media_url: media_url)
           end
 
-          @client.account.sms.messages.create(data)
+          @client.account.messages.create(data)
         rescue
           true
         end
