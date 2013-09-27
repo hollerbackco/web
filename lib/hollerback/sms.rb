@@ -10,20 +10,16 @@ module Hollerback
       end
 
       def send_message(recipient, msg, media_url=nil)
-        begin
-          data = {
-            from: @phone,
-            to: recipient,
-            body: msg
-          }
-          if media_url
-            data = data.merge(media_url: media_url)
-          end
-
-          @client.account.messages.create(data)
-        rescue
-          true
+        data = {
+          from: @phone,
+          to: recipient,
+          body: msg
+        }
+        if media_url
+          data = data.merge(media_url: media_url)
         end
+
+        @client.account.messages.create(data)
       end
 
       def client(sid,token)
