@@ -20,14 +20,16 @@ class Membership < ActiveRecord::Base
       :since => nil,
     }.merge(opts)
 
-    collection = options[:user].memberships
-      .joins("LEFT OUTER JOIN messages ON memberships.id = messages.membership_id AND messages.seen_at is null")
-      .group("memberships.id")
-      .select('memberships.*, count(messages) as unseen_count')
+    collection = self.where(user_id: options[:user].id)
 
     if options[:since]
       collection = collection.updated_since(options[:since])
     end
+
+    collection = collection
+      .joins("LEFT OUTER JOIN messages ON memberships.id = messages.membership_id AND messages.seen_at is null")
+      .group("memberships.id")
+      .select('memberships.*, count(messages) as unseen_count')
 
     collection.map(&:to_sync)
   end
