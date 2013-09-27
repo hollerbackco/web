@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
   has_many :devices, autosave: true
   has_many :memberships, :dependent => :destroy
   has_many :messages, through: :memberships, :dependent => :destroy
-  has_many :videos, :dependent => :destroy
+  has_many :videos
 
   has_many :conversations, through: :memberships
   has_many :contacts

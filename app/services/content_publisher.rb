@@ -23,6 +23,7 @@ class ContentPublisher
     notify_recipients(messages) if options[:notify]
     publish_analytics(content) if options[:analytics]
     sms_invite(conversation, content) if is_first_message
+    say_level(sender)
   end
 
   def send_to(membership, content)
@@ -77,11 +78,26 @@ class ContentPublisher
     MetricsPublisher.publish(content.user, "video:create", data)
   end
 
-  def sms_invite(phones, content)
-    conversation.invites.map(&:phone).each do |phone|
+  def sms_invite(conversation, content)
+    phones = conversation.invites.map(&:phone)
+    phones.each do |phone|
       url = create_video_share_url(content, phone)
       msg = "#{sender.username} sent you a message on hollerback. #{url}"
       Hollerback::SMS.send_message phone, msg, content.thumb_url
+    end
+    if phones.any?
+      Hollerback::BMO.say("#{content.user.username} just invited #{phones.count} people")
+    end
+  end
+
+  def say_level(user)
+    begin
+      levels = [5,10,25,50,100,250,500,1000]
+      if level = levels.index(user.videos.count)
+        level = level + 1
+        Hollerback::BMO.say("#{user.username} has leveled up: #{level}")
+      end
+    rescue
     end
   end
 end
