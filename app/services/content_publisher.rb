@@ -79,8 +79,9 @@ class ContentPublisher
 
   def sms_invite(phones, content)
     conversation.invites.map(&:phone).each do |phone|
-      msg = "#{sender.username} sent you a message on hollerback. #{video_share_url content}"
-      Hollerback::SMS.send_message phone, msg
+      url = create_video_share_url(content, phone)
+      msg = "#{sender.username} sent you a message on hollerback. #{url}"
+      Hollerback::SMS.send_message phone, msg, content.thumb_url
     end
   end
 end

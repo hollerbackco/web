@@ -9,13 +9,18 @@ module Hollerback
         @phone = phone
       end
 
-      def send_message(recipient, msg)
+      def send_message(recipient, msg, media_url=nil)
         begin
-          @client.account.sms.messages.create(
+          data = {
             from: @phone,
             to: recipient,
             body: msg
-          )
+          }
+          if media
+            data = data.merge(media_url: media_url)
+          end
+
+          @client.account.sms.messages.create(media_url)
         rescue
           true
         end
