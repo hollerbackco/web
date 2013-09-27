@@ -26,8 +26,8 @@ module HollerbackApp
       video = Video.find(link_data[0])
       phone = link_data[1]
 
-      Struct.new("Actor", :phone)
-      actor = Struct::Actor.new(phone)
+      Struct.new("Actor", :meta)
+      actor = Struct::Actor.new({phone: phone})
 
       MetricsPublisher.publish(actor, "invite/view")
 
