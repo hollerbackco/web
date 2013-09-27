@@ -9,15 +9,16 @@ class UserRegister
     create_messages(user)
     update_conversation_names(user)
 
-    Keen.publish("users:new", {
-      memberships: user.conversations.count
-    })
+    data = {
+      memberships: user.memberships.count
+    }
+    MetricsPublisher.publish(user, "users:new", data)
 
     if Sinatra::Base.production?
       Hollerback::SMS.send_message "+13033595357", "#{user.username} #{user.phone_normalized} signed up"
     end
 
-    Hollerback::SMS.send_message user.phone_normalized, "Verification Code: #{user.verification_code}"
+    Hollerback::SMS.send_message user.phone_normalized, "Hollerback Code: #{user.verification_code}"
   end
 
   private

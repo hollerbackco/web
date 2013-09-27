@@ -175,6 +175,14 @@ class User < ActiveRecord::Base
     super(options)
   end
 
+  def meta
+    {
+      id: id,
+      username: username,
+      phone: phone_normalized
+    }
+  end
+
   private
 
   def phoner
