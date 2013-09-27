@@ -14,6 +14,8 @@ module HollerbackApp
         sync_objects = sync_objects.concat(objects)
       end
 
+      ConversationRead.perform_async(current_user.id)
+
       data = success_json(
         meta: {
           last_sync_at: last_sync_at
