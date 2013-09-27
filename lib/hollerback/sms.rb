@@ -16,11 +16,11 @@ module Hollerback
             to: recipient,
             body: msg
           }
-          if media
+          if media_url
             data = data.merge(media_url: media_url)
           end
 
-          @client.account.sms.messages.create(media_url)
+          @client.account.sms.messages.create(data)
         rescue
           true
         end
