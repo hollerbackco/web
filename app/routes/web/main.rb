@@ -29,7 +29,7 @@ module HollerbackApp
       Struct.new("Actor", :meta)
       actor = Struct::Actor.new({phone: phone})
 
-      MetricsPublisher.publish(actor, "invite/view")
+      MetricsPublisher.delay.publish(actor, "invite/view")
 
       @name = video.user.username
       @video_url = video.url
