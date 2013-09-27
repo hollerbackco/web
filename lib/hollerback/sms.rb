@@ -15,9 +15,11 @@ module Hollerback
           to: recipient,
           body: msg
         }
-        if media_url
-          data = data.merge(media_url: media_url)
-        end
+
+        #TODO: turn this on once twilio supports it
+        #if media_url
+          #data = data.merge(media_url: media_url)
+        #end
 
         @client.account.messages.create(data)
       end
