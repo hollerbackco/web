@@ -18,11 +18,15 @@ class ConversationCreate
   private
 
   def publish_invited(user, conversation)
-    conversation.invites.each do |invite|
+    phones = conversation.invites.map(&:phone)
+    phones.each do |phone|
       data = {
-        invited_phone: invite.phone
+        invited_phone: phone
       }
       MetricsPublisher.publish(user, "users:invite", data)
+    end
+    if phones.any?
+      Hollerback::BMO.say("#{user.username} just invited #{phones.count} people")
     end
   end
 end
