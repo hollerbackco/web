@@ -59,6 +59,7 @@ module HollerbackApp
       if !params.key?("parts") and !params.key?("part_urls")
         return error_json 400, msg: "missing parts param"
       end
+
       urls = params.select {|key,value| ["parts", "part_urls"].include? key }
 
       membership = current_user.memberships.find(params[:id])
@@ -68,8 +69,12 @@ module HollerbackApp
 
       #mark messages as read
       if params.key? "reply"
-        ids = membership.messages.unseen.map(&:id)
-        VideoRead.perform_async(ids, current_user.id)
+        messages = membership.messages.unseen
+        if params[:watched_at]
+          watched_at = Time.parse(params[:watched_at])
+          messages = messages.before(watched_at)
+        end
+        VideoRead.perform_async(messages.map(&:id), current_user.id, watched_at)
       end
 
       success_json data: video
