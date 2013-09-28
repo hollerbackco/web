@@ -62,6 +62,7 @@ GEM
     em-socksify (0.2.1)
       eventmachine (>= 1.0.0.beta.4)
     eventmachine (1.0.3)
+    excon (0.25.3)
     execjs (1.4.0)
       multi_json (~> 1.0)
     factory_girl (4.2.0)
@@ -95,6 +96,14 @@ GEM
       sprockets (>= 2.0.3)
       tilt
     hashie (2.0.5)
+    heroku (2.41.0)
+      heroku-api (~> 0.3.7)
+      launchy (>= 0.3.2)
+      netrc (~> 0.7.7)
+      rest-client (~> 1.6.1)
+      rubyzip
+    heroku-api (0.3.15)
+      excon (~> 0.25.1)
     hike (1.2.2)
     honeybadger (1.6.2)
       json
@@ -109,17 +118,21 @@ GEM
     keen (0.7.2)
       multi_json (~> 1.0)
     kgio (2.8.1)
+    launchy (2.3.0)
+      addressable (~> 2.3)
     listen (1.1.0)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
       rb-kqueue (>= 0.2)
     lumberjack (1.0.3)
     method_source (0.8.1)
+    mime-types (1.25)
     mini_magick (3.5.0)
       subexec (~> 0.2.1)
     mqtt (0.0.9)
     multi_json (1.8.0)
     multi_xml (0.5.3)
+    netrc (0.7.7)
     newrelic_rpm (3.6.2.96)
     nokogiri (1.5.9)
     oauth (0.4.7)
@@ -163,6 +176,8 @@ GEM
       sexp_processor
     rerun (0.8.1)
       listen (>= 1.0.3)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     ripl (0.7.0)
       bond (~> 0.4.2)
     ripl-multi_line (0.3.1)
@@ -184,6 +199,7 @@ GEM
       sexp_processor (~> 4.0)
     ruby_parser (3.1.3)
       sexp_processor (~> 4.1)
+    rubyzip (1.0.0)
     sass (3.2.9)
     sexp_processor (4.2.1)
     sidekiq (2.11.2)
@@ -288,6 +304,7 @@ DEPENDENCIES
   guard-sprockets2
   haml
   handlebars_assets
+  heroku
   honeybadger
   i18n
   keen

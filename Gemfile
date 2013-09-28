@@ -47,8 +47,9 @@ gem 'mqtt'
 gem 'bcrypt-ruby'
 gem 'time-lord'
 gem 'i18n'
-gem "em-http-request", "~> 1.0"
-gem "celluloid"
+gem 'em-http-request', '~> 1.0'
+gem 'celluloid'
+gem 'heroku'
 
 #background
 gem 'slim'
