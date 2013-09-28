@@ -1,7 +1,7 @@
 class VideoRead
   include Sidekiq::Worker
 
-  def perform(message_ids, user_id)
+  def perform(message_ids, user_id, watched_at=nil)
     current_user = User.find(user_id)
     messages = Message.find(message_ids)
 
