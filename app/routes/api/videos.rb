@@ -74,7 +74,7 @@ module HollerbackApp
           watched_at = Time.parse(params[:watched_at])
           messages = messages.before(watched_at)
         end
-        VideoRead.perform_async(messages.map(&:id), current_user.id, watched_at)
+        VideoRead.perform_async(messages.map(&:id), current_user.id)
       end
 
       success_json data: video
