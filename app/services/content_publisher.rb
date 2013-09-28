@@ -9,8 +9,8 @@ class ContentPublisher
     @conversation = membership.conversation
 
     #TODO currently set to always be true, but uncomment to only send one invite
-    @is_first_message = (@conversation.videos.count == 1)
-    #@is_first_message = true
+    #@is_first_message = (@conversation.videos.count == 1)
+    @is_first_message = true
 
     @is_reply = is_reply
   end
