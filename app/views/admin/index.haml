@@ -18,8 +18,11 @@
           %tr
             %td= video.id
             %td= video.user.username
-            %td= video.conversation.name
-            %td= video.conversation.member_names
+            %td
+              = video.conversation.name
+            %td
+              = video.conversation.member_names
+              = "(#{video.conversation_id})"
             %td= video.filename
             %td
               %span.date{"data-time" => (video.created_at.to_i * 1000)}= video.created_at
@@ -43,7 +46,9 @@
           %td= video.id
           %td= video.user.username
           %td= video.conversation.name
-          %td= video.conversation.member_names
+          %td
+            = video.conversation.member_names
+            = "(#{video.conversation_id})"
           %td= video.filename
           %td
             %span.date{"data-time" => (video.created_at.to_i * 1000)}= video.created_at
