@@ -22,6 +22,8 @@ module Hollerback
         #end
 
         @client.account.messages.create(data)
+      rescue Twilio::REST::RequestError => e
+        p e
       end
 
       def client(sid,token)
