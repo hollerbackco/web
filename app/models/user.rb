@@ -27,7 +27,7 @@ class User < ActiveRecord::Base
   validates :username,
       presence: true,
       uniqueness: true,
-      format: { :with => /\A_?[a-z]_?(?:[a-z0-9]_?)*\z/i, :message => "Username must be only letters, numbers and underscores" }
+      format: { :with => /\A_?[a-z]_?(?:[a-z0-9]_?)*\z/i, :message => "must be letters, numbers and underscores" }
 
 
   def unseen_memberships_count
