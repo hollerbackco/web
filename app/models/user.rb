@@ -24,7 +24,10 @@ class User < ActiveRecord::Base
 
   validates :phone, presence: true, uniqueness: true
   validates :phone_normalized, presence: true, uniqueness: true
-  validates :username, presence: true, uniqueness: true
+  validates :username,
+      presence: true,
+      uniqueness: true,
+      format: { :with => /\A_?[a-z]_?(?:[a-z0-9]_?)*\z/i, :message => "must be letters, numbers and underscores" }
 
 
   def unseen_memberships_count
