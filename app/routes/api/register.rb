@@ -7,6 +7,14 @@ module HollerbackApp
         phone:    params["phone"]
       })
 
+      if email = params["email"]
+        user.email = email
+      end
+
+      if password = params["password"]
+        user.password = password
+      end
+
       if user.save
         UserRegister.perform_async(user.id)
 
