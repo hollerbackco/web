@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   serialize :muted, Array
 
   #has_secure_password
-  attr_accessible :name, :email, :phone, :phone_hashed, :username,
+  attr_accessible :email, :phone, :phone_hashed, :username,
     :password, :password_confirmation, :phone_normalized,
     :device_token, :last_app_version
 
@@ -109,8 +109,12 @@ class User < ActiveRecord::Base
     end
   end
 
-  def self.authenticate_with_email(email, password)
-    user = User.find_by_email(email).try(:authenticate, password)
+  def self.authenticate_with_email(matcher, password)
+    user = User.find_by_email(matcher)
+    unless user
+      user = User.find_by_username(matcher)
+    end
+    user.try(:authenticate, password)
   end
 
   def self.authenticate_with_access_token(access_token)
