@@ -1,5 +1,12 @@
 %h1 Stats
 %article
+  %h3 growth
+  %p invites/users * conversion rate
+  #invitesSentCount
+  #usersCount
+  #conversionRate
+  #kpi
+%article
   %h2 Invite Funnel
   #invite-funnel
 %article
@@ -24,7 +31,7 @@
     readKey: "#{ENV["KEEN_READ_KEY"]}"    // required for doing analysis
   });
 
-  var showInviteFunnel = function() {
+  var showInviteFunnel = function(callback) {
 
     var step1 = new Keen.Step("users:invite", {
       name: "Was Invited",
@@ -57,10 +64,44 @@
       title: "Invite Funnel"
     });
 
+    inviteFunnel.getResponse(function(response) {
+      callback(response);
+    });
+
   };
 
   Keen.onChartsReady(function() {
-    showInviteFunnel();
+
+    var inviteSent = new Keen.Metric("users:invite",{
+      analysisType: "count"
+    });
+    inviteSent.draw(document.getElementById("invitesSentCount"), {
+      label: "Invites"
+    });
+
+    inviteSent.getResponse(function(response) {
+      var invitesSentCount = response.result;
+
+      var users = new Keen.Metric("users:new", {
+        analysisType: "count_unique",
+        targetProperty: "user.id"
+      });
+      users.draw(document.getElementById("usersCount"), {
+        label: "Users"
+      });
+
+      users.getResponse(function(response) {
+        var usersCount = response.result;
+
+        showInviteFunnel(function(response){
+          console.log(invitesSentCount);
+          console.log(usersCount);
+          var conversionRate = response.result[1]/response.result[1];
+          var kpi = (invitesSentCount/usersCount) * (conversionRate);
+          $("#kpi").html(kpi + " users/users");
+        });
+      });
+    });
 
     var series = new Keen.Series("video:create", {
       analysisType: "count",
