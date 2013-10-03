@@ -79,6 +79,7 @@ group :development do
   gem 'uglifier'
   gem 'reek'
   gem 'flay'
+  gem 'thin'
 end
 
 group :test do
