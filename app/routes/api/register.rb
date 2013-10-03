@@ -26,7 +26,7 @@ module HollerbackApp
       end
     end
 
-    post '/email/free' do
+    post '/email/available' do
       free = User.find_by_email(params[:email]).blank?
 
       success_json data: free
