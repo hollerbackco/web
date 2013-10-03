@@ -26,6 +26,12 @@ module HollerbackApp
       end
     end
 
+    post '/email/free' do
+      free = User.find_by_email(params[:email]).blank?
+
+      success_json data: free
+    end
+
     post '/waitlist' do
       waitlister = Waitlister.new(email: params[:email])
 
