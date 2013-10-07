@@ -10,6 +10,20 @@ class Conversation < ActiveRecord::Base
 
   default_scope order("updated_at DESC")
 
+
+  def self.find_by_members(users)
+    raise if users.blank?
+    user_ids = users.map(&:id).join(",")
+
+    ids = Membership.unscoped.joins(:user)
+      .group("memberships.conversation_id")
+      .having("array_agg(memberships.user_id) <@ ARRAY[#{user_ids}] and array_agg(memberships.user_id) @> ARRAY[#{user_ids}]")
+      .select("memberships.conversation_id")
+      .map(&:id)
+
+    self.find_by_id(ids)
+  end
+
   # all conversations with a name that is set.
   def group?
     members.count > 2 or self[:name].present?
