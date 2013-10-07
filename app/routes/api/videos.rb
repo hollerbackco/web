@@ -68,18 +68,19 @@ module HollerbackApp
       VideoStitchRequest.perform_async(video.id, urls, params.key?("reply"))
 
       #mark messages as read
+      messages = membership.messages.unseen
       if params.key? "reply"
-        messages = membership.messages.unseen
         if params[:watched_at]
           watched_at = Time.parse(params[:watched_at])
           messages = messages.before(watched_at)
         end
         if messages.any?
           VideoRead.perform_async(messages.map(&:id), current_user.id)
+          unread_count = messages.count
         end
       end
 
-      success_json data: video.as_json.merge(:conversation_id => membership.id)
+      success_json data: video.as_json.merge(:conversation_id => membership.id, :unread_count => (unread_count || messages.count))
     end
 
     post '/me/conversations/:id/videos' do
