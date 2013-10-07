@@ -79,7 +79,7 @@ module HollerbackApp
         end
       end
 
-      success_json data: video.merge(:conversation_id => membership.id)
+      success_json data: video.as_json.merge(:conversation_id => membership.id)
     end
 
     post '/me/conversations/:id/videos' do
