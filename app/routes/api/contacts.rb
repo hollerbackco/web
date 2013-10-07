@@ -1,5 +1,12 @@
 module HollerbackApp
   class ApiApp < BaseApp
+    get '/contacts' do
+      contact_book = Hollerback::ContactBook.new(current_user)
+      contacts = contact_book.contacts_on_hollerback
+
+      success_json data: contacts.as_json
+    end
+
     route :get, :post, '/contacts/check' do
       contacts = if params.key? "numbers"
         numbers = params["numbers"]
