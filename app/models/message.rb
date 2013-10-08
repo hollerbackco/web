@@ -1,5 +1,9 @@
 class Message < ActiveRecord::Base
   belongs_to :membership
+  belongs_to :video, :foreign_key => "video_guid",
+    :class_name => "Video",
+    :primary_key => "guid"
+
   serialize :content, ActiveRecord::Coders::Hstore
 
   scope :seen, where("seen_at is not null")
@@ -12,7 +16,7 @@ class Message < ActiveRecord::Base
   after_create do |record|
     m = record.membership
     m.last_message_at = record.sent_at
-    unless record.sender? or m.most_recent_thumb_url.blank?
+    unless record.sender? and m.most_recent_thumb_url.present?
       m.most_recent_thumb_url = record.thumb_url
     end
     m.save
@@ -39,14 +43,15 @@ class Message < ActiveRecord::Base
     collection.map(&:to_sync)
   end
 
-  def conversation_id
-    membership_id
-  end
 
   def user
     {
       name: sender_name
     }
+  end
+
+  def guid
+
   end
 
   def url
@@ -57,10 +62,6 @@ class Message < ActiveRecord::Base
     content["thumb_url"]
   end
 
-  # TODO get rid of this
-  def video
-    Video.find(content_guid.to_i)
-  end
   def filename
     video.filename
   end
@@ -85,10 +86,26 @@ class Message < ActiveRecord::Base
     end
   end
 
+  def deleted?
+    deleted_at.present?
+  end
+  alias_method :is_deleted, :deleted?
+
+  def guid
+    video_guid
+  end
+
+  def conversation_id
+    membership_id
+  end
+
   def to_sync
     {
       type: "message",
-      sync: as_json(:methods => [:url, :thumb_url, :conversation_id, :user])
+      sync: as_json({
+        :only => [:created_at],
+        :methods => [:guid, :url, :thumb_url, :conversation_id, :user, :is_deleted]
+      })
     }
   end
 

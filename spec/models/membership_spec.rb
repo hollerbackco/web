@@ -6,7 +6,9 @@ describe Membership do
     conversation.members << conversation.creator
     conversation.members << FactoryGirl.create(:user)
     @membership = Membership.first
-    Message.create(membership: @membership)
+    publisher = ContentPublisher.new(@membership)
+    video = conversation.videos.create(user: @user, :filename => "hello.mp4", in_progress: false)
+    publisher.publish(video, notify: false, analytics: false)
   end
 
   let(:membership) { @membership }
