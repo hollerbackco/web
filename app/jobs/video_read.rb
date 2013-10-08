@@ -33,7 +33,8 @@ class VideoRead
     def notify_mqtt(messages, person)
       channel = "user/#{person.id}/sync"
       data = messages.map(&:to_sync)
-      data << messages.first.membership.to_sync
+      #is out of sync with stitcher
+      #data << messages.first.membership.to_sync
       Hollerback::MQTT.publish(channel, data)
     end
 
