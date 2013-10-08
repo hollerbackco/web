@@ -43,7 +43,13 @@ class Membership < ActiveRecord::Base
   end
 
   def members
-    others.map {|other| {id: other.id, name: other.also_known_as(for: user), is_blocked: user.muted?(other) } }
+    others.map do |other|
+      {
+        id: other.id,
+        name: other.also_known_as(for: user),
+        is_blocked: user.muted?(other)
+      }
+    end
   end
 
   # todo: cache this

@@ -6,7 +6,7 @@ end
 
 FactoryGirl.define do
   factory :user do
-    username            { Faker::Name.name.gsub(" ", "_").downcase }
+    username            { Faker::Internet.user_name.gsub(".","_")}
     phone               { PhoneFake.phone_number }
 
     after(:create) do |user|
