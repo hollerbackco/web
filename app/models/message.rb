@@ -103,7 +103,7 @@ class Message < ActiveRecord::Base
     {
       type: "message",
       sync: as_json({
-        :only => [:created_at],
+        :only => [:created_at, :sender_name],
         :methods => [:guid, :url, :thumb_url, :conversation_id, :user, :is_deleted]
       })
     }
