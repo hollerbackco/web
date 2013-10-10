@@ -8,7 +8,7 @@ namespace :db do
   namespace :data do
 
     desc "get production data"
-    task :pull => :environment do
+    task :pull do
       options = {}
       options[:dump]   = ENV['dump']   || 'latest.dump'
       options[:source] = ENV['remote'] || 'production'
@@ -16,7 +16,7 @@ namespace :db do
       options[:dbname] = ENV['dbname'] || 'moseytv_dev'
       options[:host]   = ENV['host']   || 'localhost'
 
-      if Rails.env.production?
+      if defined?(Rails) and Rails.env.production?
         puts "Refusing to rewrite production data. You don't really want to do that."
       else
         puts "(1/4) capture remote"

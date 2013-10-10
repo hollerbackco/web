@@ -5,7 +5,7 @@ describe Message do
     conversation = FactoryGirl.create(:conversation)
     conversation.members << FactoryGirl.create(:user)
     @membership = conversation.memberships.first
-    @message = Message.create(membership: @membership)
+    @message = Message.create(membership: @membership, video_guid: SecureRandom.uuid)
   end
 
   let(:message) { @message }

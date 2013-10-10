@@ -16,6 +16,10 @@ class Video < ActiveRecord::Base
 
   default_scope order("created_at DESC")
 
+  before_validation do |record|
+    record.guid ||= SecureRandom.uuid
+  end
+
   after_destroy do |record|
     Message.where(:content_guid => record.id.to_s).destroy_all
   end
