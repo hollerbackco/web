@@ -4,7 +4,6 @@ class UserRegister
   def perform(user_id)
     user = User.find(user_id)
 
-    Invite.accept_all!(user)
 
     create_messages(user)
     update_conversation_names(user)
