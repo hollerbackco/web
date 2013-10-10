@@ -20,7 +20,7 @@ module Hollerback
     def find_by_phone(numbers)
       contacts = User.where(phone_normalized: numbers)
       #users = User.all(conditions: [ "phone_normalized IN (:phone_normalized)", {phone_normalized: numbers}]).flatten.uniq
-      contacts = remove_will(contacts)
+      #contacts = remove_will(contacts)
     end
 
     def remove_will(contacts)
