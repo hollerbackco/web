@@ -14,7 +14,7 @@ module Hollerback
 
     def find_by_hashed_phone(numbers)
       contacts = User.where(phone_hashed: numbers.uniq)
-      contacts = remove_will(contacts)
+      #contacts = remove_will(contacts)
     end
 
     def find_by_phone(numbers)
