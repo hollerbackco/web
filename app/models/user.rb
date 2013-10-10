@@ -176,7 +176,7 @@ class User < ActiveRecord::Base
   end
 
   def is_new
-    memberships.empty?
+    memberships.reload.empty?
   end
 
   def as_json(options={})
