@@ -16,6 +16,7 @@ module HollerbackApp
       end
 
       if user.save
+        Invite.accept_all!(user)
         UserRegister.perform_async(user.id)
 
         {
