@@ -1,6 +1,6 @@
 class PgUuidExt < ActiveRecord::Migration
   def self.up
-    execute 'CREATE EXTENSION "uuid-ossp"'
+    execute 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp"'
   end
 
   def self.down
