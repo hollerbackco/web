@@ -20,7 +20,7 @@ module HollerbackApp
         UserRegister.perform_async(user.id)
 
         {
-          user: user.as_json
+          user: user.reload.as_json
         }.to_json
       else
         error_json 400, for: user
