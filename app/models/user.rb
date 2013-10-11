@@ -175,9 +175,10 @@ class User < ActiveRecord::Base
     verified?
   end
 
-  def is_new
+  def new?
     memberships.reload.empty?
   end
+  alias_method :is_new, :new?
 
   def as_json(options={})
     #TODO: uncomment when we add this to the signup flow
