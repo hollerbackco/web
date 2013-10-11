@@ -195,6 +195,10 @@ class User < ActiveRecord::Base
     }
   end
 
+  def set_verification_code
+    self.verification_code = SecureRandom.random_number(8999) + 1000
+  end
+
   private
 
   def phoner
@@ -210,9 +214,5 @@ class User < ActiveRecord::Base
 
   def downcase_username
     self.username.downcase!
-  end
-
-  def set_verification_code
-    self.verification_code = SecureRandom.random_number(8999) + 1000
   end
 end
