@@ -103,7 +103,6 @@ class Message < ActiveRecord::Base
     {
       type: "message",
       sync: as_json({
-        :only => [:created_at, :sender_name],
         :methods => [:guid, :url, :thumb_url, :conversation_id, :user, :is_deleted]
       })
     }
@@ -111,9 +110,9 @@ class Message < ActiveRecord::Base
 
   def as_json(opts={})
     options = {}
-    options = options.merge(:methods => [:url, :thumb_url, :conversation_id, :user, :filename])
-    options = options.merge(:except => [:membership_id])
+    options = options.merge(:methods => [:url, :thumb_url, :conversation_id, :user, :filename, :is_deleted])
+    options = options.merge(:only => [:created_at, :sender_name, :sent_at])
     options = options.merge(opts)
-    super(options).merge({isRead: !unseen?})
+    super(options).merge({isRead: !unseen?, id: guid})
   end
 end
