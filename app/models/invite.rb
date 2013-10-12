@@ -21,6 +21,12 @@ class Invite < ActiveRecord::Base
     end
   end
 
+  def also_known_as(obj={}) 
+    user = obj[:for]
+    contact = user.contacts.where(phone: phone).first
+    contact.present? ? contact.name : phone
+  end
+
   def self.accept_all!(user)
     invites = Invite.where(phone: user.phone_normalized)
 
