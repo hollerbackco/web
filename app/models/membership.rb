@@ -68,7 +68,9 @@ class Membership < ActiveRecord::Base
     names = names + conversation.invites.map do |invite|
       invite.also_known_as(:for => user)
     end
-    names.join(", ").truncate(100).strip
+    name = names.join(", ").truncate(100).strip
+
+    name.blank? ? "no one's here" : name
   end
 
   def videos

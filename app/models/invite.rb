@@ -23,8 +23,12 @@ class Invite < ActiveRecord::Base
 
   def also_known_as(obj={}) 
     user = obj[:for]
-    contact = user.contacts.where(phone: phone).first
+    contact = user.contacts.where(phone_hashed: phone_hashed).first
     contact.present? ? contact.name : phone
+  end
+
+  def phone_hashed
+    Digest::MD5.hexdigest(phone)
   end
 
   def self.accept_all!(user)
