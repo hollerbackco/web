@@ -32,6 +32,8 @@ class VideoCompletePoller
         SQSLogger.logger.info " -- Already delivered #{video.id}"
       end
     end
+  rescue ActiveRecord::RecordNotUnique
+    p " -- Already created message"
   rescue ActiveRecord::RecordNotFound
     p " -- No video found"
   end
