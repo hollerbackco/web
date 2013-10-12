@@ -64,11 +64,13 @@ class Membership < ActiveRecord::Base
   end
 
   def auto_generated_name
-    if others.blank?
-      "#{conversation.invites.count} Invited"
-    else
-      others.map {|other| other.also_known_as(:for => user)}.join(", ").truncate(100).strip
+    names = others.map {|other| other.also_known_as(:for => user)}
+    names = names + conversation.invites.map do |invite|
+      invite.also_known_as(:for => user)
     end
+    name = names.join(", ").truncate(100).strip
+
+    name.blank? ? "no one's here" : name
   end
 
   def videos
