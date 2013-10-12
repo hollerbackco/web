@@ -23,7 +23,7 @@ module HollerbackApp
 
       if user_version != current_version
         data = {
-          "message" => "Please Update Hollerback (#{app_version})",
+          "message" => "Please Update Hollerback (#{current_version})",
           "button-text" => "Update",
           "url" => "http://www.hollerback.com/beta/#{name}"
         }
