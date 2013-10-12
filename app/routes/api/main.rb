@@ -29,7 +29,7 @@ module HollerbackApp
         }
         success_json data: data
       else
-        {message: "app up to date"}.to_json
+        {"message" => "app up to date"}.to_json
       end
     end
 
