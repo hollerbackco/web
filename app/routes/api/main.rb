@@ -25,7 +25,7 @@ module HollerbackApp
         data = {
           "message" => "Please Update Hollerback (#{current_version})",
           "button-text" => "Update",
-          "url" => "http://www.hollerback.com/beta/#{name}"
+          "url" => "http://www.hollerback.co/beta/#{name}"
         }
         success_json data: data
       else
