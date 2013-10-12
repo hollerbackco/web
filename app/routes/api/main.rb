@@ -16,10 +16,10 @@ module HollerbackApp
       success_json data: "Hollerback App Api v1"
     end
 
-    get '/api/app/update' do
+    get '/app/update' do
       user_version = request.env["HTTP_IOS_APP_VER"]
       current_version =  REDIS.get("app:current:version")
-      name = current_user? ? current_user.username : "update"
+      name = logged_in? ? current_user.username : "update"
 
       if user_version != current_version
         data = {
