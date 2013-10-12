@@ -16,6 +16,23 @@ module HollerbackApp
       success_json data: "Hollerback App Api v1"
     end
 
+    get '/app/update' do
+      user_version = request.env["HTTP_IOS_APP_VER"]
+      current_version =  REDIS.get("app:current:version")
+      name = logged_in? ? current_user.username : "update"
+
+      if user_version != current_version
+        data = {
+          "message" => "Please Update Hollerback (#{current_version})",
+          "button-text" => "Update",
+          "url" => "http://www.hollerback.com/beta/#{name}"
+        }
+        success_json data: data
+      else
+        {"message" => "app up to date"}.to_json
+      end
+    end
+
     get '/me' do
       success_json data: current_user.as_json.merge(conversations: current_user.conversations)
     end

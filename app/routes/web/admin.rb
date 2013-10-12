@@ -16,6 +16,15 @@ module HollerbackApp
       http_protected
     end
 
+    post '/madmin/app/version' do
+      if params[:version]
+        REDIS.set("app:current:version", params[:version])
+        "success"
+      else
+        "please specify version number"
+      end
+    end
+
     get '/madmin' do
       @users = User.all
       @broken = Video.where(:filename => nil)
