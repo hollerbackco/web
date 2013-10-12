@@ -21,7 +21,7 @@ module HollerbackApp
       current_version =  REDIS.get("app:current:version")
       name = current_user? ? current_user.username : "update"
 
-      if user_version == current_version
+      if user_version != current_version
         data = {
           "message" => "Please Update Hollerback (#{app_version})",
           "button-text" => "Update",
