@@ -1,7 +1,8 @@
 class ContentPublisher
   include Sinatra::CoreHelpers
 
-  attr_accessor :membership, :conversation, :messages, :is_first_message, :sender, :is_reply
+  attr_accessor :membership, :conversation, :messages, :is_first_message,
+    :sender
 
   def initialize(membership, is_reply=false)
     @membership = membership
@@ -11,26 +12,32 @@ class ContentPublisher
     #TODO currently set to always be true, but uncomment to only send one invite
     #@is_first_message = (@conversation.videos.count == 1)
     @is_first_message = true
-
-    @is_reply = is_reply
   end
 
   def publish(content, opts={})
-    options = {notify: true, analytics: true}.merge(opts)
+    options = {
+      notify: true,
+      analytics: true,
+      is_reply: true,
+      needs_reply: true,
+      to: conversation.memberships
+    }.merge(opts)
 
-    memberships = options.key?(:to) ? [options[:to]] : conversation.memberships
+    memberships = options[:to]
 
     self.messages = memberships.map do |m|
-      send_to(m, content)
+      send_to(m, content, options[:needs_reply])
     end.compact
 
     notify_recipients(messages) if options[:notify]
-    publish_analytics(content) if options[:analytics] and is_first_message
+    if options[:analytics] and is_first_message
+      publish_analytics(content, options[:needs_reply], options[:is_reply])
+    end
     sms_invite(conversation, content) if is_first_message
     say_level(sender)
   end
 
-  def send_to(membership, content)
+  def send_to(membership, content, needs_reply)
     member = membership.user
 
     # check to see that the user actually exists
@@ -54,9 +61,10 @@ class ContentPublisher
       video_guid: content.guid,
       content: content.content_hash,
       seen_at: seen_at,
-      sent_at: content.created_at
+      sent_at: content.created_at,
+      needs_reply: needs_reply
     }
-    Message.create(obj)
+    message = Message.create(obj)
   end
 
   def sender_message
@@ -69,10 +77,11 @@ class ContentPublisher
     Hollerback::NotifyRecipients.new(messages).run
   end
 
-  def publish_analytics(content)
+  def publish_analytics(content, needs_reply, is_reply)
     data = {
       content_id: content.id,
       is_reply: is_reply,
+      needs_reply: needs_reply,
       receivers_count: (conversation.members.count - 1),
       conversation: {
         id: conversation.id,

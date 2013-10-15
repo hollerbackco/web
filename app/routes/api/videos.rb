@@ -60,12 +60,13 @@ module HollerbackApp
         return error_json 400, msg: "missing parts param"
       end
 
-      urls = params.select {|key,value| ["parts", "part_urls"].include? key }
-
       membership = current_user.memberships.find(params[:id])
 
       video = membership.conversation.videos.create(user: current_user)
-      VideoStitchRequest.perform_async(video.id, urls, params.key?("reply"))
+
+      urls = params.select {|key,value| ["parts", "part_urls"].include? key }
+
+      VideoStitchRequest.perform_async(video.id, urls, params.key?("reply"), params[:needs_reply])
 
       #mark messages as read
       messages = membership.messages.unseen
