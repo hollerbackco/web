@@ -22,6 +22,9 @@ class User < ActiveRecord::Base
   before_create :set_verification_code
   before_create :downcase_username
 
+  validates :email,
+    presence: true,
+    uniqueness: true
   validates :phone, presence: true, uniqueness: true
   validates :phone_normalized, presence: true, uniqueness: true
   validates :username,
@@ -102,7 +105,7 @@ class User < ActiveRecord::Base
 
   def self.authenticate(phone, code)
     user = User.find_by_phone_normalized(phone)
-    if user and user.verify(code)
+    if user and user.verify!(code)
       user
     else
       nil
@@ -157,14 +160,6 @@ class User < ActiveRecord::Base
   def reset_verification_code!
     set_verification_code
     save!
-  end
-
-  def verification_code
-    if self[:verification_code].blank?
-      set_verification_code
-      save
-    end
-    self[:verification_code]
   end
 
   def verify!(code)

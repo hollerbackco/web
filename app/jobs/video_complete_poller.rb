@@ -23,8 +23,11 @@ class VideoCompletePoller
         video.update_attributes(filename: data["output"], in_progress: false)
         membership = Membership.where(conversation_id: video.conversation_id, user_id: video.user_id).first
         if membership.present?
-          publisher = ContentPublisher.new(membership, data["reply"])
-          publisher.publish(video)
+          publisher = ContentPublisher.new(membership)
+          publisher.publish(video, {
+            needs_reply: (data['needs_reply'] || true),
+            is_reply: data["reply"]
+          })
         end
         mark_delivered(video)
         SQSLogger.logger.info " -- Finished updating #{video.id}"

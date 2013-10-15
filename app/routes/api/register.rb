@@ -3,18 +3,22 @@ module HollerbackApp
   class ApiApp < BaseApp
     post '/register' do
       user = User.where({
-        username: params["username"],
-        phone:    params["phone"],
         email:    params["email"]
       }).first_or_initialize
 
-      if user.new_record?
-        user.password = params["password"]
-        user.set_verification_code
+      if user.persisted? and user.verified?
+        return error_json(400, msg: "already signed up")
       end
 
-      if !user.verified? and user.save
-        if user.new?
+      first_try = user.new_record?
+
+      user.phone = params["phone"]
+      user.username = params["username"]
+      user.password = params["password"]
+      user.set_verification_code
+
+      if user.save
+        if first_try
           Invite.accept_all!(user)
           UserRegister.perform_async(user.id)
         end
