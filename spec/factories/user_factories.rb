@@ -8,6 +8,7 @@ FactoryGirl.define do
   factory :user do
     username            { Faker::Internet.user_name.gsub(".","_")}
     phone               { PhoneFake.phone_number }
+    email               { Faker::Internet.email }
 
     after(:create) do |user|
       user.devices << Device.create(platform: "ios", token: "devicetoken#{Faker::Name.name}")

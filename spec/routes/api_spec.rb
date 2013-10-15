@@ -41,8 +41,8 @@ describe 'API ROUTES |' do
 
     @second_user ||= FactoryGirl.create(:user)
     @conversation = @user.conversations.last
-    @access_token = @user.devices.first.access_token 
-    @second_token = @second_user.devices.first.access_token 
+    @access_token = @user.devices.first.access_token
+    @second_token = @second_user.devices.first.access_token
   end
 
   before(:each) do
@@ -61,8 +61,12 @@ describe 'API ROUTES |' do
   end
 
   it 'POST verify | should return access_token' do
-    post '/verify', phone: subject.phone_normalized, code: subject.verification_code,
-      :platform => "android", :device_token => "hello"
+    post '/verify',
+      phone: subject.phone_normalized,
+      code: subject.verification_code,
+      platform: "android",
+      device_token: "hello"
+
     result = JSON.parse(last_response.body)
     last_response.should be_ok
     result['access_token'].should_not be_nil
@@ -88,10 +92,40 @@ describe 'API ROUTES |' do
   end
 
   it 'POST register | creates a user' do
-    post '/register', :username => "myname", :phone => "8587614144"
+    post '/register',
+      username: "myname",
+      phone: "8587614144",
+      email: "test@test.com"
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
+  end
+
+  it 'POST register | should throw error if email is already used' do
+    post '/register',
+      email: subject.email
+
+    result = JSON.parse(last_response.body)
+    last_response.should_not be_ok
+  end
+
+  it 'POST register | should throw error if username is already used' do
+    post '/register',
+      email: "test@tester.com",
+      username: subject.username
+
+    result = JSON.parse(last_response.body)
+    last_response.should_not be_ok
+  end
+
+  it 'POST register | should throw error if phone is already used' do
+    post '/register',
+      email: "test@tester10.com",
+      username: "testuser",
+      phone: subject.phone
+
+    result = JSON.parse(last_response.body)
+    last_response.should_not be_ok
   end
 
   it 'POST session | should respond with success phone number' do
