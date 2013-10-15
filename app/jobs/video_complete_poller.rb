@@ -25,7 +25,7 @@ class VideoCompletePoller
         if membership.present?
           publisher = ContentPublisher.new(membership)
           publisher.publish(video, {
-            needs_reply: data['needs_reply'],
+            needs_reply: (data['needs_reply'] || true),
             is_reply: data["reply"]
           })
         end
