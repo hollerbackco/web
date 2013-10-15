@@ -12,7 +12,7 @@ class VideoStitchRequest
         output: "#{Video.random_label}",
         video_id: video_id,
         reply: reply,
-        needs_reply: needs_reply
+        needs_reply: (needs_reply || true)
       }.to_json)
     end
   end
