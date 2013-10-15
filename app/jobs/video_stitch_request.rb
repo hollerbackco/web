@@ -1,16 +1,18 @@
 class VideoStitchRequest
   include Sidekiq::Worker
 
-  def perform(video_id, obj={}, reply=false)
+  def perform(video_id, obj={}, reply=false, needs_reply=true)
     video = Video.find(video_id)
     urls = fetch_urls(obj)
 
     if video
+      # stitcher will send a complete message with the same data
       queue.send_message({
         parts: urls,
         output: "#{Video.random_label}",
         video_id: video_id,
-        reply: reply
+        reply: reply,
+        needs_reply: needs_reply
       }.to_json)
     end
   end
