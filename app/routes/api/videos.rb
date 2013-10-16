@@ -75,6 +75,9 @@ module HollerbackApp
           watched_at = Time.parse(params[:watched_at])
           messages = messages.before(watched_at)
         end
+        if params[:watched_ids]
+          messages = messages.where(:video_guid => params[:watched_ids])
+        end
         if messages.any?
           VideoRead.perform_async(messages.map(&:id), current_user.id)
           unread_count = messages.count
