@@ -5,6 +5,7 @@ require 'sinatra/multi_route'
 module HollerbackApp
   class BaseApp < ::Sinatra::Base
     register ::Sinatra::ActiveRecordExtension
+    register WillPaginate::Sinatra
 
     set :app_root, File.expand_path(".")
 
@@ -52,6 +53,7 @@ end
 HollerbackApp::BaseApp.load_lib
 HollerbackApp::BaseApp.helpers ::Sinatra::Warden::Helpers
 HollerbackApp::BaseApp.helpers ::Sinatra::CoreHelpers
+HollerbackApp::BaseApp.helpers WillPaginate::Sinatra::Helpers
 HollerbackApp::BaseApp.register Sinatra::MultiRoute
 #HollerbackApp::BaseApp.register ::Sinatra::ActiveRecordExtension
 HollerbackApp::BaseApp.load_config
