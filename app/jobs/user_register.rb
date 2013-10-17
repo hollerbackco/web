@@ -16,7 +16,6 @@ class UserRegister
       Hollerback::SMS.send_message "+13033595357", "#{user.username} #{user.phone_normalized} signed up"
     end
 
-    Hollerback::SMS.send_message user.phone_normalized, "Hollerback Code: #{user.verification_code}"
     Hollerback::BMO.say("#{user.username} just signed up")
   end
 
