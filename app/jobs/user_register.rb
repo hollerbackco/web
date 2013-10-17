@@ -16,7 +16,6 @@ class UserRegister
       Hollerback::SMS.send_message "+13033595357", "#{user.username} #{user.phone_normalized} signed up"
     end
 
-    Hollerback::SMS.send_message user.phone_normalized, "Hollerback Code: #{user.verification_code}"
     Hollerback::BMO.say("#{user.username} just signed up")
   end
 
@@ -27,7 +26,7 @@ class UserRegister
       sender_membership = Membership.where(conversation_id: content.conversation_id, user_id: content.user_id).first
       receiver_membership = Membership.where(conversation_id: content.conversation_id, user_id: user.id).first
       publisher = ContentPublisher.new(sender_membership)
-      publisher.publish(content, to: receiver_membership, analytics: false)
+      publisher.publish(content, to: [receiver_membership], analytics: false)
     end
   end
 

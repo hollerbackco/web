@@ -81,6 +81,14 @@ module HollerbackApp
         end
       end
 
+      if params[:watched_ids]
+        messages = messages.where(:video_guid => params[:watched_ids])
+        if messages.any?
+          VideoRead.perform_async(messages.map(&:id), current_user.id)
+          unread_count = messages.count
+        end
+      end
+
       success_json data: video.as_json.merge(:conversation_id => membership.id, :unread_count => (unread_count || messages.count))
     end
 
