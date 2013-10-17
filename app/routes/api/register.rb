@@ -23,6 +23,7 @@ module HollerbackApp
           UserRegister.perform_async(user.id)
         end
 
+        Hollerback::SMS.send_message user.phone_normalized, "Hollerback Code: #{user.verification_code}"
         {
           user: user.reload.as_json
         }.to_json
