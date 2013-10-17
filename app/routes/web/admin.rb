@@ -26,10 +26,33 @@ module HollerbackApp
     end
 
     get '/madmin' do
-      @users = User.all
       @broken = Video.where(:filename => nil)
-      @videos = Video.limit(25)
+      @videos = Video.limit(20)
       haml "admin/index".to_sym, layout: "layouts/admin".to_sym
+    end
+
+    get '/madmin/videos' do
+      @videos = Video.paginate(:page => params[:page], :per_page => 20)
+      haml "admin/index".to_sym, layout: "layouts/admin".to_sym
+    end
+
+    get '/madmin/users' do
+      @users = User.order("created_at ASC").all
+      haml "admin/users".to_sym, layout: "layouts/admin".to_sym
+    end
+
+    get '/madmin/users/:id/edit' do
+      @user = User.find(:id)
+      haml "admin/users/edit".to_sym, layout: "layouts/admin".to_sym
+    end
+
+    put '/madmin/users/:id' do
+      @user = User.find(:id)
+      if @user.update_attributes(params[:user])
+        redirect "/madmin/users/#{@user.id}/edit"
+      else
+        haml "admin/users/edit".to_sym, layout: "layouts/admin".to_sym
+      end
     end
 
     get '/madmin/metrics' do
