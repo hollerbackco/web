@@ -27,7 +27,7 @@ module HollerbackApp
 
     get '/madmin' do
       @broken = Video.where(:filename => nil)
-      @videos = Video.limit(20)
+      @videos = Video.paginate(:page => params[:page], :per_page => 20)
       haml "admin/index".to_sym, layout: "layouts/admin".to_sym
     end
 
