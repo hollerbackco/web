@@ -52,31 +52,7 @@
           %td= video.filename
           %td
             %span.date{"data-time" => (video.created_at.to_i * 1000)}= video.created_at
-
-%h1 Users
-%table.table.table-bordered
-  %thead
-    %tr
-      %td Id
-      %td Username
-      %td Verify Code
-      %td Phone
-      %td Conversations
-      %td Videos (S/R)
-      %td Created At
-      %td App Version
-  %tbody
-    - @users.each do |user|
-      %tr
-        %td= user.id
-        %td= user.username
-        %td= user.verification_code
-        %td= user.phone_normalized
-        %td= user.memberships.count
-        %td= "#{user.messages.sent.count}/#{user.messages.received.count}"
-        %td
-          %span.date{"data-time" => (user.created_at.to_i * 1000)}= user.created_at
-        %td= user.last_app_version
+= will_paginate(@videos)
 
 :javascript
   $(document).ready(function() {

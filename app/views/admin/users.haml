@@ -1,0 +1,39 @@
+%h1 Users
+%table.table.table-bordered
+  %thead
+    %tr
+      %td Id
+      %td Username
+      %td Email
+      %td Verify Code
+      %td Phone
+      %td Conversations
+      %td Videos (S/R)
+      %td Joined
+      %td App Version
+  %tbody
+    - @users.each do |user|
+      %tr
+        %td= user.id
+        %td= user.username
+        %td= user.email
+        %td= user.verification_code
+        %td= user.phone_normalized
+        %td= user.memberships.count
+        %td= "#{user.messages.sent.count}/#{user.messages.received.count}"
+        %td
+          %span.date{"data-time" => (user.created_at.to_i * 1000)}= user.created_at
+        %td= user.last_app_version
+
+:javascript
+  $(document).ready(function() {
+    var datecopy = $(".date");
+
+    datecopy.each(function(el) {
+      var timeString = $(this).attr("data-time");
+      var unixTimestamp = parseInt(timeString);
+      var date = new Date(unixTimestamp);
+
+      $(this).html(date.toLocaleString());
+    })
+  })
