@@ -18,6 +18,7 @@ class Message < ActiveRecord::Base
     m.last_message_at = record.sent_at
     if !record.sender? or m.most_recent_thumb_url.blank?
       m.most_recent_thumb_url = record.thumb_url
+      m.most_recent_subtitle = record.subtitle
     end
     m.save
   end
@@ -50,16 +51,16 @@ class Message < ActiveRecord::Base
     }
   end
 
-  def guid
-
-  end
-
   def url
     content["url"]
   end
 
   def thumb_url
     content["thumb_url"]
+  end
+
+  def subtitle
+    content["subtitle"]
   end
 
   def filename

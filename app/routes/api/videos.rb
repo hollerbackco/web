@@ -63,7 +63,10 @@ module HollerbackApp
 
       membership = current_user.memberships.find(params[:id])
 
-      video = membership.conversation.videos.create(user: current_user)
+      video = membership.conversation.videos.create({
+        user: current_user,
+        subtitle: params[:subtitle]
+      })
 
       urls = params.select {|key,value| ["parts", "part_urls"].include? key }
 
