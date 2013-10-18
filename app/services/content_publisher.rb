@@ -82,6 +82,7 @@ class ContentPublisher
       content_id: content.id,
       is_reply: is_reply,
       needs_reply: needs_reply,
+      has_subtitle: content.subtitle.present?,
       receivers_count: (conversation.members.count - 1),
       conversation: {
         id: conversation.id,
