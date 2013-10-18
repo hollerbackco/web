@@ -18,8 +18,8 @@ class Message < ActiveRecord::Base
     m.last_message_at = record.sent_at
     if !record.sender? or m.most_recent_thumb_url.blank?
       m.most_recent_thumb_url = record.thumb_url
-      m.most_recent_subtitle = record.subtitle
     end
+    m.most_recent_subtitle = record.subtitle
     m.save
   end
 
