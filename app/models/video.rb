@@ -7,7 +7,7 @@ class Video < ActiveRecord::Base
     CLOUDFRONT_URL = "https://s3.amazonaws.com/hb-media-dev"
   end
 
-  attr_accessible :filename, :user, :conversation, :in_progress
+  attr_accessible :filename, :user, :conversation, :in_progress, :subtitle
   #acts_as_readable :on => :created_at
 
   belongs_to :user
@@ -63,7 +63,8 @@ class Video < ActiveRecord::Base
   def content_hash
     {
       url: url,
-      thumb_url: thumb_url
+      thumb_url: thumb_url,
+      subtitle: subtitle
     }
   end
 

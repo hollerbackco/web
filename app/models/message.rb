@@ -50,16 +50,16 @@ class Message < ActiveRecord::Base
     }
   end
 
-  def guid
-
-  end
-
   def url
     content["url"]
   end
 
   def thumb_url
     content["thumb_url"]
+  end
+
+  def subtitle
+    content["subtitle"]
   end
 
   def filename
