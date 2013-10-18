@@ -14,6 +14,7 @@ class User < ActiveRecord::Base
   has_many :memberships, :dependent => :destroy
   has_many :messages, through: :memberships, :dependent => :destroy
   has_many :videos
+  has_many :invites, :as => :inviter
 
   has_many :conversations, through: :memberships
   has_many :contacts
