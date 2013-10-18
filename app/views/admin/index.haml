@@ -36,6 +36,7 @@
       %td Members
       %td Filename
       %td Created At
+      %td Subtitle
   %tbody
     - @videos.each do |video|
       - if video.user.blank?
@@ -52,6 +53,8 @@
           %td= video.filename
           %td
             %span.date{"data-time" => (video.created_at.to_i * 1000)}= video.created_at
+          %td
+            %span.subtitle= video.subtitle.present? ? "Y" : ""
 = will_paginate(@videos)
 
 :javascript
