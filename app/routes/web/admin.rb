@@ -56,7 +56,7 @@ module HollerbackApp
     end
 
     get '/madmin/invites' do
-      @invites = Invite.includes(:inviter).paginate(:page => params[:page], :per_page => 20)
+      @invites = Invite.order("created_at DESC").includes(:inviter).paginate(:page => params[:page], :per_page => 50)
       haml "admin/invites".to_sym, layout: "layouts/admin".to_sym
     end
 
