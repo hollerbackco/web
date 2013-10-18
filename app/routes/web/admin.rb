@@ -55,6 +55,11 @@ module HollerbackApp
       end
     end
 
+    get '/madmin/invites' do
+      @invites = Invite.includes(:inviter).paginate(:page => params[:page], :per_page => 20)
+      haml "admin/invites".to_sym, layout: "layouts/admin".to_sym
+    end
+
     get '/madmin/metrics' do
       @app_links = AppLink.all
       haml "admin/stats".to_sym, layout: "layouts/admin".to_sym
