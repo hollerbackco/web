@@ -336,6 +336,25 @@ describe 'API ROUTES |' do
     VideoStitchRequest.jobs.size.should == 1
   end
 
+  it 'POST me/conversations/:id/videos/parts | sends a video with a subtitle' do
+    parts = [
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.0.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.1.mp4",
+      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.2.mp4"
+    ]
+
+    post "/me/conversations/#{secondary_subject.memberships.first.id}/videos/parts",
+      access_token: second_token,
+      parts: parts,
+      subtitle: "hello whats up"
+
+    last_response.should be_ok
+    result = JSON.parse(last_response.body)
+
+    VideoStitchRequest.jobs.size.should == 1
+    result["data"]["subtitle"].should == "hello whats up"
+  end
+
   it 'POST me/conversations/:id/videos/parts | requires parts param' do
     post "/me/conversations/#{secondary_subject.memberships.first.id}/videos/parts", access_token: second_token
 
