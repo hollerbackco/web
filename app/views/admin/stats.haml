@@ -114,7 +114,8 @@
     });
 
     var watch = new Keen.Series("video:watch", {
-      analysisType: "count",
+      analysisType: "count_unique",
+      targetProperty: "message_id",
       timeframe: "this_14_days",
       interval: "daily"
     });
@@ -131,7 +132,7 @@
     });
 
     users.draw(document.getElementById("active-users"), {
-      label: "Users who watched a video"
+      label: "Users who refreshed convo list"
     });
 
   });
