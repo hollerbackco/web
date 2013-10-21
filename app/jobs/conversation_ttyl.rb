@@ -10,7 +10,7 @@ class ConversationTtyl
 
     membership.others.each do |other|
       p "notify push to #{other.username}"
-      notify_push(membership.user.username, other)
+      notify_push(membership.user.also_known_as(for: other), other)
     end
   end
 
@@ -30,7 +30,7 @@ class ConversationTtyl
       sender_name: sender_name
     }
 
-    text = "#{sender_name} said ttyl"
+    text = "#{sender_name}: ttyl"
 
     person.devices.ios.each do |device|
       APNS.send_notification(device.token, {
