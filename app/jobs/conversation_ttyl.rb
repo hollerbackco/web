@@ -8,9 +8,9 @@ class ConversationTtyl
 
     notify_mqtt(conversation.memberships)
 
-    membership.recipient_memberships do |receiver|
-      p "notify push to #{receiver.user.username}"
-      notify_push(membership.user.username, receiver)
+    membership.others do |other|
+      p "notify push to #{other.username}"
+      notify_push(membership.user.username, other)
     end
   end
 
@@ -25,18 +25,17 @@ class ConversationTtyl
     end
   end
 
-  def notify_push(sender_name, membership)
+  def notify_push(sender_name,person)
     data = {
-      conversation_id: membership.id,
       sender_name: sender_name
     }
 
     text = "#{sender_name} said ttyl"
-    person = membership.user
 
     person.devices.ios.each do |device|
       APNS.send_notification(device.token, {
         alert: text,
+        badge: 0,
         sound: "default",
         other: {
           hb: data
