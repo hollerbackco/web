@@ -94,6 +94,23 @@ module HollerbackApp
       end
     end
 
+    post '/me/conversations/:id/goodbye' do
+      membership = current_user.memberships.find(params[:id])
+
+      if params[:watched_ids]
+        messages = membership.messages.where(:video_guid => params[:watched_ids])
+        if messages.any?
+          VideoRead.perform_async(messages.map(&:id), current_user.id)
+          unread_count = messages.count
+        end
+      end
+
+      membership.converation.ttyl
+
+      MetricsPublisher.delay.publish(current_user.meta, "conversations:ttyl")
+      success_json data: nil
+    end
+
     post '/me/conversations/:id/leave' do
       membership = current_user.memberships.find(params[:id])
       if membership.destroy

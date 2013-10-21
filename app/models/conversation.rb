@@ -10,7 +10,6 @@ class Conversation < ActiveRecord::Base
 
   default_scope order("updated_at DESC")
 
-
   def self.find_by_members(users)
     raise if users.blank?
     user_ids = users.map(&:id).join(",")
@@ -22,6 +21,14 @@ class Conversation < ActiveRecord::Base
       .map(&:id)
 
     self.find_by_id(ids)
+  end
+
+  def ttyl
+    memberships.each do |membership|
+      m.last_message_at = Time.now
+      m.most_recent_subtitle = "ttyl"
+      m.save
+    end
   end
 
   # all conversations with a name that is set.
