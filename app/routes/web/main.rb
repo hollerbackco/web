@@ -40,6 +40,14 @@ module HollerbackApp
       haml :waitlist
     end
 
+    get '/terms' do
+      haml :terms
+    end
+
+    get '/privacy' do
+      haml :privacy
+    end
+
     get '/android/:party' do
       party = params[:party]
 
