@@ -22,6 +22,12 @@ module HollerbackApp
       current_version =  REDIS.get("app:current:version")
       name = logged_in? ? current_user.username : "update"
 
+      #todo user_version is app store
+      if user_version == "1.0"
+        {"message" => "app up to date"}.to_json
+        return
+      end
+
       if user_version != current_version
         data = {
           "message" => "Please Update Hollerback (#{current_version})",

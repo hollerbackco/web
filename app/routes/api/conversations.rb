@@ -97,8 +97,9 @@ module HollerbackApp
     post '/me/conversations/:id/goodbye' do
       membership = current_user.memberships.find(params[:id])
 
+      messages = membership.messages.unseen
       if params[:watched_ids]
-        messages = membership.messages.where(:video_guid => params[:watched_ids])
+        messages = messages.where(:video_guid => params[:watched_ids])
       end
 
       if messages.any?
