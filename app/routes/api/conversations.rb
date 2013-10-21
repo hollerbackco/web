@@ -99,7 +99,6 @@ module HollerbackApp
 
       if params[:watched_ids]
         messages = membership.messages.where(:video_guid => params[:watched_ids])
-        end
       end
 
       messages = membership.messages.unseen
