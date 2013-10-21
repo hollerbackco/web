@@ -25,6 +25,7 @@ gem 'will_paginate'
 
 #views
 gem 'haml'
+gem 'redcarpet'
 
 #authentication
 gem 'warden'
