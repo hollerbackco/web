@@ -105,7 +105,7 @@ module HollerbackApp
         end
       end
 
-      membership.converation.ttyl
+      membership.conversation.ttyl
 
       MetricsPublisher.delay.publish(current_user.meta, "conversations:ttyl")
       success_json data: nil
