@@ -101,7 +101,6 @@ module HollerbackApp
         messages = membership.messages.where(:video_guid => params[:watched_ids])
       end
 
-      messages = membership.messages.unseen
       if messages.any?
         VideoRead.perform_async(messages.map(&:id), current_user.id)
       end
