@@ -24,7 +24,7 @@ class Conversation < ActiveRecord::Base
   end
 
   def ttyl
-    memberships.each do |membership|
+    memberships.each do |m|
       m.last_message_at = Time.now
       m.most_recent_subtitle = "ttyl"
       m.save
