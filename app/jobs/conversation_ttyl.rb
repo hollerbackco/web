@@ -9,7 +9,8 @@ class ConversationTtyl
     notify_mqtt(conversation.memberships)
 
     membership.recipient_memberships do |receiver|
-      notify_push(membership.name, receiver)
+      p "notify push to #{receiver.user.username}"
+      notify_push(membership.user.username, receiver)
     end
   end
 
