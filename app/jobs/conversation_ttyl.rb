@@ -35,7 +35,6 @@ class ConversationTtyl
     person.devices.ios.each do |device|
       APNS.send_notification(device.token, {
         alert: text,
-        badge: 0,
         sound: "default",
         other: {
           hb: data

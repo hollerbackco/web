@@ -60,7 +60,7 @@ class Message < ActiveRecord::Base
   end
 
   def subtitle
-    content["subtitle"]
+    (content["subtitle"] || "").force_encoding("UTF-8")
   end
 
   def filename
