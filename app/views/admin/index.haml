@@ -56,10 +56,7 @@
           %td
             %span.subtitle
               - if video.subtitle.present?
-                - if video.subtitle == "ttyl"
-                  ttyl
-                - else
-                  Y
+                Y
 = will_paginate(@videos)
 
 :javascript
