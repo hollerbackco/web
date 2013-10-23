@@ -1,15 +1,21 @@
 .panel.panel-default
   .panel-heading Conversation
   .list-group
-    .list-group-item= @conversation.id
-    .list-group-item= @conversation.name || "no name"
-    .list-group-item= @conversation.member_names
     .list-group-item
+      %strong Id
+      = @conversation.id
+    .list-group-item
+      %strong Name
+      = @conversation.name || "N/A"
+    .list-group-item
+      %strong Members
+      = @conversation.member_names
+    .list-group-item
+      %strong Videos Sent
       = @videos.count
-      = " videos"
     - if @conversation.memberships.first.most_recent_subtitle == "ttyl"
       .list-group-item
-        %span.label.label-default ttyl
+        %span.label.label-success ttyl
 
 %h1 Videos
 %table.table.table-bordered
