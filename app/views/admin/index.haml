@@ -49,8 +49,8 @@
           %td= video.conversation.name
           %td
             %a{href: "/madmin/conversations/#{video.conversation_id}"}
-            = video.conversation.member_names
-            = "(#{video.conversation_id})"
+              = video.conversation.member_names
+              = "(#{video.conversation_id})"
           %td= video.filename
           %td
             %span.date{"data-time" => (video.created_at.to_i * 1000)}= video.created_at
