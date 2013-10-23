@@ -54,7 +54,14 @@
           %td
             %span.date{"data-time" => (video.created_at.to_i * 1000)}= video.created_at
           %td
-            %span.subtitle= video.subtitle.present? ? "Y" : ""
+            %span.subtitle
+              - if video.subtitle.present?
+                - if video.subtitle == "ttyl"
+                  ttyl
+                - else
+                  Y
+              - else
+                ""
 = will_paginate(@videos)
 
 :javascript
