@@ -48,18 +48,16 @@
           %td= video.user.username
           %td= video.conversation.name
           %td
-            = video.conversation.member_names
-            = "(#{video.conversation_id})"
+            %a{href: "/madmin/conversations/#{video.conversation_id}"}
+              = video.conversation.member_names
+              = "(#{video.conversation_id})"
           %td= video.filename
           %td
             %span.date{"data-time" => (video.created_at.to_i * 1000)}= video.created_at
           %td
             %span.subtitle
               - if video.subtitle.present?
-                - if video.subtitle == "ttyl"
-                  ttyl
-                - else
-                  Y
+                Y
 = will_paginate(@videos)
 
 :javascript
