@@ -36,6 +36,14 @@ module HollerbackApp
       haml "admin/index".to_sym, layout: "layouts/admin".to_sym
     end
 
+    get '/madmin/conversations/:id' do
+      @conversation = Conversation.find(params[:id])
+      @members = @conversation.members
+      @videos = @conversation.videos
+
+      haml "admin/memberships".to_sym, layout: "layouts/admin".to_sym
+    end
+
     get '/madmin/users' do
       @users = User.order("created_at ASC").includes(:memberships, :messages).all
       haml "admin/users".to_sym, layout: "layouts/admin".to_sym

@@ -48,6 +48,7 @@
           %td= video.user.username
           %td= video.conversation.name
           %td
+            %a{href: "/madmin/conversations/#{video.conversation_id}"}
             = video.conversation.member_names
             = "(#{video.conversation_id})"
           %td= video.filename
