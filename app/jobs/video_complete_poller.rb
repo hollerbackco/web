@@ -46,6 +46,7 @@ class VideoCompletePoller
   end
 
   def mark_delivered(video)
-    HollerbackApp::BaseApp.settings.cache.set("d/#{video.id}", 1)
+    ttl = 60 * 5
+    HollerbackApp::BaseApp.settings.cache.set("d/#{video.id}", 1, ttl)
   end
 end
