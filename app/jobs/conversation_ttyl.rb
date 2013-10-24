@@ -26,19 +26,12 @@ class ConversationTtyl
   end
 
   def notify_push(sender_name,person)
-    data = {
-      sender_name: sender_name
-    }
-
     text = "#{sender_name}: ttyl"
 
     person.devices.ios.each do |device|
-      APNS.send_notification(device.token, {
+      Hollerback::Push.send(device.token, {
         alert: text,
         sound: "default",
-        other: {
-          hb: data
-        }
       })
     end
 

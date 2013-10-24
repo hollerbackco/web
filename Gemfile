@@ -42,7 +42,7 @@ gem 'twilio-ruby'
 #utils
 gem 'split', :require => 'split/dashboard'
 gem 'split-analytics', :require => 'split/analytics'
-gem 'apns'
+gem 'houston'
 gem 'gcm'
 gem 'mqtt'
 gem 'bcrypt-ruby'
