@@ -30,7 +30,6 @@ GEM
       i18n (~> 0.6)
       multi_json (~> 1.0)
     addressable (2.3.4)
-    apns (1.0.0)
     arel (3.0.2)
     awesome_nested_set (2.1.6)
       activerecord (>= 3.0.0)
@@ -50,6 +49,8 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.2)
+    commander (4.1.5)
+      highline (~> 1.6.11)
     compass (0.12.2)
       chunky_png (~> 1.2)
       fssm (>= 0.2.7)
@@ -113,8 +114,12 @@ GEM
       rubyzip
     heroku-api (0.3.15)
       excon (~> 0.25.1)
+    highline (1.6.20)
     hike (1.2.2)
     honeybadger (1.6.2)
+      json
+    houston (0.3.1)
+      commander (~> 4.1)
       json
     http_parser.rb (0.5.3)
     httparty (0.11.0)
@@ -297,7 +302,6 @@ PLATFORMS
 DEPENDENCIES
   activerecord
   activerecord-postgres-hstore
-  apns
   awesome_nested_set
   aws-sdk
   bcrypt-ruby
@@ -318,6 +322,7 @@ DEPENDENCIES
   handlebars_assets
   heroku
   honeybadger
+  houston
   i18n
   keen
   mini_magick
