@@ -9,11 +9,13 @@ module Hollerback
         alert = options[:alert]
         badge = options[:badge]
         sound = options[:sound]
+        content_available = options[:content_available]
 
         notification = Houston::Notification.new(device: token)
         notification.alert = alert if alert
         notification.badge = badge if badge
         notification.sound = sound if sound
+        notification.content_available = content_available if content_available
 
         @client.push(notification)
       end

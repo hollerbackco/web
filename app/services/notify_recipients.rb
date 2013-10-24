@@ -39,7 +39,8 @@ module Hollerback
         Hollerback::Push.send(device.token, {
           alert: message.sender_name,
           badge: badge_count,
-          sound: "default"
+          sound: "default",
+          content_available: true
         })
       end
 
