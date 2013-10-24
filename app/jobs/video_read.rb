@@ -41,7 +41,7 @@ class VideoRead
     def notify_apns(current_user)
       unwatched_count = current_user.unseen_memberships_count
       current_user.devices.ios.each do |device|
-        APNS.send_notification(device.token, badge: unwatched_count)
+        Hollerback::Push.send(device.token, badge: unwatched_count)
       end
     end
 end
