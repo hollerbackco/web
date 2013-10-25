@@ -56,7 +56,7 @@ module HollerbackApp
     end
 
     post '/me/conversations/:id/videos/parts' do
-      if !params.key?("parts") and !params.key?("part_urls")
+      if !params.key?("parts") and !params.key?("part_urls") and !params.key?("urls")
         return error_json 400, msg: "missing parts param"
       end
       p params
@@ -68,7 +68,7 @@ module HollerbackApp
         subtitle: params[:subtitle]
       })
 
-      urls = params.select {|key,value| ["parts", "part_urls"].include? key }
+      urls = params.select {|key,value| ["urls", "parts", "part_urls"].include? key }
 
       VideoStitchRequest.perform_async(video.id, urls, params.key?("reply"), params[:needs_reply])
 
