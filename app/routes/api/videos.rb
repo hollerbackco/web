@@ -56,7 +56,7 @@ module HollerbackApp
     end
 
     post '/me/conversations/:id/videos/parts' do
-      if !params.key?("parts") and !params.key?("part_urls")
+      if !params.key?("parts") and !params.key?("part_urls") and !params.key?("urls")
         return error_json 400, msg: "missing parts param"
       end
       p params
