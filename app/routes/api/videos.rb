@@ -68,7 +68,7 @@ module HollerbackApp
         subtitle: params[:subtitle]
       })
 
-      urls = params.select {|key,value| ["parts", "part_urls"].include? key }
+      urls = params.select {|key,value| ["urls", "parts", "part_urls"].include? key }
 
       VideoStitchRequest.perform_async(video.id, urls, params.key?("reply"), params[:needs_reply])
 

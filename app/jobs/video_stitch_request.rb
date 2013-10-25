@@ -29,6 +29,8 @@ class VideoStitchRequest
         bucket, key = arn.split("/", 2)
         Video.bucket_by_name(bucket).objects[key].url_for(:read, :expires => 1.month, :secure => false).to_s
       end
+    elsif urls.key? "urls"
+      urls["urls"]
     end
   end
 
