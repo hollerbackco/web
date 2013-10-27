@@ -10,7 +10,7 @@ module HollerbackApp
 
       ios_model_name = request.env["HTTP_IOS_MODEL_NAME"]
       if ios_model_name
-        device = Device.find(params[:access_token])
+        device = Device.find_by_access_token(params[:access_token])
         if device and device != device.description
           device.description = ios_model_name
           device.save
