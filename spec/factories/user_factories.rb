@@ -11,7 +11,7 @@ FactoryGirl.define do
     email               { Faker::Internet.email }
 
     after(:create) do |user|
-      user.devices << Device.create(platform: "ios", token: "devicetoken#{Faker::Name.name}")
+      user.devices << Device.create(platform: "ios", token: "devicetoken#{Faker::Name.name}", description: "ios1")
     end
   end
 end

@@ -45,7 +45,7 @@ module HollerbackApp
     end
 
     get '/madmin/users' do
-      @users = User.order("created_at ASC").includes(:memberships, :messages).all
+      @users = User.order("created_at ASC").includes(:memberships, :messages, :devices).all
       haml "admin/users".to_sym, layout: "layouts/admin".to_sym
     end
 
