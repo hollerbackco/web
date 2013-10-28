@@ -47,6 +47,10 @@ describe User do
     user.also_known_as(for: user).should == "testname"
   end
 
+  it "should respond to description" do
+    user.device_names.should == "ios1"
+  end
+
   describe "muting of users" do
     it "should have an empty list at first" do
       user.muted_users.is_a?(Array).should be_true

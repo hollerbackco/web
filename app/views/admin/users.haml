@@ -13,6 +13,7 @@
       %td Badge
       %td Joined
       %td App Version
+      %td Devices
   %tbody
     - @users.each do |user|
       %tr
@@ -28,6 +29,7 @@
         %td
           %span.date{"data-time" => (user.created_at.to_i * 1000)}= user.created_at
         %td= user.last_app_version
+        %td= user.device_names
 
 :javascript
   $(document).ready(function() {

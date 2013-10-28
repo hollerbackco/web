@@ -1,5 +1,5 @@
 class Device < ActiveRecord::Base
-  attr_accessible :platform, :platform_version, :token
+  attr_accessible :platform, :platform_version, :token, :description
 
   validates :platform, presence: true, inclusion: {in: %w(ios android general)}
   #validates :token,    presence: true
