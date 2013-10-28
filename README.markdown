@@ -1,17 +1,5 @@
-
-Design Principles and Resources
-===============================
-
-http://www.12factor.net/
-http://dl.dropboxusercontent.com/u/1579953/talks/modern_architecture.pdf
-
-- logs as first class citizens
-
-
-TODO
-- install graphite/statsd to start measuring performance and monitor server
-
-activity
+API
+===
 
 1. Main web api;
 2. Sidekiq background workers;
@@ -19,15 +7,20 @@ activity
 
 videos as complete.
 
-API for HollerbackApp
-=====================
+Design Principles and Resources
+-------------------------------
 
-Users can register, read and create conversations, and read and add videos
+http://www.12factor.net/
+http://dl.dropboxusercontent.com/u/1579953/talks/modern_architecture.pdf
+
+- logs as first class citizens
+- long running tasks on jobs queue
 
 
 Server
 ------
-temp server is located at http://calm-peak-4397.herokuapp.com/
+production server is located at http://www.hollerback.co/api/
+dev server is located at http://lit-sea-1934.herokuapp.com/api/
 
 
 Dependencies
@@ -66,8 +59,24 @@ Every response is contained by an envelope. That is, each response has a predict
 Routes
 ------
 
+## AUTHENTICATION
+User must register and verify with phone. User authenticates with email
+and password.
+
+### POST /email/available
+Checks to see if an email is currently in use
+
+  params
+    email*
+
+  response
+    {
+      data: true
+    }
+
 ### POST /register
-register a user
+The endpoint registers a user and sends a verification code to the supplied phone
+number
 
     params
         email*
@@ -77,9 +86,40 @@ register a user
 
     response
         {
-          access_token: "anaccesstoken",
-          user: {}
+          user: {
+            id: 1,
+            phone: "+18885558888",
+            username: "username",
+            created_at: timestamp,
+            phone_hashed: "",
+            is_new: true
+          }
         }
+
+### POST /verify
+Verifies a users phone number.  Code is a four characters long and sent
+to the users phone as a text
+  
+    params
+        phone*
+        code*
+        device_token*
+        platform*
+
+    response
+        {
+          access_token: "anaccesstoken",
+          user: {
+            id: 1,
+            phone: "+18885558888",
+            username: "username",
+            created_at: timestamp,
+            phone_hashed: "",
+            is_new: false
+          }
+        }
+
+
 
 ### POST /session
 get an access token
@@ -87,12 +127,157 @@ get an access token
     params
         email*
         password*
+        device_token*
+        platform*
 
     response
         {
           access_token: "anaccesstoken",
-          user: {}
+          user: {
+            id: 1,
+            phone: "+18885558888",
+            username: "username",
+            created_at: timestamp,
+            phone_hashed: "",
+            is_new: false
+          }
         }
+
+## CONTACTS
+
+### POST /contacts/check
+send hashed numbers. it will return users on the service
+
+    params
+        access_token*   string
+        c[0][:n]        string
+        c[0][:p]        string
+
+    response
+        {
+            data: [list of users]
+        }
+
+
+## SYNC
+
+### GET /me/sync
+Sends conversation and video data.  If no timestamp is sent, the entire
+list will be sent.  If a timestamp is supplied, only new/updated objects  will be
+returned.
+
+    params
+      updated_at    iso8601 date
+
+    response
+      {
+          data: [{
+              type: "conversation",
+              sync: {
+                  id: 1,
+                  name: "Jeff",
+                  unread_count: 2,
+                  is_deleted: false,
+                  most_recent_thumb_url: "http://url",
+                  most_recent_subtitle: "hello",
+                  last_message_at: timestamp
+              }
+          },{
+              type: "message",
+              sync: {
+                  guid: "aldsfkj-asdfkj-sdf",
+                  conversation_id: 12,
+                  url: "http://url",
+                  thumb_url: "http://thumburl",
+                  subtitle: "hello",
+                  sent_at: timestamp,
+                  created_at: timestamp
+                  sender_name: "Sender Name",
+                  needs_reply: true
+              }
+          }]
+      }
+
+
+## CONVERSATIONS
+
+### POST /me/conversations
+create a conversation
+
+    params
+        access_token*     string
+        invites*          array of phone numbers
+
+    response
+        {
+          data: {
+            id: 1,
+            unread_count: 10,
+            members: [list of users],
+            invites: [{phone: "+18885558888"}],
+            videos: [{
+              isRead: false,
+              id: 1,
+              created_at: timestamp,
+              url: "http://url",
+              meta: {}
+            }]
+          }
+        }
+
+
+### POST /me/conversations/:id/videos/parts
+Creates a video stitch request, marks videos as read.
+
+    params
+        access_token*      string
+        urls**             string     send a url location of the file
+        part_urls**        string     bucket/key
+        subtitle           string
+        watched_ids        array of strings
+
+    response
+        {
+          data: {
+            guid: "asfd,
+          }
+        }
+
+### GET /me/conversations/:id/members
+get info about a conversation
+
+    params
+        access_token*     string
+
+    response
+        {
+          data: [list of users]
+        }
+
+### POST /me/conversations/:id/goodbye
+
+    params
+        watched_id*       string
+      
+    response
+        {
+          data: nil
+        }
+
+
+### POST /me/conversations/:id/leave
+get info about a conversation
+
+    params
+        access_token*     string
+
+    response
+        {
+          data: nil
+        }
+
+
+## DEPRECATED
 
 ### GET /me/conversations
 list of conversations
@@ -116,67 +301,7 @@ list of conversations
           }]
         }
 
-### POST /me/conversations
-create a conversation
 
-    params
-        access_token*     string
-        invites*           array of phone numbers
-
-    response
-        {
-          data: {
-            id: 1,
-            unread_count: 10,
-            members: [list of users],
-            invites: [{phone: "+18885558888"}],
-            videos: [{
-              isRead: false,
-              id: 1,
-              created_at: timestamp,
-              url: "http://url",
-              meta: {}
-            }]
-          }
-        }
-
-### GET /me/conversations/:id
-get info about a conversation
-
-    params
-        access_token*     string
-
-    response
-        {
-          data: {
-            id: 18,
-            members: [list of users],
-            invites: [{phone: "+18885558888"}],
-            videos: [{
-              isRead: false,
-              id: 1,
-              created_at: timestamp,
-              url: "http://url",
-              meta: {}
-            }]
-          }
-        }
-
-### POST /me/conversations/:id/videos
-get info about a conversation
-
-    params
-        access_token*     string
-        filename*         string
-
-    response
-        {
-          data: [{
-            id: 18,
-            user: {..},
-            url: ""
-          }]
-        }
 
 ### POST /me/videos/:id/read
 mark a video as read
@@ -195,3 +320,7 @@ mark a video as read
             url: ""
           }
         }
+
+TODO
+----
+- install graphite/statsd to start measuring performance and monitor server activity
