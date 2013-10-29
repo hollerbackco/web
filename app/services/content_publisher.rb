@@ -33,7 +33,8 @@ class ContentPublisher
     if options[:analytics] and is_first_message
       publish_analytics(content, options[:needs_reply], options[:is_reply])
     end
-    sms_invite(conversation, content) if is_first_message
+    #TODO: currently testing user sent sms
+    #sms_invite(conversation, content) if is_first_message
     say_level(sender)
   end
 
