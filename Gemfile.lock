@@ -168,6 +168,8 @@ GEM
       method_source (~> 0.8)
       slop (~> 3.4)
     rack (1.5.2)
+    rack-parser (0.4.0)
+      rack
     rack-protection (1.5.0)
       rack
     rack-reverse-proxy (0.4.4)
@@ -327,11 +329,13 @@ DEPENDENCIES
   keen
   mini_magick
   mqtt
+  multi_json
   newrelic_rpm
   omniauth
   omniauth-twitter
   pg
   phone
+  rack-parser
   rack-reverse-proxy
   rake
   rb-fsevent

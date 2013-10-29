@@ -6,9 +6,10 @@ gem 'rake'
 
 #server
 gem 'unicorn'
-gem 'sinatra', :require => "sinatra/base"
+gem 'sinatra', :require => 'sinatra/base'
 gem 'sinatra-contrib'
-gem "rack-reverse-proxy", :require => "rack/reverse_proxy"
+gem 'rack-reverse-proxy', :require => 'rack/reverse_proxy'
+gem 'rack-parser', :require => 'rack/parser'
 
 #database
 gem 'activerecord'
@@ -40,6 +41,7 @@ gem 'phone'
 gem 'twilio-ruby'
 
 #utils
+gem 'multi_json'
 gem 'split', :require => 'split/dashboard'
 gem 'split-analytics', :require => 'split/analytics'
 gem 'houston'
