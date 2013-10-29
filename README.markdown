@@ -3,9 +3,7 @@ API
 
 1. Main web api;
 2. Sidekiq background workers;
-3. Poller services listens to video-stitch-ready sqs queue. Marks stitched;
-
-videos as complete.
+3. Poller services listens to video-stitch-ready sqs queue. Marks stitched; videos as complete.
 
 Design Principles and Resources
 -------------------------------
@@ -207,6 +205,7 @@ create a conversation
     params
         access_token*     string
         invites*          array of phone numbers
+        part_urls*        array of part urls
 
     response
         {

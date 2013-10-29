@@ -12,12 +12,16 @@ use Rack::ReverseProxy do
   reverse_proxy '/blog', 'http://ec2-72-44-44-118.compute-1.amazonaws.com/blog'
 end
 
+use Rack::Deflater
+# gzip
+use Rack::CompressedRequests
+# parse json
+use Rack::Parser, :parsers => {
+  'application/json' => proc {|body| ::MultiJson.decode body}
+}
+
 map '/api' do
   run HollerbackApp::ApiApp
-end
-
-map '/split' do
-  run ::Split::Dashboard
 end
 
 map '/sidekiq' do

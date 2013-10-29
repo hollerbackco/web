@@ -19,10 +19,10 @@ module HollerbackApp
     end
 
     not_found do
-      error_json 404, "not found"
+      error_json 404, msg: "not found"
     end
 
-    get '/' do
+    post '/' do
       success_json data: "Hollerback App Api v1"
     end
 
