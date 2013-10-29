@@ -22,7 +22,7 @@ module HollerbackApp
       error_json 404, msg: "not found"
     end
 
-    post '/' do
+    get '/' do
       success_json data: "Hollerback App Api v1"
     end
 
