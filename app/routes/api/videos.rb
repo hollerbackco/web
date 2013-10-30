@@ -59,8 +59,6 @@ module HollerbackApp
       if !params.key?("parts") and !params.key?("part_urls") and !params.key?("urls")
         return error_json 400, msg: "missing parts param"
       end
-      p params
-
       membership = current_user.memberships.find(params[:id])
 
       video = membership.conversation.videos.create({

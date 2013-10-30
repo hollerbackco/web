@@ -15,6 +15,7 @@ module HollerbackApp
       user.phone = params["phone"]
       user.username = params["username"]
       user.password = params["password"]
+      user.phone_hashed = params["phone_hashed"]
       user.set_verification_code
 
       if user.save
