@@ -22,6 +22,12 @@ module Hollerback
         notification.content_available = content_available if content_available
 
         @client.push(notification)
+
+        notification = Houston::Notification.new(device: token)
+        notification.alert = alert if alert
+        notification.badge = badge if badge
+        notification.sound = sound if sound
+        notification.content_available = content_available if content_available
         @appstore_client.push(notification) if @appstore_client
       end
 
