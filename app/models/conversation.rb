@@ -23,6 +23,16 @@ class Conversation < ActiveRecord::Base
     self.find_by_id(ids)
   end
 
+  def self.find_by_phones(phones)
+    raise if phones.blank?
+    raise if !phones.is_a? Array
+    phones = phones.uniq.sort
+
+    includes(:members, :invites).all.select do |c|
+      same = (phones == c.involved_phones.uniq.flatten.sort)
+    end
+  end
+
   def ttyl
     memberships.each do |m|
       m.last_message_at = Time.now
