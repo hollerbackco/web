@@ -296,30 +296,6 @@ describe 'API ROUTES |' do
     last_response.should be_ok
   end
 
-  it 'POST me/conversations/batch | should create multiple conversations' do
-    parts = [
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.0.mp4",
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.1.mp4",
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.2.mp4",
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.3.mp4",
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.4.mp4",
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.5.mp4",
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.6.mp4"
-    ]
-
-    conversations_count = subject.conversations.count
-    post '/me/conversations/batch', :access_token => access_token,
-      "invites[]" => [secondary_subject.phone_normalized, "+18888888888"],
-      :parts => parts
-
-    result = JSON.parse(last_response.body)
-    result['data'].count.should == 2
-
-    last_response.should be_ok
-    subject.conversations.reload.count.should == conversations_count + 2
-  end
-
-
   it 'GET me/conversations/:id | get a specific conversation' do
     c = subject.memberships.first
     get "/me/conversations/#{c.id}", :access_token => access_token

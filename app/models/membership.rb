@@ -59,7 +59,7 @@ class Membership < ActiveRecord::Base
   end
 
   def update_conversation_name
-    self.name = conversation.name || auto_generated_name
+    self.name = auto_generated_name
     save!
   end
 
