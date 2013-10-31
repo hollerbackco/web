@@ -24,6 +24,8 @@ class Membership < ActiveRecord::Base
 
     if options[:since]
       collection = collection.updated_since(options[:since])
+    else
+      collection = collection.where("memberships.deleted_at IS NOT null")
     end
 
     collection = collection
@@ -101,7 +103,15 @@ class Membership < ActiveRecord::Base
   end
 
   def is_deleted
-    false
+    self.deleted_at.present?
+  end
+
+  def leave!
+    self.class.transaction do
+      self.deleted_at = Time.now
+      save!
+      self.messages.destroy_all
+    end
   end
 
   def as_json(opts={})
