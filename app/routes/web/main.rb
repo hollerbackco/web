@@ -85,11 +85,11 @@ module HollerbackApp
     end
 
     get '/beta/:party' do
+      app_link = AppLink.where(slug: party, segment: "ios").first_or_create
       if params[:party] == "teamhollerback"
         url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-staging.plist")
         url = "itms-services://?action=download-manifest&url=#{url}"
       elsif app_link.usable?
-        app_link = AppLink.where(slug: party, segment: "ios").first_or_create
         if Sinatra::Base.production? and ! params.key? :test
           Hollerback::SMS.send_message "+13033595357", "[ios] #{params[:party]} was sent to the appstore"
         end
