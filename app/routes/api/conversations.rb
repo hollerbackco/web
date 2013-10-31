@@ -2,12 +2,10 @@ module HollerbackApp
   class ApiApp < BaseApp
     get '/me/conversations' do
       scope = current_user.memberships
-
       if params["updated_at"]
         updated_at = Time.parse params["updated_at"]
         scope = scope.where("memberships.updated_at > ?", updated_at)
       end
-
       memberships = scope
 
       ConversationRead.perform_async(current_user.id)
@@ -42,7 +40,7 @@ module HollerbackApp
         end
         success_json data: inviter.inviter_membership.as_json
       else
-        error_json 400, for: inviter, msg: "problem updating"
+        error_json 400, for: inviter, msg: "conversation could not be created"
       end
     end
 
