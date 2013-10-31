@@ -25,7 +25,7 @@ class Membership < ActiveRecord::Base
     if options[:since]
       collection = collection.updated_since(options[:since])
     else
-      collection = collection.where("memberships.deleted_at IS NOT null")
+      collection = collection.where("memberships.deleted_at IS null")
     end
 
     collection = collection
