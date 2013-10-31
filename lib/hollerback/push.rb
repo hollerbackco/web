@@ -32,7 +32,7 @@ module Hollerback
 
       def appstore_client
         client = Houston::Client.production
-        pemfile = File.join(app_root, 'config', 'apns', 'apns_prod.pem')
+        pemfile = File.join(Sinatra::Base.app_root, 'config', 'apns', 'apns_prod.pem')
         client.certificate = File.read(pemfile)
         client
       end
