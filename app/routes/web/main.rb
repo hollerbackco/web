@@ -75,7 +75,13 @@ module HollerbackApp
       app_link = AppLink.where(slug: "invite", segment: "ios").first_or_create
       app_link.increment!(:downloads_count)
 
-      url = "http://appstore.com/hollerback"
+      if Sinatra::Base.production? and ! params.key? :test
+        Hollerback::SMS.send_message "+13033595357", "[ios] invite link was sent to beta"
+      end
+
+      url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-master.plist")
+      url = "itms-services://?action=download-manifest&url=#{url}"
+      #url = "http://appstore.com/hollerback"
       redirect url
     end
 
@@ -91,7 +97,7 @@ module HollerbackApp
         url = "itms-services://?action=download-manifest&url=#{url}"
       elsif app_link.usable?
         if Sinatra::Base.production? and ! params.key? :test
-          Hollerback::SMS.send_message "+13033595357", "[ios] #{params[:party]} was sent to the appstore"
+          Hollerback::SMS.send_message "+13033595357", "[ios] #{params[:party]} was sent to beta"
         end
         app_link.increment!(:downloads_count)
 
