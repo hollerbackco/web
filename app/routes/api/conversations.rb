@@ -73,7 +73,7 @@ module HollerbackApp
 
     post '/me/conversations/:id/leave' do
       membership = current_user.memberships.find(params[:id])
-      if membership.destroy
+      if membership.leave!
         MetricsPublisher.delay.publish(current_user.meta, "conversations:leave")
         success_json data: nil
       else

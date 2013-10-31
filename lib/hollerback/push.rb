@@ -30,7 +30,7 @@ module Hollerback
         client
       end
 
-      def appstore_client(pemfile, is_production)
+      def appstore_client
         client = Houston::Client.production
         pemfile = File.join(app_root, 'config', 'apns', 'apns_prod.pem')
         client.certificate = File.read(pemfile)
