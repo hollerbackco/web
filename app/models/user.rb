@@ -23,7 +23,8 @@ class User < ActiveRecord::Base
 
   before_create :set_access_token
   before_create :set_verification_code
-  before_create :downcase_username
+  before_save :downcase_username
+  before_save :downcase_email
 
   validates :email,
     presence: true,
@@ -216,5 +217,9 @@ class User < ActiveRecord::Base
 
   def downcase_username
     self.username.downcase!
+  end
+
+  def downcase_email
+    self.email.downcase!
   end
 end
