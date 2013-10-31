@@ -81,7 +81,6 @@ class Message < ActiveRecord::Base
 
   def delete!
     self.class.transaction do
-      membership.touch
       self.deleted_at = Time.now
       self.save!
     end
