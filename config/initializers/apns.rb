@@ -3,14 +3,14 @@ module HollerbackApp
     configure :development, :staging, :test do
       ::GCMS = GCM.new ENV["GCM_KEY"]
       pemfile = File.join(app_root, 'config', 'apns', 'apns_enterprise_dev.pem')
-      Hollerback::Push.configure(pemfile, false)
+      Hollerback::Push.configure(pemfile, false, app_root)
     end
 
     configure :production do
       require 'newrelic_rpm'
       ::GCMS = GCM.new ENV["GCM_KEY"]
       pemfile = File.join(app_root, 'config', 'apns', 'apns_enterprise_prod.pem')
-      Hollerback::Push.configure(pemfile, true)
+      Hollerback::Push.configure(pemfile, true, app_root)
     end
   end
 end
