@@ -36,15 +36,27 @@ module HollerbackApp
       name = params["name"]
       name = nil if params["name"] == "<null>" #TODO: iOs sometimes sends a null value
 
-      inviter = Hollerback::ConversationInviter.new(current_user, invites, name)
+      # TODO:slow, find a way to speed this up.
+      # md5 checksums on the conversation phone numbers
+      phones = invites + [current_user.phone_normalized]
+      conversation = current_user.conversations.find_by_phones(phones).first
 
-      if inviter.invite
+      unless conversation
+        inviter = Hollerback::ConversationInviter.new(current_user, invites, name)
+        if inviter.invite
+          conversation = inviter.conversation
+          membership = inviter.inviter_membership
+        end
+      end
+
+      if conversation
         urls = params.select {|key,value| ["parts", "part_urls"].include? key }
         unless urls.blank?
-          video = inviter.conversation.videos.create(user: current_user)
+          video = conversation.videos.create(user: current_user)
           VideoStitchRequest.perform_async(video.id, urls)
         end
-        success_json data: inviter.inviter_membership.as_json
+        membership = current_user.memberships.where(:conversation_id => conversation.id).first
+        success_json data: membership.as_json
       else
         error_json 400, for: inviter, msg: "problem updating"
       end

@@ -265,6 +265,18 @@ describe 'API ROUTES |' do
     subject.memberships.reload.find_by_name(name).should_not be_nil
   end
 
+  it 'POST me/conversations | should not create another conversation' do
+    count = subject.conversations.reload.count
+
+    post '/me/conversations',
+      :access_token => access_token,
+      "invites[]" => [secondary_subject.phone_normalized,"+18887777777"]
+
+    last_response.should be_ok
+    result = JSON.parse(last_response.body)
+    subject.conversations.reload.count.should == count
+  end
+
   it 'POST me/conversations | return error if no invites sent' do
     count = subject.memberships.count
     post '/me/conversations', :access_token => access_token
