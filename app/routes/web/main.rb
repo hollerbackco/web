@@ -85,7 +85,7 @@ module HollerbackApp
     end
 
     get '/beta/:party' do
-      app_link = AppLink.where(slug: party, segment: "ios").first_or_create
+      app_link = AppLink.where(slug: params[:party], segment: "ios").first_or_create
       if params[:party] == "teamhollerback"
         url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-staging.plist")
         url = "itms-services://?action=download-manifest&url=#{url}"
