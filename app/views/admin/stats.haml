@@ -38,27 +38,22 @@
       actorProperty: "invited_phone"
     });
 
-    var step2 = new Keen.Step("invite:view", {
-      name: "Viewed Webview",
-      actorProperty: "user.phone"
-    });
-
-    var step3 = new Keen.Step("users:new", {
+    var step2 = new Keen.Step("users:new", {
       name: "Registered",
       actorProperty: "user.phone"
     });
 
-    var step4 = new Keen.Step("video:create", {
+    var step3 = new Keen.Step("video:create", {
       name: "Sent Video",
       actorProperty: "user.phone"
     });
 
-    var step5 = new Keen.Step("users:invite", {
+    var step4 = new Keen.Step("users:invite", {
       name: "Invited Someone",
       actorProperty: "user.phone"
     });
 
-    var inviteFunnel = new Keen.Funnel([step1,step2,step3,step4,step5]);
+    var inviteFunnel = new Keen.Funnel([step1,step2,step3,step4]);
 
     inviteFunnel.draw(document.getElementById("invite-funnel"), {
       title: "Invite Funnel"
