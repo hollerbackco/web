@@ -15,6 +15,7 @@ class Message < ActiveRecord::Base
 
   after_create do |record|
     m = record.membership
+    m.deleted_at = nil
     m.last_message_at = record.sent_at
     if !record.sender? or m.most_recent_thumb_url.blank?
       m.most_recent_thumb_url = record.thumb_url
@@ -81,7 +82,6 @@ class Message < ActiveRecord::Base
 
   def delete!
     self.class.transaction do
-      membership.touch
       self.deleted_at = Time.now
       self.save!
     end
