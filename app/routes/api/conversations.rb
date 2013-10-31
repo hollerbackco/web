@@ -10,12 +10,6 @@ module HollerbackApp
 
       memberships = scope
 
-      #conversations = scope.select { |conversation|
-        #conversation.videos.count > 0
-      #}.map do |conversation|
-        #conversation_json conversation
-      #end
-
       ConversationRead.perform_async(current_user.id)
 
       success_json data: {conversations: memberships.as_json}
@@ -36,64 +30,19 @@ module HollerbackApp
       name = params["name"]
       name = nil if params["name"] == "<null>" #TODO: iOs sometimes sends a null value
 
-      # TODO:slow, find a way to speed this up.
-      # md5 checksums on the conversation phone numbers
-      phones = invites + [current_user.phone_normalized]
-      conversation = current_user.conversations.find_by_phones(phones).first
+      inviter = Hollerback::ConversationInviter.new(current_user, invites, name)
 
-      unless conversation
-        inviter = Hollerback::ConversationInviter.new(current_user, invites, name)
-        if inviter.invite
-          conversation = inviter.conversation
-          membership = inviter.inviter_membership
-        end
-      end
+      if inviter.invite
+        conversation = inviter.conversation
 
-      if conversation
-        urls = params.select {|key,value| ["parts", "part_urls"].include? key }
+        urls = params.select {|key,value| ["parts", "part_urls", "urls"].include? key }
         unless urls.blank?
           video = conversation.videos.create(user: current_user)
           VideoStitchRequest.perform_async(video.id, urls)
         end
-        membership = current_user.memberships.where(:conversation_id => conversation.id).first
-        success_json data: membership.as_json
+        success_json data: inviter.inviter_membership.as_json
       else
         error_json 400, for: inviter, msg: "problem updating"
-      end
-    end
-
-    # creates one conversation for each number supplied in the invites params.
-    # => each conversation will have a video created from the supplied parts params.
-    post '/me/conversations/batch' do
-      unless ensure_params(:invites, :parts)
-        return error_json 400, msg: "missing required params"
-      end
-
-      invites = params["invites"]
-      if invites.is_a? String
-        invites = invites.split(",")
-      end
-
-      parts = params["parts"]
-      inviter = nil
-      memberships = []
-
-      for number in invites
-        success = Conversation.transaction do
-          inviter = Hollerback::ConversationInviter.new(current_user, [number])
-          inviter.invite
-
-          video = inviter.conversation.videos.create(user: current_user)
-          VideoStitchRequest.perform_async(parts, video.id)
-        end
-
-        memberships << inviter.inviter_membership if success
-      end
-
-      if memberships.any?
-        success_json data: memberships.as_json
-      else
-        error_json 400, msg: "problem creating conversations"
       end
     end
 

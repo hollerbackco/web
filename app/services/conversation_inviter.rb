@@ -9,6 +9,10 @@ module Hollerback
     end
 
     def invite
+      if self.conversation = fetch_conversation_if_exists
+        return true
+      end
+
       success = Conversation.transaction do
         self.conversation = create_conversation
         parsed_phones.each do |phone|
@@ -45,13 +49,30 @@ module Hollerback
     end
 
     def inviter_membership
-      inviter.memberships.find(:first, conditions: {conversation_id: conversation.id})
+      membership = inviter.memberships.find(:first, conditions: {conversation_id: conversation.id})
     end
 
     private
 
+    # TODO: too slow.
+    # one idea is to do a md5 checksum on the conversation phone numbers
+    # returns nil if no conversation exists
+    def fetch_conversation_if_exists
+      # all members phone numbers should be included to do a proper lookup
+      numbers = parsed_phones + [inviter.phone_normalized]
+      inviter.conversations.find_by_phones(numbers).first
+    end
+
     def create_conversation
-      inviter.conversations.create(creator: inviter, name: name)
+      conversation = Conversation.create(creator: inviter)
+
+      #creates a membership
+      conversation.members << inviter
+      membership = inviter.memberships.find(:first, conditions: {conversation_id: conversation.id})
+      membership.name = name
+      membership.save
+
+      conversation
     end
 
     def run_analytics
