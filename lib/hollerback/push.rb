@@ -1,7 +1,8 @@
 module Hollerback
   class Push
     class << self
-      def configure(pemfile, is_production=false)
+      def configure(pemfile, is_production=false, app_root)
+        @app_root = app_root
         @client = self.client(pemfile, is_production)
         if is_production
           @appstore_client = appstore_client
@@ -32,7 +33,7 @@ module Hollerback
 
       def appstore_client
         client = Houston::Client.production
-        pemfile = File.join(Sinatra::Base.app_root, 'config', 'apns', 'apns_prod.pem')
+        pemfile = File.join(@app_root, 'config', 'apns', 'apns_prod.pem')
         client.certificate = File.read(pemfile)
         client
       end
