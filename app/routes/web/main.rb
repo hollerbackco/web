@@ -72,7 +72,7 @@ module HollerbackApp
 
     get '/invite' do
       #TODO: check if android or ios
-      app_link = AppLink.where(slug: party, segment: "ios").first_or_create
+      app_link = AppLink.where(slug: "invite", segment: "ios").first_or_create
       app_link.increment!(:downloads_count)
 
       url = "http://appstore.com/hollerback"
