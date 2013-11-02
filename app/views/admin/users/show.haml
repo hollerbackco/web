@@ -1,12 +1,68 @@
-%td= user.id
-%td= user.username
-%td= user.email
-%td= user.verification_code
-%td= user.phone_normalized
-%td= user.memberships.count
-%td= "#{user.messages.sent.count}/#{user.messages.received.count}"
-%td= user.invites.count
-%td= user.unseen_memberships_count
-%td{"data-time" => (user.created_at.to_i * 1000)}= user.created_at
-%td= user.last_app_version
-%td= user.device_names
+.panel.panel-default
+  .panel-heading Conversation
+  .list-group
+    .list-group-item
+      %strong Id
+      = @user.id
+    .list-group-item
+      %strong Username
+      = @user.username
+    .list-group-item
+      %strong Email
+      = @user.email
+    .list-group-item
+      %strong Messages
+      = "#{@user.messages.sent.count}/#{@user.messages.received.count}"
+    .list-group-item
+      %strong Joined
+      %span{"data-time" => (@user.created_at.to_i * 1000)}= @user.created_at
+    .list-group-item
+      %strong Has Invited
+      = @user.invites.count
+    .list-group-item
+      %strong Device
+      = @user.device_names
+
+%h1 Memberships
+%table.table.table-bordered
+  %thead
+    %tr
+      %td Id
+      %td Name
+      %td Messages Sent
+      %td Unseen Count
+      %td TTYL
+      %td Created At
+  %tbody
+    - @memberships.each do |membership|
+      %tr
+        %td= membership.id
+        %td= membership.name
+        %td= membership.messages.count
+        %td= membership.messages.unseen.count
+        %td
+          %span.subtitle
+            - if membership.most_recent_subtilte == "ttyl"
+              Y
+        %td
+          %span.date{"data-time" => (membership.created_at.to_i * 1000)}= membership.created_at
+
+%h1 Relevant Messages
+%table.table.table-bordered
+  %thead
+    %tr
+      %td Id
+      %td Sender
+      %td Created At
+      %td Subtitle
+  %tbody
+    - @messages.each do |message|
+      %tr
+        %td= message.id
+        %td= message.sender_name
+        %td
+          %span.date{"data-time" => (message.created_at.to_i * 1000)}= message.created_at
+        %td
+          %span.subtitle
+            - if message.subtitle.present?
+              Y
