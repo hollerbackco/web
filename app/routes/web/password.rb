@@ -31,7 +31,7 @@ module HollerbackApp
         @error_message = "please enter an email"
         return haml 'password/forgot'.to_sym, layout: 'layouts/mobile'.to_sym
       end
-      user = User.find_by_email(params[:email])
+      user = User.find_by_email(params[:email].downcase!)
       unless user
         @error_message = "nobody by that email exists"
         return haml 'password/forgot'.to_sym, layout: 'layouts/mobile'.to_sym
@@ -40,13 +40,14 @@ module HollerbackApp
       token = create_token(user.id)
 
       #TODO: email link to password change
+      url = absolute_url("/changepw/" + token)
       Mail.deliver do
         to user.email
         from 'no-reply@hollerback.co'
         subject 'Hollerback Password Change'
 
         text_part do
-          body "Change your password here:\n #{absolute_url("/changepw/" + token)}"
+          body "Change your password here:\n #{url}"
         end
       end
 
