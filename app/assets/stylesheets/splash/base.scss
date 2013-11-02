@@ -251,7 +251,7 @@ textarea {
   }
 
   form {
-    padding: 15px 15px 0;
+    padding: 15px 15px 15px;
 
     .error-messages {
       padding: 0;
@@ -270,6 +270,7 @@ textarea {
 
     h2 {
       text-align: left;
+      font-size: 24px;
       margin-bottom: 16px;
 
       &.error-message {
