@@ -1,0 +1,12 @@
+%td= user.id
+%td= user.username
+%td= user.email
+%td= user.verification_code
+%td= user.phone_normalized
+%td= user.memberships.count
+%td= "#{user.messages.sent.count}/#{user.messages.received.count}"
+%td= user.invites.count
+%td= user.unseen_memberships_count
+%td{"data-time" => (user.created_at.to_i * 1000)}= user.created_at
+%td= user.last_app_version
+%td= user.device_names

@@ -30,6 +30,7 @@
           %span.date{"data-time" => (user.created_at.to_i * 1000)}= user.created_at
         %td= user.last_app_version
         %td= user.device_names
+= will_paginate(@users)
 
 :javascript
   $(document).ready(function() {
