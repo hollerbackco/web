@@ -31,8 +31,8 @@ module HollerbackApp
         @error_message = "please enter an email"
         return haml 'password/forgot'.to_sym, layout: 'layouts/mobile'.to_sym
       end
-      user = User.find_by_email(params[:email].downcase!)
-      unless user
+      user = User.find_by_email(params[:email].downcase)
+      if user.blank?
         @error_message = "nobody by that email exists"
         return haml 'password/forgot'.to_sym, layout: 'layouts/mobile'.to_sym
       end
