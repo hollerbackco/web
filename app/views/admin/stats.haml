@@ -68,7 +68,8 @@
   Keen.onChartsReady(function() {
 
     var inviteSent = new Keen.Metric("users:invite",{
-      analysisType: "count"
+      analysisType: "count_unique",
+      targetProperty: "invited_phone"
     });
     inviteSent.draw(document.getElementById("invitesSentCount"), {
       label: "Invites"
