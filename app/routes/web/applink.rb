@@ -29,6 +29,7 @@ module HollerbackApp
 
       #url = "http://appstore.com/hollerback"
       url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-master.plist")
+      url = "itms-services://?action=download-manifest&url=#{url}"
       redirect url
     end
 
@@ -50,7 +51,7 @@ module HollerbackApp
 
         #to enterprise build
         url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-master.plist")
-        #redirect "itms-services://?action=download-manifest&url=#{url}"
+        url =  "itms-services://?action=download-manifest&url=#{url}"
         #
 
         #url = "http://appstore.com/hollerback"
