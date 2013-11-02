@@ -42,7 +42,7 @@
         %td= membership.messages.unseen.count
         %td
           %span.subtitle
-            - if membership.most_recent_subtilte == "ttyl"
+            - if membership.most_recent_subtitle == "ttyl"
               Y
         %td
           %span.date{"data-time" => (membership.created_at.to_i * 1000)}= membership.created_at
