@@ -38,6 +38,7 @@ module HollerbackApp
       end
 
       token = create_token(user.id)
+
       #TODO: email link to password change
       Mail.deliver do
         to user.email
@@ -45,7 +46,7 @@ module HollerbackApp
         subject 'Hollerback Password Change'
 
         text_part do
-          body "Change your password here\n: http://www.hollerback.co/changepw/#{token}"
+          body "Change your password here:\n #{absolute_url("/changepw/" + token)}"
         end
       end
 
