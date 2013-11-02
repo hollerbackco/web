@@ -17,7 +17,9 @@
   %tbody
     - @users.each do |user|
       %tr
-        %td= user.id
+        %td
+          %a{href: "/madmin/users/#{video.user.id}"}
+            = user.id
         %td= user.username
         %td= user.email
         %td= user.verification_code
@@ -30,6 +32,7 @@
           %span.date{"data-time" => (user.created_at.to_i * 1000)}= user.created_at
         %td= user.last_app_version
         %td= user.device_names
+= will_paginate(@users)
 
 :javascript
   $(document).ready(function() {

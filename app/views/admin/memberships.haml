@@ -34,7 +34,9 @@
       - else
         %tr
           %td= video.id
-          %td= video.user.username
+          %td
+            %a{href: "/madmin/users/#{video.user.id}"}
+              = video.user.username
           %td= video.filename
           %td
             %span.date{"data-time" => (video.created_at.to_i * 1000)}= video.created_at

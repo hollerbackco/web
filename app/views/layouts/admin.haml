@@ -34,6 +34,18 @@
           window.scrollTo(0, 1);
         }, 0);
       });
+    :javascript
+      $(document).ready(function() {
+        var datecopy = $(".date");
+
+        datecopy.each(function(el) {
+          var timeString = $(this).attr("data-time");
+          var unixTimestamp = parseInt(timeString);
+          var date = new Date(unixTimestamp);
+
+          $(this).html(date.toLocaleString());
+        })
+      })
 
   %body
     %header.navbar.navbar-inverse.navbar-fixed-top

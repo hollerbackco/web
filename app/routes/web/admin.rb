@@ -45,8 +45,20 @@ module HollerbackApp
     end
 
     get '/madmin/users' do
-      @users = User.order("created_at ASC").includes(:memberships, :messages, :devices).all
+      @users = User.order("created_at ASC")
+        .includes(:memberships, :messages, :devices)
+        .paginate(:page => params[:page], :per_page => 50)
+
       haml "admin/users".to_sym, layout: "layouts/admin".to_sym
+    end
+
+    get '/madmin/users/:id' do
+      @user = User.includes(:memberships, :messages).find(params[:id])
+      @memberships = @user.memberships
+      @messages = @user.messages
+
+      @users = User.order("created_at ASC").includes(:memberships, :messages, :devices).all
+      haml "admin/users/show".to_sym, layout: "layouts/admin".to_sym
     end
 
     get '/madmin/users/:id/edit' do
