@@ -39,20 +39,10 @@
         }, 0);
       });
 
-  %body#pledge-splash.splash-body
+  %body#splash.splash-body
     %header
       %h1.logo=image_tag "banana-logo.png"
       %h1.wordmark=image_tag "welcome-hollerback-logo.png"
-    = yield
-    %footer
-      %h3= t "thanks"
-      .faces.clearfix
-        .face
-          = image_tag "faces-will.png"
-          %h4.name will
-        .face
-          = image_tag "faces-jeff.png"
-          %h4.name jeff
-        .face
-          = image_tag "faces-joe.png"
-          %h4.name joe
+    .container
+      %section
+        = yield

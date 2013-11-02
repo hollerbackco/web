@@ -6,6 +6,14 @@ module Sinatra
       I18n.t(*args)
     end
 
+    def absolute_url(url)
+      if Sinatra::Base.production?
+        url = "http://www.hollerback.co#{url}"
+      else
+        url = "http://lit-sea-1934.herokuapp.com#{url}"
+      end
+    end
+
     def create_video_share_url(video, phone)
       value = [video.id, phone].to_json
       token = shortlink_token

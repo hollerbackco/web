@@ -26,7 +26,7 @@ Warden::Strategies.add(:email) do
 
   def authenticate!
     user = User.authenticate_with_email(
-      params['email'],
+      params['email'].downcase,
       params['password']
       )
     user.nil? ? fail!('Could not log in') : success!(user, 'Successfully logged in')

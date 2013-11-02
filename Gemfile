@@ -39,14 +39,15 @@ gem 'aws-sdk'
 #messaging
 gem 'phone'
 gem 'twilio-ruby'
+gem 'houston'
+gem 'gcm'
+gem 'mqtt'
+gem 'mail'
 
 #utils
 gem 'multi_json'
 gem 'split', :require => 'split/dashboard'
 gem 'split-analytics', :require => 'split/analytics'
-gem 'houston'
-gem 'gcm'
-gem 'mqtt'
 gem 'bcrypt-ruby'
 gem 'time-lord'
 gem 'i18n'

@@ -139,6 +139,9 @@ GEM
       rb-inotify (>= 0.9)
       rb-kqueue (>= 0.2)
     lumberjack (1.0.3)
+    mail (2.5.4)
+      mime-types (~> 1.16)
+      treetop (~> 1.4.8)
     method_source (0.8.1)
     mime-types (1.25)
     mini_magick (3.5.0)
@@ -163,6 +166,7 @@ GEM
     pg (0.15.1)
     pg-hstore (1.2.0)
     phone (1.1)
+    polyglot (0.3.3)
     pry (0.9.12.2)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
@@ -273,6 +277,9 @@ GEM
     tilt (1.4.1)
     time-lord (1.0.1)
     timers (1.1.0)
+    treetop (1.4.15)
+      polyglot
+      polyglot (>= 0.3.1)
     tux (0.3.0)
       ripl (>= 0.3.5)
       ripl-multi_line (>= 0.2.4)
@@ -327,6 +334,7 @@ DEPENDENCIES
   houston
   i18n
   keen
+  mail
   mini_magick
   mqtt
   multi_json
