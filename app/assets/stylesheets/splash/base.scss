@@ -18,10 +18,8 @@ textarea {
   background: #10a6e9;
 }
 
-#pledge-splash {
-  background: #000;
+#splash {
   color: #ffffff;
-
 
   section {
     max-width: 100%;
@@ -47,12 +45,10 @@ textarea {
   }
 
   header {
-    float: left;
     width: 200px;
-    margin: 40px 0 0 30px;
-
+    float: none;
+    margin: 30px auto 0;
   }
-
 
   .participate {
     background: image-url("girl2.jpg") left bottom no-repeat;
@@ -169,7 +165,7 @@ textarea {
       text-align: center;
       margin-top: 20px;
       font-size: 24px;
-      padding: 10px;
+      padding: 15px;
       color: #000;
     }
   }
@@ -206,19 +202,22 @@ textarea {
       display: inline-block;
       background: image-url("banana-logo.png");
       width: 100px;
-      height: 105px;
+      height: 100px;
     }
 
     .wordmark {
-      display: inline-block;
+      display: block;
       background: image-url("welcome-hollerback-logo.png");
-      width: 513px;
-      height: 98px;
+      width: 488px;
+      height: 84px;
 
       /* Hide the text. */
       text-indent: 200%;
       white-space: nowrap;
       overflow: hidden;
+    }
+    p {
+      margin-top: 40px;
     }
   }
 
@@ -235,6 +234,12 @@ textarea {
     }
   }
 
+  p.message {
+    margin-top: 16px;
+    font-size: 32px;
+    line-height: 1.5em;
+  }
+
   .wordmark img {
     width: 100%;
   }
@@ -243,7 +248,6 @@ textarea {
     margin-bottom: 0;
     font-size: 32px;
     color: #fff;
-    text-shadow: 0 2px 0 #333;
   }
 
   form {
@@ -264,8 +268,17 @@ textarea {
       }
     }
 
+    h2 {
+      text-align: left;
+      margin-bottom: 16px;
+
+      &.error-message {
+        font-weight: bold;
+      }
+    }
+
     input {
-      padding: 8px;
+      padding: 16px;
       font-size: 24px;
       width: 100%;
 
@@ -343,9 +356,6 @@ textarea {
 
     h2 img {
       width: 100%;
-    }
-    .button {
-      margin-top: 60px;
     }
   }
 
@@ -479,10 +489,6 @@ textarea {
   }
 
   body#pledge-splash {
-    header {
-      float: none;
-      margin: 30px auto 0;
-    }
 
     .participate .right-box {
       float: none;
