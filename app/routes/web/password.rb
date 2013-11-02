@@ -38,8 +38,6 @@ module HollerbackApp
       end
 
       token = create_token(user.id)
-
-      #TODO: email link to password change
       url = absolute_url("/changepw/" + token)
       Mail.deliver do
         to user.email
