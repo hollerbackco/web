@@ -53,7 +53,7 @@ module HollerbackApp
     end
 
     get '/madmin/users/:id' do
-      @user = User.find(params[:id]).includes(:memberships, :messages)
+      @user = User.includes(:memberships, :messages).find(params[:id])
       @memberships = @user.memberships
       @messages = @user.messages
 
