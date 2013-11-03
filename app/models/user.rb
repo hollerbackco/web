@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
     :password, :password_confirmation, :phone_normalized,
     :device_token, :last_app_version
 
-  has_many :devices, autosave: true
+  has_many :devices, autosave: true, :dependent => :destroy
   has_many :memberships, :dependent => :destroy
   has_many :messages, through: :memberships, :dependent => :destroy
   has_many :videos
@@ -36,6 +36,7 @@ class User < ActiveRecord::Base
       uniqueness: true,
       format: { :with => /\A_?[a-z]_?(?:[a-z0-9]_?)*\z/i, :message => "must be letters, numbers and underscores" }
 
+  scope :unverified, where(:verification_code => nil)
 
   def unseen_memberships_count
     messages.unseen.group_by(&:membership_id).length
@@ -155,7 +156,7 @@ class User < ActiveRecord::Base
   def verified?
     self.verification_code.blank?
   end
-  alias_method :isVerified, :verified?
+  alias_method :is_verified, :verified?
 
   def verify(code)
     self.verification_code == code
@@ -182,7 +183,7 @@ class User < ActiveRecord::Base
   def as_json(options={})
     #TODO: uncomment when we add this to the signup flow
     options = options.merge(:only => [:id, :phone, :phone_normalized, :username, :name, :created_at])
-    options = options.merge(:methods => [:phone_hashed, :is_new])
+    options = options.merge(:methods => [:phone_hashed, :is_new, :is_verified])
     super(options)
   end
 
@@ -216,10 +217,10 @@ class User < ActiveRecord::Base
   end
 
   def downcase_username
-    self.username.downcase!
+    self.username = username.downcase
   end
 
   def downcase_email
-    self.email.downcase!
+    self.email = email.downcase
   end
 end

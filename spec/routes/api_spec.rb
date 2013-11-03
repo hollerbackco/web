@@ -95,7 +95,8 @@ describe 'API ROUTES |' do
     post '/register',
       username: "myname",
       phone: "8587614144",
-      email: "test@test.com"
+      email: "anothertest@test.com",
+      password: "hello"
 
     result = JSON.parse(last_response.body)
     last_response.should be_ok
@@ -103,18 +104,25 @@ describe 'API ROUTES |' do
 
   it 'POST register | should throw error if email is already used' do
     post '/register',
-      email: subject.email
+      username: "myname",
+      phone: "8587614144",
+      email: "anothertest@test.com",
+      password: "hellohello"
 
     result = JSON.parse(last_response.body)
+    p result
     last_response.should_not be_ok
   end
 
   it 'POST register | should throw error if username is already used' do
     post '/register',
       email: "test@tester.com",
+      password: "hello",
+      phone: "8587611111",
       username: subject.username
 
     result = JSON.parse(last_response.body)
+    p result
     last_response.should_not be_ok
   end
 
@@ -400,7 +408,7 @@ describe 'API ROUTES |' do
     c = subject.memberships.first
     post "/me/conversations/#{c.id}/leave", access_token: access_token
 
-    expect{subject.memberships.reload.find(c.id)}.to raise_error(::ActiveRecord::RecordNotFound)
+    subject.memberships.reload.find(c.id).is_deleted.should be_true
   end
 
   it 'POST me/videos/:id/read | user reads a video' do
