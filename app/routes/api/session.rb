@@ -35,7 +35,7 @@ module HollerbackApp
 
     post '/verify' do
       unless ensure_params(:phone, :code)
-        return error_json 400, msg: "missing required params"
+        return error_json 400, msg: "Missing required params"
       end
       authenticate(:password)
 
@@ -43,14 +43,12 @@ module HollerbackApp
       # remove all devices with device_token that is not blank
       if params.key "device_token" and !params["device_token"].blank?
         devices = Device.where("token" => params["device_token"])
-        if devices.any?
-          p "destroying devices ---"
-          p devices
-        end
         devices.destroy_all
       end
 
       device = user.device_for(params["device_token"], params["platform"])
+      Invite.accept_all!(device.user)
+      UserRegister.perform_async(device.user.id)
 
       {
         access_token: device.access_token,
@@ -64,8 +62,8 @@ module HollerbackApp
       status 403
       {
         meta: {
-          error_type: "AuthException",
           code: 403,
+          error_type: "AuthException",
           msg: "Incorrect code or access_token"
         },
         data: nil
