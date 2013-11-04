@@ -24,6 +24,7 @@ class ContentPublisher
     }.merge(opts)
 
     memberships = options[:to]
+    last_message_at = membership.last_message_at
 
     self.messages = memberships.map do |m|
       send_to(m, content, options[:needs_reply])
@@ -31,7 +32,7 @@ class ContentPublisher
 
     notify_recipients(messages) if options[:notify]
     if options[:analytics] and is_first_message
-      publish_analytics(content, options[:needs_reply], options[:is_reply])
+      publish_analytics(content, options[:needs_reply], options[:is_reply], last_message_at)
     end
     #TODO: currently testing user sent sms
     #sms_invite(conversation, content) if is_first_message
@@ -78,13 +79,15 @@ class ContentPublisher
     Hollerback::NotifyRecipients.new(messages).run
   end
 
-  def publish_analytics(content, needs_reply, is_reply)
+  def publish_analytics(content, needs_reply, is_reply, last_message_at)
+    time = Time.now - last_message_at
     data = {
       content_id: content.id,
       is_reply: is_reply,
       needs_reply: needs_reply,
       has_subtitle: content.subtitle.present?,
       receivers_count: (conversation.members.count - 1),
+      seconds_since_last_message: time,
       conversation: {
         id: conversation.id,
         videos_count: conversation.videos.count
