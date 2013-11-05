@@ -28,18 +28,19 @@ module HollerbackApp
     end
 
     get '/v/:token' do
-      link_data = JSON.parse(REDIS.get("links:#{params[:token]}"))
-      video = Video.find(link_data[0])
-      phone = link_data[1]
+      #link_data = JSON.parse(REDIS.get("links:#{params[:token]}"))
+      #video = Video.find(link_data[0])
+      #phone = link_data[1]
 
-      actor = {phone: phone}
+      #actor = {phone: phone}
 
-      MetricsPublisher.delay.publish(actor, "invite:view")
+      #MetricsPublisher.delay.publish(actor, "invite:view")
 
-      @name = video.user.username
-      @video_url = video.url
-      @thumb_url = video.thumb_url
-      haml :video
+      #@name = video.user.username
+      #@video_url = video.url
+      #@thumb_url = video.thumb_url
+      #haml :video
+      redirect "/invite"
     end
 
     get "/thanks" do
