@@ -61,13 +61,10 @@ module HollerbackApp
     end
 
     post '/me' do
-      obj = {}
-      obj[:email] = params["email"] if params.key? "email"
-      obj[:name]  = params["name"] if params.key? "name"
-      obj[:device_token]  = params["device_token"] if params.key? "device_token"
-      obj[:phone]  = params["phone"] if params.key? "phone"
+      device = Device.find_by_access_token(params[:access_token])
+      device.token = params["device_token"]
 
-      if current_user.update_attributes obj
+      if device.save
         success_json data: current_user.as_json.merge(conversations: current_user.conversations)
       else
         error_json 400, msg: current_user
