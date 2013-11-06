@@ -39,7 +39,7 @@ module HollerbackApp
     get '/madmin/conversations/:id' do
       @conversation = Conversation.find(params[:id])
       @members = @conversation.members
-      @videos = @conversation.videos
+      @messages = @conversation.memberships.first.messages
 
       haml "admin/memberships".to_sym, layout: "layouts/admin".to_sym
     end
