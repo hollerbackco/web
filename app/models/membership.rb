@@ -29,7 +29,7 @@ class Membership < ActiveRecord::Base
     end
 
     collection = collection
-      .joins("LEFT OUTER JOIN messages ON memberships.id = messages.membership_id AND messages.seen_at is null")
+      .joins("LEFT OUTER JOIN messages ON memberships.id = messages.membership_id AND messages.seen_at is null AND messages.content ? 'guid'")
       .group("memberships.id")
       .select('memberships.*, count(messages) as unseen_count')
 
@@ -110,7 +110,7 @@ class Membership < ActiveRecord::Base
   alias_method :is_group, :group?
 
   def unseen_count
-    self["unseen_count"] || messages.unseen.count
+    self["unseen_count"] || messages.watchable.unseen.count
   end
   alias_method :unread_count, :unseen_count
 
