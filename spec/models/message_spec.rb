@@ -17,6 +17,12 @@ describe Message do
     message.seen_at.class.should == Time
   end
 
+  it "should find message by guid" do
+    guid =  message.guid
+    found = Message.find_by_guid(guid)
+    found.should_not be_nil
+  end
+
   it "should create a ttyl object" do
     message = membership.messages.new
     message.content["subtitle"] = "ttyl"

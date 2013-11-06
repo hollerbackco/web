@@ -27,7 +27,9 @@ class UserRegister
       receiver_membership = Membership.where(conversation_id: content.conversation_id, user_id: user.id).first
       publisher = ContentPublisher.new(sender_membership)
 
-      publisher.publish(content, to: [receiver_membership], analytics: false)
+      if !receiver_membership.messages.find_by_guid(content.guid)
+        publisher.publish(content, to: [receiver_membership], analytics: false)
+      end
     end
   end
 

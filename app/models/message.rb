@@ -28,6 +28,10 @@ class Message < ActiveRecord::Base
     is_sender
   end
 
+  def self.find_by_guid(str)
+    where("content -> 'guid'='#{str}'").first
+  end
+
   def self.sync_objects(opts={})
     raise ArgumentError if opts[:user].blank?
     options = {
