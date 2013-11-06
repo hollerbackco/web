@@ -1,8 +1,5 @@
 class Message < ActiveRecord::Base
   belongs_to :membership
-  belongs_to :video, :foreign_key => "video_guid",
-    :class_name => "Video",
-    :primary_key => "guid"
 
   serialize :content, ActiveRecord::Coders::Hstore
 
@@ -18,7 +15,9 @@ class Message < ActiveRecord::Base
     m.deleted_at = nil
     m.last_message_at = record.sent_at
     if !record.sender? or m.most_recent_thumb_url.blank?
-      m.most_recent_thumb_url = record.thumb_url
+      if !record.ttyl?
+        m.most_recent_thumb_url = record.thumb_url
+      end
     end
     m.most_recent_subtitle = record.subtitle
     m.save
@@ -34,7 +33,7 @@ class Message < ActiveRecord::Base
       :since => nil
     }.merge(opts)
 
-    collection = options[:user].messages
+    collection = options[:user].messages.where("content ? 'url'")
 
     collection = if options[:since]
       collection.updated_since(options[:since])
@@ -45,11 +44,14 @@ class Message < ActiveRecord::Base
     collection.map(&:to_sync)
   end
 
-
   def user
     {
       name: sender_name
     }
+  end
+
+  def ttyl?
+    !content.key? "url"
   end
 
   def url
@@ -64,8 +66,16 @@ class Message < ActiveRecord::Base
     (content["subtitle"] || "").force_encoding("UTF-8")
   end
 
+  def guid
+    content["guid"]
+  end
+
+  def video_guid=(str)
+    content["guid"] = str
+  end
+
   def filename
-    video.filename
+    Video.find_by_guid(content["guid"]).filename
   end
 
   def unseen?
@@ -91,10 +101,6 @@ class Message < ActiveRecord::Base
     deleted_at.present?
   end
   alias_method :is_deleted, :deleted?
-
-  def guid
-    video_guid
-  end
 
   def conversation_id
     membership_id
