@@ -54,7 +54,8 @@ module HollerbackApp
 
       device = user.device_for(params["device_token"], params["platform"])
       Invite.accept_all!(device.user)
-      UserRegister.perform_async(device.user.id)
+      registrar = UserRegister.new
+      registrar.perform(device.user.id)
 
       {
         access_token: device.access_token,
