@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130826013659) do
+ActiveRecord::Schema.define(:version => 20131027012606) do
 
   create_table "app_links", :force => true do |t|
     t.string   "slug"
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(:version => 20130826013659) do
     t.string  "platform_version"
     t.string  "token"
     t.string  "access_token"
+    t.string  "description"
   end
 
   add_index "devices", ["access_token"], :name => "index_devices_on_access_token", :unique => true
@@ -71,12 +72,20 @@ ActiveRecord::Schema.define(:version => 20130826013659) do
   create_table "memberships", :force => true do |t|
     t.integer  "user_id"
     t.integer  "conversation_id"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
+    t.datetime "last_message_at"
+    t.string   "most_recent_thumb_url"
+    t.string   "name"
+    t.string   "most_recent_subtitle"
   end
 
   add_index "memberships", ["conversation_id", "user_id"], :name => "index_memberships_on_conversation_id_and_user_id", :unique => true
+  add_index "memberships", ["last_message_at"], :name => "index_memberships_on_last_message_at"
   add_index "memberships", ["user_id", "conversation_id"], :name => "index_memberships_on_user_id_and_conversation_id", :unique => true
+
+# Could not dump table "messages" because of following StandardError
+#   Unknown type 'hstore' for column 'content'
 
   create_table "pledgers", :force => true do |t|
     t.string  "name"
@@ -89,15 +98,6 @@ ActiveRecord::Schema.define(:version => 20130826013659) do
     t.integer "rgt"
     t.text    "meta"
   end
-
-  create_table "read_marks", :force => true do |t|
-    t.integer  "readable_id"
-    t.integer  "user_id",                     :null => false
-    t.string   "readable_type", :limit => 20, :null => false
-    t.datetime "timestamp"
-  end
-
-  add_index "read_marks", ["user_id", "readable_type", "readable_id"], :name => "index_read_marks_on_user_id_and_readable_type_and_readable_id"
 
   create_table "stream_jobs", :force => true do |t|
     t.integer "video_id"
@@ -123,6 +123,7 @@ ActiveRecord::Schema.define(:version => 20130826013659) do
     t.string   "username"
     t.string   "last_app_version"
     t.string   "phone_hashed"
+    t.text     "muted"
   end
 
   add_index "users", ["access_token"], :name => "index_users_on_access_token", :unique => true
@@ -136,14 +137,17 @@ ActiveRecord::Schema.define(:version => 20130826013659) do
     t.integer  "user_id"
     t.integer  "conversation_id"
     t.string   "filename"
-    t.datetime "created_at",                        :null => false
-    t.datetime "updated_at",                        :null => false
-    t.boolean  "in_progress",     :default => true, :null => false
+    t.datetime "created_at",                                       :null => false
+    t.datetime "updated_at",                                       :null => false
+    t.boolean  "in_progress",                    :default => true, :null => false
     t.string   "streamname"
+    t.string   "guid",            :limit => nil,                   :null => false
+    t.string   "subtitle"
   end
 
   add_index "videos", ["conversation_id"], :name => "index_videos_on_conversation_id"
   add_index "videos", ["created_at"], :name => "index_videos_on_created_at"
+  add_index "videos", ["guid"], :name => "index_videos_on_guid", :unique => true
   add_index "videos", ["user_id"], :name => "index_videos_on_user_id"
 
   create_table "waitlisters", :force => true do |t|

@@ -36,6 +36,22 @@ class Membership < ActiveRecord::Base
     collection.map(&:to_sync)
   end
 
+  def ttyl
+    message = messages.new
+    message.content["subtitle"] = "ttyl"
+    message.is_sender = true
+    message.sender_name = user.also_known_as(for: user)
+    message.save
+
+    recipient_memberships.each do |m|
+      message = m.messages.new
+      message.is_sender = false
+      message.sender_name = user.also_known_as(for: m.user)
+      message.content["subtitle"] = "ttyl"
+      message.save
+    end
+  end
+
   def recipient_memberships
     conversation.memberships - [self]
   end

@@ -60,7 +60,6 @@ class ContentPublisher
       membership_id: membership.id,
       is_sender: is_sender,
       sender_name: sender.also_known_as(for: member),
-      video_guid: content.guid,
       content: content.content_hash,
       seen_at: seen_at,
       sent_at: content.created_at,
