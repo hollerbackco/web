@@ -32,7 +32,7 @@ module HollerbackApp
       name = logged_in? ? current_user.username : "update"
 
       #todo user_version is app store
-      if ["1.0","1.0.1"].include? user_version
+      if user_version.match(/1.0/)
         {"message" => "app up to date"}.to_json
         return
       end
