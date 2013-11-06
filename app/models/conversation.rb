@@ -35,9 +35,9 @@ class Conversation < ActiveRecord::Base
 
   def ttyl
     memberships.each do |m|
-      m.last_message_at = Time.now
-      m.most_recent_subtitle = "ttyl"
-      m.save
+      message = memberships.messages.new
+      message.content["subtitle"] = "ttyl"
+      message.save
     end
   end
 

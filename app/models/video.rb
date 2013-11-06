@@ -62,6 +62,7 @@ class Video < ActiveRecord::Base
 
   def content_hash
     {
+      guid: guid,
       url: url,
       thumb_url: thumb_url,
       subtitle: subtitle
