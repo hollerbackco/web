@@ -12,7 +12,7 @@
       = @conversation.member_names
     .list-group-item
       %strong Videos Sent
-      = @videos.count
+      = @messages.count
     - if @conversation.memberships.first.most_recent_subtitle == "ttyl"
       .list-group-item
         %span.label.label-success ttyl
