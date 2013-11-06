@@ -3,11 +3,11 @@ class ConversationTtyl
 
   def perform(membership_id)
     membership = Membership.find(membership_id)
+    membership.ttyl
+
     conversation = membership.conversation
-    conversation.ttyl
 
     notify_mqtt(conversation.memberships)
-
     membership.others.each do |other|
       p "notify push to #{other.username}"
       notify_push(membership.user.also_known_as(for: other), other)

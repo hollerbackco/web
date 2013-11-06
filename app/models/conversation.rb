@@ -33,14 +33,6 @@ class Conversation < ActiveRecord::Base
     end
   end
 
-  def ttyl
-    memberships.each do |m|
-      message = memberships.messages.new
-      message.content["subtitle"] = "ttyl"
-      message.save
-    end
-  end
-
   # all conversations with a name that is set.
   def group?
     members.count > 2 or self[:name].present?
