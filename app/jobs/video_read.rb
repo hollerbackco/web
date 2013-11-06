@@ -24,7 +24,7 @@ class VideoRead
       messages.each do |message|
         data = {
           message_id: message.id,
-          content_guid: message.video_guid
+          content_guid: message.guid
         }
         MetricsPublisher.publish(current_user, "video:watch", data)
       end
