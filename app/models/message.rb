@@ -9,6 +9,7 @@ class Message < ActiveRecord::Base
   scope :sent, where("is_sender IS TRUE")
   scope :updated_since, lambda {|updated_at| where("messages.updated_at > ?", updated_at)}
   scope :before, lambda {|time| where("messages.updated_at < ?", time)}
+  scope :watchable, where("content ? 'guid'")
 
   after_create do |record|
     m = record.membership
@@ -33,7 +34,7 @@ class Message < ActiveRecord::Base
       :since => nil
     }.merge(opts)
 
-    collection = options[:user].messages.where("content ? 'url'")
+    collection = options[:user].messages.watchable
 
     collection = if options[:since]
       collection.updated_since(options[:since])
@@ -51,7 +52,7 @@ class Message < ActiveRecord::Base
   end
 
   def ttyl?
-    !content.key? "url"
+    !content.key? "guid"
   end
 
   def url

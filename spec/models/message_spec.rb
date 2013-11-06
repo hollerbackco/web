@@ -30,4 +30,11 @@ describe Message do
     message.save
     membership.reload.most_recent_subtitle.should == "ttyl"
   end
+
+  it "messages that are watchable should not include ttyl" do
+    messages = membership.messages.watchable
+    messages.each do |message|
+      message.ttyl?.should_not be_true
+    end
+  end
 end
