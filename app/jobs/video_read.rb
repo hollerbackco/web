@@ -9,6 +9,7 @@ class VideoRead
 
     notify_analytics(messages, current_user)
     notify_mqtt(messages, current_user)
+    notify_gcm(messages, current_user)
     notify_apns(current_user)
   end
 
@@ -36,6 +37,13 @@ class VideoRead
       #is out of sync with stitcher
       #data << messages.first.membership.to_sync
       Hollerback::MQTT.publish(channel, data)
+    end
+
+    def notify_gcm(messages, person)
+      data = messages.map(&:to_sync)
+      person.devices.android.each do |device|
+        ::GCMS.send_notification([device.token], data: data)
+      end
     end
 
     def notify_apns(current_user)
