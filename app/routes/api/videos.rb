@@ -63,6 +63,7 @@ module HollerbackApp
 
       video = membership.conversation.videos.create({
         user: current_user,
+        guid: params[:guid],
         subtitle: params[:subtitle]
       })
 

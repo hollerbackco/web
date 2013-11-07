@@ -35,7 +35,7 @@ module HollerbackApp
 
         urls = params.select {|key,value| ["parts", "part_urls", "urls"].include? key }
         unless urls.blank?
-          video = conversation.videos.create(user: current_user)
+          video = conversation.videos.create(user: current_user, guid: params[:guid])
           VideoStitchRequest.perform_async(video.id, urls)
         end
         success_json data: inviter.inviter_membership.as_json
