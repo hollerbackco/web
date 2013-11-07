@@ -27,12 +27,6 @@ module Hollerback
     def notify_push(message, person)
       user = message.membership.user
       conversation = message.membership.conversation
-      data = {
-        conversation_id: message.membership.id,
-        video_id: message.id,
-        sender_name: message.sender_name
-      }
-
       badge_count = person.unseen_memberships_count
 
       person.devices.ios.each do |device|
@@ -44,6 +38,7 @@ module Hollerback
         })
       end
 
+      data = [message.to_sync, message.membership.to_sync]
       person.devices.android.each do |device|
         ::GCMS.send_notification([device.token],
           data: data,
