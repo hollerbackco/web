@@ -38,7 +38,7 @@ module HollerbackApp
           video = conversation.videos.create(user: current_user, guid: params[:guid])
           VideoStitchRequest.perform_async(video.id, urls)
         end
-        success_json data: inviter.inviter_membership.to_sync[:sync]
+        success_json data: inviter.inviter_membership.as_json
       else
         error_json 400, for: inviter, msg: "conversation could not be created"
       end

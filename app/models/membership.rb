@@ -132,7 +132,7 @@ class Membership < ActiveRecord::Base
 
   def as_json(opts={})
     options = {}
-    options = options.merge(methods: [:name, :unread_count, :is_group, :videos, :members, :is_deleted])
+    options = options.merge(methods: [:name, :unread_count, :is_deleted])
     options = options.merge(except: [:updated_at, :conversation_id])
     options = options.merge(opts)
     obj = super(options)
@@ -145,7 +145,7 @@ class Membership < ActiveRecord::Base
   def to_sync
     {
       type: "conversation",
-      sync: as_json({methods: [:name, :unread_count, :is_deleted]})
+      sync: as_json
     }
   end
 end
