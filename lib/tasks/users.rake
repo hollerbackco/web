@@ -8,4 +8,38 @@ namespace :users do
     end
     p users.destroy_all
   end
+
+  desc "push notification reminder"
+  task :push_remind do
+    User.find_each do |user|
+      next if user.unseen_memberships_count == 0
+      day_ago = Time.now - 1.day
+      message = user.messages
+        .unseen
+        .received
+        .reorder("messages.sent_at DESC")
+        .before(day_ago)
+        .first
+      next if message.blank?
+
+      badge_count = user.unseen_memberships_count
+      user.devices.ios.each do |device|
+        p device.token, message.sender_name
+
+        Hollerback::Push.send(device.token, {
+          alert: message.sender_name,
+          badge: badge_count,
+          sound: "default",
+          content_available: true
+        })
+      end
+      mark_pushed(user, message)
+    end
+  end
+
+  def mark_pushed(user, message)
+    key = "user:#{user.id}:push_remind"
+    data = ::MultiJson.encode({message_id: message.id, sent_at: Time.now})
+    REDIS.set(key, data)
+  end
 end
