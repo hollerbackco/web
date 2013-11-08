@@ -8,7 +8,7 @@ class Message < ActiveRecord::Base
   scope :received, where("is_sender IS NOT TRUE")
   scope :sent, where("is_sender IS TRUE")
   scope :updated_since, lambda {|updated_at| where("messages.updated_at > ?", updated_at)}
-  scope :before, lambda {|time| where("messages.updated_at < ?", time)}
+  scope :before, lambda {|time| where("messages.sent_at < ?", time)}
   scope :watchable, where("content ? 'guid'")
 
   after_create do |record|
