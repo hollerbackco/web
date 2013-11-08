@@ -39,6 +39,8 @@ namespace :users do
         end
       end
       mark_pushed(user, message)
+      mark_keen(user, message)
+
       users << user.username
     end
 
@@ -50,5 +52,9 @@ namespace :users do
     key = "user:#{user.id}:push_remind"
     data = ::MultiJson.encode({message_id: message.id, sent_at: Time.now})
     REDIS.set(key, data)
+  end
+
+  def mark_keen(user, message)
+    MetricsPublisher.publish(user, "push:message_reminder", {message_id: message.id})
   end
 end
