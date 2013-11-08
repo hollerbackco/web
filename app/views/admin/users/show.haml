@@ -64,5 +64,5 @@
           %span.date{"data-time" => (message.created_at.to_i * 1000)}= message.created_at
         %td
           %span.subtitle
-            - if message.subtitle.present?
+            - if message.subtitle.present? and message.subtitle == "ttyl"
               Y

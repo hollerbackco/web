@@ -39,7 +39,7 @@ module HollerbackApp
     get '/madmin/conversations/:id' do
       @conversation = Conversation.find(params[:id])
       @members = @conversation.members
-      @videos = @conversation.videos
+      @messages = @conversation.memberships.first.messages
 
       haml "admin/memberships".to_sym, layout: "layouts/admin".to_sym
     end
@@ -55,7 +55,7 @@ module HollerbackApp
     get '/madmin/users/:id' do
       @user = User.includes(:memberships, :messages).find(params[:id])
       @memberships = @user.memberships
-      @messages = @user.messages
+      @messages = @user.messages.order("created_at DESC")
 
       @users = User.order("created_at ASC").includes(:memberships, :messages, :devices).all
       haml "admin/users/show".to_sym, layout: "layouts/admin".to_sym

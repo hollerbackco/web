@@ -12,48 +12,26 @@
       = @conversation.member_names
     .list-group-item
       %strong Videos Sent
-      = @videos.count
+      = @messages.count
     - if @conversation.memberships.first.most_recent_subtitle == "ttyl"
       .list-group-item
         %span.label.label-success ttyl
 
-%h1 Videos
 %table.table.table-bordered
   %thead
     %tr
       %td Id
       %td Sender
-      %td Filename
       %td Created At
-      %td Subtitle
+      %td TTYL
   %tbody
-    - @videos.each do |video|
-      - if video.user.blank?
-        %tr
-          %td blank user
-      - else
-        %tr
-          %td= video.id
-          %td
-            %a{href: "/madmin/users/#{video.user.id}"}
-              = video.user.username
-          %td= video.filename
-          %td
-            %span.date{"data-time" => (video.created_at.to_i * 1000)}= video.created_at
-          %td
-            %span.subtitle
-              - if video.subtitle.present?
-                Y
-
-:javascript
-  $(document).ready(function() {
-    var datecopy = $(".date");
-
-    datecopy.each(function(el) {
-      var timeString = $(this).attr("data-time");
-      var unixTimestamp = parseInt(timeString);
-      var date = new Date(unixTimestamp);
-
-      $(this).html(date.toLocaleString());
-    })
-  })
+    - @messages.each do |message|
+      %tr
+        %td= message.id
+        %td= message.sender_name
+        %td
+          %span.date{"data-time" => (message.created_at.to_i * 1000)}= message.created_at
+        %td
+          %span.subtitle
+            - if message.subtitle.present? and message.subtitle == "ttyl"
+              Y

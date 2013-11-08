@@ -13,11 +13,6 @@ describe Membership do
 
   let(:membership) { @membership }
 
-  it "json should include members" do
-    json = membership.as_json
-    json.key?(:members).should be_true
-  end
-
   it "json should have an updated_at equal to last_message_at" do
     json = membership.as_json
     membership.messages.should_not be_empty

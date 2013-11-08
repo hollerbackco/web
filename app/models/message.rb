@@ -14,7 +14,7 @@ class Message < ActiveRecord::Base
   after_create do |record|
     m = record.membership
     m.deleted_at = nil
-    m.last_message_at = record.sent_at
+    m.last_message_at = record.sent_at || record.created_at
     if !record.sender? or m.most_recent_thumb_url.blank?
       if !record.ttyl?
         m.most_recent_thumb_url = record.thumb_url

@@ -35,7 +35,7 @@ module HollerbackApp
 
         urls = params.select {|key,value| ["parts", "part_urls", "urls"].include? key }
         unless urls.blank?
-          video = conversation.videos.create(user: current_user)
+          video = conversation.videos.create(user: current_user, guid: params[:guid])
           VideoStitchRequest.perform_async(video.id, urls)
         end
         success_json data: inviter.inviter_membership.as_json
@@ -58,7 +58,9 @@ module HollerbackApp
 
       messages = membership.messages.unseen
       if params[:watched_ids]
-        messages = messages.where(:video_guid => params[:watched_ids])
+        messages = params[:watched_ids].map do |watched_id|
+          Message.find_by_guid(watched_id)
+        end.flatten
       end
 
       if messages.any?
@@ -67,7 +69,9 @@ module HollerbackApp
 
       ConversationTtyl.perform_async(membership.id)
 
-      MetricsPublisher.delay.publish(current_user.meta, "conversations:ttyl")
+      MetricsPublisher.delay.publish(current_user.meta, "conversations:ttyl", {
+        conversation_id: membership.conversation_id
+      })
       success_json data: nil
     end
 

@@ -10,7 +10,7 @@ class ConversationTtyl
     notify_mqtt(conversation.memberships)
     membership.others.each do |other|
       p "notify push to #{other.username}"
-      notify_push(membership.user.also_known_as(for: other), other)
+      notify_push(membership, other)
     end
   end
 
@@ -25,7 +25,9 @@ class ConversationTtyl
     end
   end
 
-  def notify_push(sender_name,person)
+  def notify_push(sender_membership, person)
+    sender_name = sender_membership.user.also_known_as(for: person)
+
     text = "#{sender_name}: ttyl"
 
     person.devices.ios.each do |device|
@@ -35,6 +37,7 @@ class ConversationTtyl
       })
     end
 
+    data = [sender_membership.to_sync]
     person.devices.android.each do |device|
       ::GCMS.send_notification([device.token],
         data: data
