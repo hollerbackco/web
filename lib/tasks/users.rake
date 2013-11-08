@@ -25,13 +25,15 @@ namespace :users do
       badge_count = user.unseen_memberships_count
       user.devices.ios.each do |device|
         p device.token, message.sender_name
-
-        Hollerback::Push.send(device.token, {
-          alert: message.sender_name,
-          badge: badge_count,
-          sound: "default",
-          content_available: true
-        })
+        unless ENV['dryrun']
+          p "doing the real thing"
+          Hollerback::Push.send(device.token, {
+            alert: message.sender_name,
+            badge: badge_count,
+            sound: "default",
+            content_available: true
+          })
+        end
       end
       mark_pushed(user, message)
     end
