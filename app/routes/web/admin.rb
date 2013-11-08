@@ -39,7 +39,7 @@ module HollerbackApp
     get '/madmin/conversations/:id' do
       @conversation = Conversation.find(params[:id])
       @members = @conversation.members
-      @messages = @conversation.memberships.first.messages
+      @messages = @conversation.memberships.first.messages.reorder("messages.created_at DESC")
 
       haml "admin/memberships".to_sym, layout: "layouts/admin".to_sym
     end
