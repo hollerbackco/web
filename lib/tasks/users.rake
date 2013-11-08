@@ -20,7 +20,10 @@ namespace :users do
         .reorder("messages.sent_at DESC")
         .before(day_ago)
         .first
-      next if message.blank?
+      if message.blank?
+        p "skip this user"
+        next
+      end
 
       badge_count = user.unseen_memberships_count
       user.devices.ios.each do |device|
