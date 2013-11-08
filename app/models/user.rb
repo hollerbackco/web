@@ -38,6 +38,11 @@ class User < ActiveRecord::Base
 
   scope :unverified, where(:verification_code => nil)
 
+  def active?(since=nil)
+    since = Time.now - 1.day if since.blank?
+    messages.sent.where("sent_at > ?", since).any?
+  end
+
   def unseen_memberships_count
     messages.unseen.group_by(&:membership_id).length
   end
