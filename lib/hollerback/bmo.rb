@@ -3,7 +3,7 @@ module Hollerback
     def self.say(msg)
       if Sinatra::Base.production? 
         uri = URI('http://still-depths-4143.herokuapp.com/hubot/say')
-        res = Net::HTTP.post_form(uri, 'room' => '60453_hollerback@conf.hipchat.com', 'message' => msg)
+        res = Net::HTTP.post_form(uri, 'room' => 'general', 'message' => msg)
       end
     end
   end
