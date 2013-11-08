@@ -51,7 +51,10 @@
     });
 
     var inviteFunnel = new Keen.Funnel([step1,step2,step3], {
-      timeframe: {start: "2013-11-08T02:08:33.883Z", end: (new Date()).toISOString()}
+      "timeframe": {
+        "start": "2013-11-08T01:08:33.883Z",
+        "end": (new Date()).toISOString()
+      }
     });
 
     inviteFunnel.draw(document.getElementById("reminder-funnel"), {
