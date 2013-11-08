@@ -30,10 +30,14 @@ class ConversationTtyl
 
     text = "#{sender_name}: ttyl"
 
+    badge_count = person.unseen_memberships_count
     person.devices.ios.each do |device|
       Hollerback::Push.send(device.token, {
         alert: text,
+        badge_count: badge_count,
         sound: "default",
+        content_available: true,
+        data: {uuid: SecureRandom.uuid}
       })
     end
 
