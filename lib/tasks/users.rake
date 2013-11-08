@@ -12,6 +12,7 @@ namespace :users do
   desc "push notification reminder"
   task :push_remind do
     day_ago = Time.now - 1.day
+    users = []
     User.find_each do |user|
       next if user.active?
       message = user.messages
@@ -38,7 +39,11 @@ namespace :users do
         end
       end
       mark_pushed(user, message)
+      users << user.username
     end
+
+    p users
+    p "#{users.count} users pushed"
   end
 
   def mark_pushed(user, message)
