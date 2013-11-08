@@ -7,6 +7,9 @@
   #conversionRate
   #kpi
 %article
+  %h2 Reminder Funnel
+  #reminder-funnel
+%article
   %h2 Invite Funnel
   #invite-funnel
 %article
@@ -30,6 +33,29 @@
     projectId: "#{ENV["KEEN_PROJECT_ID"]}",
     readKey: "#{ENV["KEEN_READ_KEY"]}"    // required for doing analysis
   });
+
+  var showReminderFunnel = function(callback) {
+    var step1 = new Keen.Step("push:message_reminder", {
+      name: "Push Reminder",
+      actorProperty: "user.id"
+    });
+
+    var step2 = new Keen.Step("conversations:list", {
+      name: "App Open",
+      actorProperty: "user.id"
+    });
+
+    var step3 = new Keen.Step("video:create", {
+      name: "Sent Video",
+      actorProperty: "user.id"
+    });
+
+    var inviteFunnel = new Keen.Funnel([step1,step2,step3]);
+
+    inviteFunnel.draw(document.getElementById("reminder-funnel"), {
+      title: "Reminder Funnel"
+    });
+  };
 
   var showInviteFunnel = function(callback) {
 
@@ -98,6 +124,8 @@
         });
       });
     });
+
+    showReminderFunnel();
 
     var series = new Keen.Series("video:create", {
       analysisType: "count",
