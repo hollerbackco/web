@@ -205,7 +205,7 @@ class User < ActiveRecord::Base
   end
 
   def set_verification_code
-    self.verification_code = SecureRandom.random_number(8999) + 1000
+    self.verification_code ||= SecureRandom.random_number(8999) + 1000
   end
 
   private
