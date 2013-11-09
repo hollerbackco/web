@@ -22,14 +22,23 @@ module HollerbackApp
       end
     end
 
+    get '/download' do
+      app_link = AppLink.where(slug: "download", segment: "ios").first_or_create
+      app_link.increment!(:downloads_count)
+
+      url = "http://appstore.com/hollerback"
+      redirect url
+    end
+
     get '/invite' do
       #TODO: check if android or ios
       app_link = AppLink.where(slug: "invite", segment: "ios").first_or_create
       app_link.increment!(:downloads_count)
 
       #url = "http://appstore.com/hollerback"
-      url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-master.plist")
-      url = "itms-services://?action=download-manifest&url=#{url}"
+      #url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-master.plist")
+      #url = "itms-services://?action=download-manifest&url=#{url}"
+      url = "http://appstore.com/hollerback"
       redirect url
     end
 
@@ -50,11 +59,10 @@ module HollerbackApp
         app_link.increment!(:downloads_count)
 
         #to enterprise build
-        url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-master.plist")
-        url =  "itms-services://?action=download-manifest&url=#{url}"
-        #
+        #url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-master.plist")
+        #url =  "itms-services://?action=download-manifest&url=#{url}"
 
-        #url = "http://appstore.com/hollerback"
+        url = "http://appstore.com/hollerback"
       else
         url = "/"
       end
