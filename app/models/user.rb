@@ -44,7 +44,7 @@ class User < ActiveRecord::Base
   end
 
   def unseen_memberships_count
-    messages.received.unseen.group_by(&:membership_id).length
+    messages.watchable.unseen.group_by(&:membership_id).length
   end
 
   def muted?(user)
