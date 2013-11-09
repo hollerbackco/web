@@ -22,7 +22,8 @@ module HollerbackApp
         user = User.find_by_phone_normalized(params["phone"])
 
         if user
-          user.reset_verification_code!
+          user.set_verification_code
+          user.save
           Hollerback::SMS.send_message user.phone_normalized, "Hollerback Code: #{user.verification_code}"
           {
             user: user.as_json
