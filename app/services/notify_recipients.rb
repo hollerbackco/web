@@ -34,7 +34,8 @@ module Hollerback
           alert: message.sender_name,
           badge: badge_count,
           sound: "default",
-          content_available: true
+          content_available: true,
+          data: {uuid: SecureRandom.uuid}
         })
       end
 
