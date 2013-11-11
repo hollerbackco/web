@@ -62,6 +62,23 @@
     });
   };
 
+  var showInviteReminderFunnel = function(callback) {
+    var step1 = new Keen.Step("push:invite_reminder", {
+      name: "Invite Reminder"
+    });
+
+    var inviteFunnel = new Keen.Funnel([step1], {
+      "timeframe": {
+        "start": "2013-11-10T00:08:33.883Z",
+        "end": (new Date()).toISOString()
+      }
+    });
+
+    inviteFunnel.draw(document.getElementById("reminder-funnel"), {
+      title: "Reminder Funnel"
+    });
+  };
+
   var showInviteFunnel = function(callback) {
 
     var step1 = new Keen.Step("users:invite", {
@@ -131,6 +148,7 @@
     });
 
     showReminderFunnel();
+    showInviteReminderFunnel();
 
     var series = new Keen.Series("video:create", {
       analysisType: "count",

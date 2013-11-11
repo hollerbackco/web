@@ -82,6 +82,6 @@ namespace :users do
   end
 
   def mark_keen_invite(user, invite)
-    MetricsPublisher.publish(user, "push:invite_reminder", {invite_id: invite.id})
+    MetricsPublisher.publish(user, "push:invite_reminder", {invite_id: invite.id, phone: invite.phone})
   end
 end
