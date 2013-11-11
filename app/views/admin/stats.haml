@@ -11,7 +11,8 @@
   #reminder-funnel
 %article
   %h2 Reminder Invite Funnel
-  #reminder-invite-funnel
+  #invite-reminders
+  #invite-reminders-users
 %article
   %h2 Invite Funnel
   #invite-funnel
@@ -31,12 +32,13 @@
 :javascript
   var Keen=Keen||{configure:function(e){this._cf=e},addEvent:function(e,t,n,i){this._eq=this._eq||[],this._eq.push([e,t,n,i])},setGlobalProperties:function(e){this._gp=e},onChartsReady:function(e){this._ocrq=this._ocrq||[],this._ocrq.push(e)}};(function(){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src=("https:"==document.location.protocol?"https://":"http://")+"dc8na2hxrj29i.cloudfront.net/code/keen-2.1.0-min.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)})();
 
-    // Configure the Keen object with your Project ID and (optional) access keys.
+  // Configure the Keen object with your Project ID and (optional) access keys.
   Keen.configure({
     projectId: "#{ENV["KEEN_PROJECT_ID"]}",
     readKey: "#{ENV["KEEN_READ_KEY"]}"    // required for doing analysis
   });
 
+  // Reminder funnel init
   var showReminderFunnel = function(callback) {
     var step1 = new Keen.Step("push:message_reminder", {
       name: "Push Reminder",
@@ -65,25 +67,35 @@
     });
   };
 
+  // Invitation reminder funnel init
   var showInviteReminderFunnel = function(callback) {
-    var step1 = new Keen.Step("push:invite_reminder", {
-      name: "Invite Reminder"
-    });
-
-    var inviteFunnel = new Keen.Funnel([step1], {
-      "timeframe": {
+    var timeframe = {
         "start": "2013-11-10T00:08:33.883Z",
         "end": (new Date()).toISOString()
-      }
+      };
+
+    var invites = new Keen.Metric("push:invite_reminder",{
+      "analysisType": "count_unique",
+      "targetProperty": "invite_id",
+      "timeframe": timeframe
     });
 
-    inviteFunnel.draw(document.getElementById("reminder-invite-funnel"), {
-      title: "Reminder Funnel"
+    invites.draw(document.getElementById("invite-reminders"), {
+      label: "Invite Reminders"
+    });
+
+    var users = new Keen.Metric("users:new", {
+      analysisType: "count_unique",
+      targetProperty: "user.id",
+      timeframe: timeframe
+    });
+
+    users.draw(document.getElementById("invite-reminders-users"), {
+      label: "Users"
     });
   };
 
   var showInviteFunnel = function(callback) {
-
     var step1 = new Keen.Step("users:invite", {
       name: "Was Invited",
       actorProperty: "invited_phone"
@@ -113,11 +125,9 @@
     inviteFunnel.getResponse(function(response) {
       callback(response);
     });
-
   };
 
   Keen.onChartsReady(function() {
-
     var inviteSent = new Keen.Metric("users:invite",{
       analysisType: "count_unique",
       targetProperty: "invited_phone"
@@ -186,5 +196,4 @@
     users.draw(document.getElementById("active-users"), {
       label: "Users who refreshed convo list"
     });
-
   });
