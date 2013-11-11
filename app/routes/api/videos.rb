@@ -68,7 +68,7 @@ module HollerbackApp
           current_user.messages.received.find_by_guid(watched_id)
         end.flatten
         if messages.any?
-          membership.unread_count = 0
+          membership.unseen_count = 0
           membership.save
           VideoRead.perform_async(messages.map(&:id), current_user.id)
           unread_count = messages.count
