@@ -61,16 +61,6 @@ module HollerbackApp
       end
       membership = current_user.memberships.find(params[:id])
 
-      video = membership.conversation.videos.create({
-        user: current_user,
-        guid: params[:guid],
-        subtitle: params[:subtitle]
-      })
-
-      urls = params.select {|key,value| ["urls", "parts", "part_urls"].include? key }
-
-      VideoStitchRequest.perform_async(video.id, urls, params.key?("reply"), params[:needs_reply])
-
       #mark messages as read
       messages = membership.messages.unseen
       if params[:watched_ids]
@@ -78,6 +68,8 @@ module HollerbackApp
           current_user.messages.received.find_by_guid(watched_id)
         end.flatten
         if messages.any?
+          membership.unread_count = 0
+          membership.save
           VideoRead.perform_async(messages.map(&:id), current_user.id)
           unread_count = messages.count
         end
@@ -91,6 +83,16 @@ module HollerbackApp
           unread_count = messages.count
         end
       end
+
+      video = membership.conversation.videos.create({
+        user: current_user,
+        guid: params[:guid],
+        subtitle: params[:subtitle]
+      })
+
+      urls = params.select {|key,value| ["urls", "parts", "part_urls"].include? key }
+
+      VideoStitchRequest.perform_async(video.id, urls, params.key?("reply"), params[:needs_reply])
 
       success_json data: video.as_json.merge(:conversation_id => membership.id, :unread_count => (unread_count || messages.count))
     end
