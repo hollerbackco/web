@@ -51,7 +51,7 @@ namespace :users do
   desc "push sms invite reminders"
   task :push_invite do
     time = Time.now - 3.days
-    Invite.pending.where("created_at < ?", ).find_each do |invite|
+    Invite.pending.where("invites.created_at < ?", time).find_each do |invite|
       user = User.find_by_phone_normalized(invite.phone)
       next if user.present?
 
