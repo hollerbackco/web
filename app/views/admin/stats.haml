@@ -10,6 +10,9 @@
   %h2 Reminder Funnel
   #reminder-funnel
 %article
+  %h2 Reminder Invite Funnel
+  #reminder-invite-funnel
+%article
   %h2 Invite Funnel
   #invite-funnel
 %article
@@ -74,7 +77,7 @@
       }
     });
 
-    inviteFunnel.draw(document.getElementById("reminder-funnel"), {
+    inviteFunnel.draw(document.getElementById("reminder-invite-funnel"), {
       title: "Reminder Funnel"
     });
   };
@@ -119,6 +122,7 @@
       analysisType: "count_unique",
       targetProperty: "invited_phone"
     });
+
     inviteSent.draw(document.getElementById("invitesSentCount"), {
       label: "Invites"
     });
@@ -138,9 +142,10 @@
         var usersCount = response.result;
 
         showInviteFunnel(function(response){
+          console.log(response);
           console.log(invitesSentCount);
           console.log(usersCount);
-          var conversionRate = response.result[1]/response.result[1];
+          var conversionRate = response.result[1]/response.result[0];
           var kpi = (invitesSentCount/usersCount) * (conversionRate);
           $("#kpi").html(kpi + " users/users");
         });
