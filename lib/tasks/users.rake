@@ -60,6 +60,7 @@ namespace :users do
       unless ENV['dryrun']
         Hollerback::SMS.send_message invite.phone, message
         mark_invited(invite)
+        mark_keen_invite(invite.inviter, invite)
       end
     end
   end
@@ -78,5 +79,9 @@ namespace :users do
 
   def mark_keen(user, message)
     MetricsPublisher.publish(user, "push:message_reminder", {message_id: message.id})
+  end
+
+  def mark_keen_invite(user, invite)
+    MetricsPublisher.publish(user, "push:invite_reminder", {invite_id: invite.id, phone: invite.phone})
   end
 end

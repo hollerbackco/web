@@ -1,5 +1,13 @@
 module HollerbackApp
   class WebApp < BaseApp
+    helpers do
+      def sms_download_notification(name)
+        if Sinatra::Base.production? and ! params.key? :test
+          Hollerback::SMS.send_message "+13033595357", "[ios] #{name} was sent to the appstore"
+        end
+      end
+    end
+
     get '/android/:party' do
       party = params[:party]
 
@@ -26,6 +34,8 @@ module HollerbackApp
       app_link = AppLink.where(slug: "download", segment: "ios").first_or_create
       app_link.increment!(:downloads_count)
 
+      sms_download_notification("/download")
+
       url = "http://appstore.com/hollerback"
       redirect url
     end
@@ -34,6 +44,8 @@ module HollerbackApp
       #TODO: check if android or ios
       app_link = AppLink.where(slug: "invite", segment: "ios").first_or_create
       app_link.increment!(:downloads_count)
+
+      sms_download_notification("/invite")
 
       #url = "http://appstore.com/hollerback"
       #url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-master.plist")
@@ -53,9 +65,7 @@ module HollerbackApp
         url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-staging.plist")
         url = "itms-services://?action=download-manifest&url=#{url}"
       elsif app_link.usable?
-        if Sinatra::Base.production? and ! params.key? :test
-          Hollerback::SMS.send_message "+13033595357", "[ios] #{params[:party]} was sent to the appstore"
-        end
+        sms_download_notification(params[:party])
         app_link.increment!(:downloads_count)
 
         #to enterprise build
