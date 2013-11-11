@@ -57,8 +57,10 @@ namespace :users do
 
       message = "#{invite.inviter.username} sent you a video on hollerback. download it here: www.hollerback.co/download"
       p message
-      Hollerback::SMS.send_message invite.phone, message
-      mark_invited(invite)
+      unless ENV['dryrun']
+        Hollerback::SMS.send_message invite.phone, message
+        mark_invited(invite)
+      end
     end
   end
 
