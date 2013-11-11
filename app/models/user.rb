@@ -29,14 +29,29 @@ class User < ActiveRecord::Base
   validates :email,
     presence: true,
     uniqueness: true
-  validates :phone, presence: true, uniqueness: true
-  validates :phone_normalized, presence: true, uniqueness: true
   validates :username,
       presence: true,
       uniqueness: true,
       format: { :with => /\A_?[a-z]_?(?:[a-z0-9]_?)*\z/i, :message => "must be letters, numbers and underscores" }
+  validate :phone_must_be_valid
 
   scope :unverified, where(:verification_code => nil)
+
+  def phone_must_be_valid
+    if phone.blank?
+      errors[:base] << "Phone number cannot be blank"
+      return
+    end
+    if phone_normalized.blank?
+      errors[:base] << "Invalid phone number"
+      return
+    end
+    user = User.find_by_phone_normalized(phone_normalized)
+    if user and self.id != user.id
+      errors[:base] << "Phone number is taken"
+      return
+    end
+  end
 
   def active?(since=nil)
     since = Time.now - 1.day if since.blank?
