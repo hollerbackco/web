@@ -105,7 +105,6 @@ GEM
       execjs (>= 1.2.9)
       sprockets (>= 2.0.3)
       tilt
-    hashie (2.0.5)
     heroku (2.41.0)
       heroku-api (~> 0.3.7)
       launchy (>= 0.3.2)
@@ -152,16 +151,6 @@ GEM
     netrc (0.7.7)
     newrelic_rpm (3.6.2.96)
     nokogiri (1.5.9)
-    oauth (0.4.7)
-    omniauth (1.1.4)
-      hashie (>= 1.2, < 3)
-      rack
-    omniauth-oauth (1.0.1)
-      oauth
-      omniauth (~> 1.0)
-    omniauth-twitter (1.0.0)
-      multi_json (~> 1.3)
-      omniauth-oauth (~> 1.0)
     open4 (1.3.0)
     pg (0.15.1)
     pg-hstore (1.2.0)
@@ -339,8 +328,6 @@ DEPENDENCIES
   mqtt
   multi_json
   newrelic_rpm
-  omniauth
-  omniauth-twitter
   pg
   phone
   rack-parser
