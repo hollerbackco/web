@@ -9,8 +9,9 @@ module HollerbackApp
         config.failure_app = HollerbackApp::ApiApp
 
         config.scope_defaults :default,
-          strategies: [:password, :api_token],
-          action: '/unauthenticated'
+          strategies: [:api_token, :password],
+          action: '/unauthenticated',
+          store: false
       end
     end
   end

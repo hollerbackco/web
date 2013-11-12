@@ -299,7 +299,7 @@ GEM
       raindrops (~> 0.7)
     upsert (2.0.1)
     uuidtools (2.1.4)
-    warden (1.2.1)
+    warden (1.2.3)
       rack (>= 1.0)
     will_paginate (3.0.4)
     yui-compressor (0.9.6)

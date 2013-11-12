@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require 'spec_helper'
 
 class CoreHelpersTest
   include Sinatra::CoreHelpers
@@ -29,5 +29,4 @@ describe 'Core helpers' do
   let(:subject) { CoreHelpersTest.new(@user) }
   let(:user) { @user }
   let(:conversation) { @conversation }
-
 end
