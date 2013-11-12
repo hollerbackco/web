@@ -32,6 +32,10 @@ class Message < ActiveRecord::Base
     where("content -> 'guid'='#{str}'").first
   end
 
+  def self.all_by_guid(str)
+    where("content -> 'guid'='#{str}'")
+  end
+
   def self.sync_objects(opts={})
     raise ArgumentError if opts[:user].blank?
     options = {

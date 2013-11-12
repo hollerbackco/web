@@ -21,7 +21,7 @@ class Video < ActiveRecord::Base
   end
 
   after_destroy do |record|
-    Message.where(:content_guid => record.id.to_s).destroy_all
+    Message.all_by_guid(record.guid.to_s).destroy_all
   end
 
   def self.random_label
