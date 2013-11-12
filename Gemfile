@@ -30,8 +30,6 @@ gem 'redcarpet'
 
 #authentication
 gem 'warden'
-gem 'omniauth'
-gem 'omniauth-twitter'
 
 #storage
 gem 'aws-sdk'
