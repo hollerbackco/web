@@ -65,4 +65,57 @@ describe User do
       user.muted?(second_user).should be_false
     end
   end
+
+  describe "create" do
+    it "should downcase uppercased username" do
+      username = "TESSTER"
+      user = User.create({
+        email: "testemail@email.com",
+        username: username,
+        phone: "15551114444",
+        password: "password"
+      })
+
+      user.valid?.should be_true
+      user.username.should == username.downcase
+    end
+
+    it "should downcase uppercased emails" do
+      email = "TESTEMAILUPPERCASE@email.com"
+      user = User.create({
+        email: email,
+        username: "username",
+        phone: "15551113333",
+        password: "password"
+      })
+
+      user.valid?.should be_true
+      user.email.should == email.downcase
+    end
+
+    describe "errors" do
+      it "throw only one error if phone is missing" do
+        user = User.create({
+          email: "test@test.com",
+          username: "test",
+          password: "password"
+        })
+
+        user.valid?.should_not be_true
+        user.errors.full_messages.count.should == 1
+      end
+
+      it "should not allow duplicate phone numbers" do
+        user = User.create({
+          email: "test@test.com",
+          username: "test",
+          phone: "15551113333",
+          password: "password"
+        })
+
+        user.valid?.should_not be_true
+        user.errors.full_messages.count.should == 1
+      end
+    end
+  end
 end

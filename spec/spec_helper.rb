@@ -22,11 +22,31 @@ module HollerbackApp
   end
 end
 
+module Hollerback
+  module Test
+    module Support
+      def app
+        Rack::Builder.new do
+          Warden::Manager.serialize_into_session { |user| user.id }
+          Warden::Manager.serialize_from_session { |id| User.find(id) }
+
+          run HollerbackApp::ApiApp
+        end
+      end
+    end
+  end
+end
+
 RSpec.configure do |config|
   config.include Rack::Test::Methods
   config.include Warden::Test::Helpers
   config.include SmsSpec::Helpers
   config.include SmsSpec::Matchers
+  config.include Hollerback::Test::Support
+
+  config.before(:all) do
+    DatabaseCleaner.clean!
+  end
 
   config.after(:each) do
     Warden.test_reset!
