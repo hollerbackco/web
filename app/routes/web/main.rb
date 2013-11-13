@@ -27,24 +27,40 @@ module HollerbackApp
       haml :video
     end
 
-    get '/v/:token' do
-      #link_data = JSON.parse(REDIS.get("links:#{params[:token]}"))
-      #video = Video.find(link_data[0])
-      #phone = link_data[1]
+    get '/android/wait' do
+      @post_action = '/android/wait'
+      haml 'android/wait'.to_sym, layout: 'layouts/mobile'.to_sym
+    end
 
-      #actor = {phone: phone}
+    post '/android/wait' do
+      phone = params[:phone]
+      email = params[:email]
 
-      #MetricsPublisher.delay.publish(actor, "invite:view")
+      if phone.blank?
+        @error_message = 'Please enter a phone number'
+        return haml 'android/wait'.to_sym, layout: 'layouts/mobile'.to_sym
+      end
+      if email.blank?
+        @error_message = 'Please enter an email'
+        return haml 'android/wait'.to_sym, layout: 'layouts/mobile'.to_sym
+      end
 
-      #@name = video.user.username
-      #@video_url = video.url
-      #@thumb_url = video.thumb_url
-      #haml :video
-      redirect "/invite"
+      #mark invites as used
+      invites = Invite.unscoped.find_all_by_phone(phone)
+      invites.each do |invite|
+        invite.waitlisted!
+      end
+
+      #save the waitlister
+      waitlister = Waitlister.where(email: email).first_or_create
+      waitlister.phone = phone
+      waitlister.save
+
+      haml 'android/confirm'.to_sym, layout: 'layouts/mobile'.to_sym
     end
 
     get "/thanks" do
-      finished("signup_waitlist")
+      finished('signup_waitlist')
       haml :entries, layout: :pledge
     end
 

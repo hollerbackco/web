@@ -97,7 +97,7 @@ class Membership < ActiveRecord::Base
   end
 
   def unseen?
-    messages.unseen.present?
+    messages.watchable.unseen.present?
   end
 
   def view_all
@@ -110,7 +110,7 @@ class Membership < ActiveRecord::Base
   alias_method :is_group, :group?
 
   def unseen_count
-    self["unseen_count"] || messages.watchable.unseen.count
+    self["unseen_count"] || messages.watchable.received.unseen.count
   end
   alias_method :unread_count, :unseen_count
 
