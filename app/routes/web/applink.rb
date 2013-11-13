@@ -8,6 +8,7 @@ module HollerbackApp
       end
 
       def ios?
+        p request.user_agent
         user_agent = Hollerback::UserAgent.new(request.user_agent)
         user_agent.ios?
       end

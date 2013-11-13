@@ -33,7 +33,7 @@ module Hollerback
     end
 
     def ios?
-      [:iphone, :ipad, :ipod].include?(@platform)
+      [:iphone, :ipad, :ipod].include?(platform)
     end
 
     def platform
