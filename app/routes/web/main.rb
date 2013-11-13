@@ -35,6 +35,7 @@ module HollerbackApp
     post '/android/wait' do
       phone = params[:phone]
       email = params[:email]
+
       if phone.blank?
         @error_message = 'Please enter a phone number'
         return haml 'android/wait'.to_sym, layout: 'layouts/mobile'.to_sym
