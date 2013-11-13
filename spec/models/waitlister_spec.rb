@@ -11,6 +11,12 @@ describe Waitlister do
     lambda { Waitlister.create!(email: "user") }.should raise_error(ActiveRecord::RecordInvalid)
   end
 
+  it "should normalize phone" do
+    waitlister = Waitlister.create(email: "test@test.com")
+    waitlister.phone = "4446667777"
+    waitlister.phone.should == "+14446667777"
+  end
+
   it "should not create two wailisters with the same email address" do
     email = "user@example.com"
 

@@ -65,11 +65,11 @@ module HollerbackApp
       messages = membership.messages.unseen
       if params[:watched_ids]
         messages = params[:watched_ids].map do |watched_id|
-          current_user.messages.received.find_by_guid(watched_id)
+          current_user.messages.find_by_guid(watched_id)
         end.flatten
         if messages.any?
           VideoRead.perform_async(messages.map(&:id), current_user.id)
-          unread_count = messages.count
+          unread_count = 0
         end
       elsif params.key?("reply")
         if params[:watched_at]
@@ -78,7 +78,7 @@ module HollerbackApp
         end
         if messages.any?
           VideoRead.perform_async(messages.map(&:id), current_user.id)
-          unread_count = messages.count
+          unread_count = 0
         end
       end
 
