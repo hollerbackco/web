@@ -3,15 +3,16 @@ require 'phone'
 
 module Hollerback
   class SMS
+    PHONES = ["+14152758229","+14155285018","+14152300935"]
+
     class << self
       def configure(sid, token, phone)
         @client = self.client(sid, token)
-        @phone = phone
       end
 
       def send_message(recipient, msg, media_url=nil)
         data = {
-          from: @phone,
+          from: self.phone,
           to: recipient,
           body: msg
         }
@@ -28,6 +29,11 @@ module Hollerback
 
       def client(sid,token)
         Twilio::REST::Client.new sid, token
+      end
+
+      #TODO: shouldnt' be random. should cycle through them.
+      def phone
+        PHONES.sample
       end
     end
   end
