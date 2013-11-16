@@ -41,7 +41,7 @@ module Hollerback
 
       data = [message.to_sync, message.membership.to_sync]
       person.devices.android.each do |device|
-        ::GCMS.send_notification([device.token],
+        p ::GCMS.send_notification([device.token],
           data: data,
           collapse_key: "new_message"
         )
