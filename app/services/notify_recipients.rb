@@ -39,7 +39,7 @@ module Hollerback
         })
       end
 
-      data = [message.to_sync, message.membership.to_sync]
+      data = [message.to_sync, message.membership.to_sync].to_json
       person.devices.android.each do |device|
         p ::GCMS.send_notification([device.token],
           data: data,
