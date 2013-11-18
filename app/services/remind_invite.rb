@@ -5,10 +5,12 @@ class RemindInvite
     end
   end
 
+
+  attr_accessor :dryrun, :user, :invite, :invited_user
   def initialize(invite,dryrun=false)
     @dryrun = dryrun
+    @invite = invite
     @user = invite.user
-    @invite = invite.phone
     @invited_user = User.find_by_phone_normalized(invite.phone)
   end
 
@@ -33,7 +35,7 @@ class RemindInvite
   end
 
   def remindable?
-    return false if user.present?
+    return false if invited_user.present?
   end
 
   private
