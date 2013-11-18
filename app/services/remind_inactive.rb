@@ -1,8 +1,11 @@
 class RemindInactive
   def self.run(dryrun=false)
+    counter = 0
     User.find_each do |user|
       reminderer = self.new(user: user, dryrun: dryrun)
-      reminderer.remind
+      if reminderer.remind
+        counter = counter + 1
+      end
     end
   end
 
@@ -23,6 +26,9 @@ class RemindInactive
 
       user_reminders.create(remindable_message)
       track_metrics(user, remindable_message)
+      true
+    else
+      false
     end
   end
 
@@ -85,7 +91,8 @@ class RemindInactive
     end
 
     def last_reminder_at
-      data["sent_at"] || Time.now - 1.year
+
+      data["sent_at"] ? Time.parse(data["sent_at"]) : (Time.now - 1.year)
     end
 
     def message_ids
