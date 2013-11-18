@@ -10,7 +10,7 @@ class RemindInvite
   def initialize(invite,dryrun=false)
     @dryrun = dryrun
     @invite = invite
-    @user = invite.user
+    @user = invite.inviter
     @invited_user = User.find_by_phone_normalized(invite.phone)
   end
 
