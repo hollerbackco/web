@@ -7,6 +7,7 @@ class RemindInactive
         counter = counter + 1
       end
     end
+    p "#{counter} users"
   end
 
   attr_accessor :dryrun, :user, :user_reminders
