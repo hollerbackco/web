@@ -15,7 +15,10 @@ class RemindInvite
   def remind
     if remindable?
       message = "#{user.username} sent you a video on hollerback. download it here: www.hollerback.co/download"
-      send_sms(phone, message)
+      if send_sms(invite.phone, message)
+        mark_invited(invite)
+        mark_keen_invite(user, invite)
+      end
       true
     else
       false
@@ -24,10 +27,9 @@ class RemindInvite
 
   def send_sms(phone, message)
     p message
-    return if dryrun
-    Hollerback::SMS.send_message invite.phone, message
-    mark_invited(invite)
-    mark_keen_invite(user, invite)
+    return false if dryrun
+    Hollerback::SMS.send_message phone, message
+    true
   end
 
   def remindable?
