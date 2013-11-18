@@ -16,19 +16,7 @@ namespace :users do
 
   desc "push sms invite reminders"
   task :push_invite do
-    time = Time.now - 3.days
-    Invite.pending.where("invites.created_at < ?", time).find_each do |invite|
-      user = User.find_by_phone_normalized(invite.phone)
-      next if user.present?
-
-      message = "#{invite.inviter.username} sent you a video on hollerback. download it here: www.hollerback.co/download"
-      p message
-      unless ENV['dryrun']
-        Hollerback::SMS.send_message invite.phone, message
-        mark_invited(invite)
-        mark_keen_invite(invite.inviter, invite)
-      end
-    end
+    RemindInvite.run(ENV['dryrun'])
   end
 
   def mark_invited(invite)
