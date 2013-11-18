@@ -11,7 +11,7 @@ namespace :users do
 
   desc "push notification reminder"
   task :push_remind do
-    RemindInactive.run
+    RemindInactive.run(ENV['dryrun'])
   end
 
   desc "push sms invite reminders"

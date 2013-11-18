@@ -1,7 +1,7 @@
 class RemindInactive
-  def self.run
-    User.for_each do |user|
-      reminderer = self.new(user: user)
+  def self.run(dryrun=false)
+    User.find_each do |user|
+      reminderer = self.new(user: user, dryrun: dryrun)
       reminderer.remind
     end
   end
