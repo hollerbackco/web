@@ -58,8 +58,25 @@ class User < ActiveRecord::Base
     messages.sent.where("sent_at > ?", since).any?
   end
 
+  def active_within_days?(days)
+    Time.now - last_active_at
+  end
+
+  def last_active_at
+    message = messages
+      .sent
+      .reorder("sent_at DESC")
+      .first
+
+    message.present? ? message.sent_at : Time.now
+  end
+
   def unseen_memberships_count
     messages.watchable.unseen.group_by(&:membership_id).length
+  end
+
+  def unseen_messages
+    messages.watchable.unseen.received.reorder("messages.sent_at DESC")
   end
 
   def muted?(user)
