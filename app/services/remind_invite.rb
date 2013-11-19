@@ -1,9 +1,13 @@
 class RemindInvite
   def self.run(dryrun=false)
+    counter = 0
     self.invites.each do |invite|
       reminderer = self.new(invite, dryrun)
-      reminderer.remind
+      if reminderer.remind
+        counter = counter + 1
+      end
     end
+    puts "#{counter} invites sent"
   end
 
 
@@ -30,7 +34,7 @@ class RemindInvite
   end
 
   def send_sms(phone, message)
-    p message
+    p message, invite.created_at, invite.id
     return false if dryrun
     Hollerback::SMS.send_message phone, message
     true
