@@ -80,7 +80,7 @@ describe RemindInactive do
         content: {guid: "asdf"}
       })
       reminders.create(message)
-      reminders.reminded?(messages).should be_true
+      reminders.reminded?(message).should be_true
     end
   end
 end

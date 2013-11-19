@@ -32,6 +32,7 @@ class Invite < ActiveRecord::Base
       self.accepted = true
       save!
     end
+    MetricsPublisher.delay.publish(user, "invite:accept", {invite_id: self.id})
   end
 
   def also_known_as(obj={})
