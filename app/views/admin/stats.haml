@@ -69,29 +69,25 @@
 
   // Invitation reminder funnel init
   var showInviteReminderFunnel = function(callback) {
-    var timeframe = {
-        "start": "2013-11-10T00:08:33.883Z",
+    var step1 = new Keen.Step("push:invite_reminder", {
+      name: "Invite Reminder",
+      actorProperty: "invite_id"
+    });
+
+    var step2 = new Keen.Step("invite:accept", {
+      name: "Accept Invitation",
+      actorProperty: "invite_id"
+    });
+
+    var inviteFunnel = new Keen.Funnel([step1,step2], {
+      "timeframe": {
+        "start": "2013-11-17T01:08:33.883Z",
         "end": (new Date()).toISOString()
-      };
-
-    var invites = new Keen.Metric("push:invite_reminder",{
-      "analysisType": "count_unique",
-      "targetProperty": "invite_id",
-      "timeframe": timeframe
+      }
     });
 
-    invites.draw(document.getElementById("invite-reminders"), {
-      label: "Invite Reminders"
-    });
-
-    var users = new Keen.Metric("users:new", {
-      analysisType: "count_unique",
-      targetProperty: "user.id",
-      timeframe: timeframe
-    });
-
-    users.draw(document.getElementById("invite-reminders-users"), {
-      label: "Users"
+    inviteFunnel.draw(document.getElementById("invite-reminders-users"), {
+      title: "Invite Reminder Funnel"
     });
   };
 
