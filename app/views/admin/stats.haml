@@ -79,12 +79,14 @@
       actorProperty: "invite_id"
     });
 
-    var inviteFunnel = new Keen.Funnel([step1,step2], {
+    var inviteFunnel = new Keen.Funnel([step1], {
       "timeframe": {
-        "start": "2013-11-17T01:08:33.883Z",
+        "start": "2013-11-16T01:08:33.883Z",
         "end": (new Date()).toISOString()
       }
     });
+
+    //var inviteFunnel = new Keen.Funnel([step1])
 
     inviteFunnel.draw(document.getElementById("invite-reminders-users"), {
       title: "Invite Reminder Funnel"
