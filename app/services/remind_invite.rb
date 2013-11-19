@@ -21,7 +21,7 @@ class RemindInvite
 
   def remind
     if remindable?
-      message = "#{user.username} sent you a video on hollerback. download it here: www.hollerback.co/download"
+      message = "#{user.username} sent you a video on hollerback. download the app here: www.hollerback.co/app"
       if send_sms(invite.phone, message)
         mark_invited(invite)
         mark_keen_invite(user, invite)
