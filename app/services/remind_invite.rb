@@ -36,11 +36,17 @@ class RemindInvite
 
   def remindable?
     return false if invited_user.present?
+    return false if data?
+    true
   end
 
   private
 
-  def data(invite)
+  def data?
+    data.present?
+  end
+
+  def data
     key = "invite:#{invite.id}:push_invited"
     REDIS.get(key)
   end
