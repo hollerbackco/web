@@ -23,6 +23,7 @@ class RemindInvite
       end
       true
     else
+      p "skipped"
       false
     end
   end
@@ -53,7 +54,7 @@ class RemindInvite
 
   def mark_invited(invite)
     key = "invite:#{invite.id}:push_invited"
-    data = ::MultiJson.encode({invite: invite.id, sent_at: Time.now})
+    data = ::MultiJson.encode({sent_at: Time.now})
     REDIS.set(key, data)
   end
 

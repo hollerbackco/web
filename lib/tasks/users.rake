@@ -18,14 +18,4 @@ namespace :users do
   task :push_invite do
     RemindInvite.run(ENV['dryrun'])
   end
-
-  def mark_invited(invite)
-    key = "invite:#{invite.id}:push_invited"
-    data = ::MultiJson.encode({invite: invite.id, sent_at: Time.now})
-    REDIS.set(key, data)
-  end
-
-  def mark_keen_invite(user, invite)
-    MetricsPublisher.publish(user, "push:invite_reminder", {invite_id: invite.id, phone: invite.phone})
-  end
 end
