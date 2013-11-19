@@ -2,6 +2,7 @@ class RemindInvite
   def self.run(dryrun=false)
     self.invites.each do |invite|
       reminderer = self.new(invite, dryrun)
+      reminderer.remind
     end
   end
 
