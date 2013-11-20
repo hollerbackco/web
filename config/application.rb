@@ -51,12 +51,15 @@ module HollerbackApp
       require File.expand_path('./app/app')
     end
 
-    def self.logger
-      logger = Logger.new(STDOUT)
-      logger.formatter = proc do |severity, datetime, progname, msg|
-        "formatter: #{msg}"
+    def logger
+      return @logger if @logger
+
+      @logger = Logger.new(STDOUT)
+      @logger.formatter = proc do |severity, datetime, progname, msg|
+        "" << (logged_in? ? "#{user.username}:#{user.id}" : "anon_user")
       end
-      logger
+      ActiveRecord::Base.logger = @logger
+      @logger
     end
   end
 end
