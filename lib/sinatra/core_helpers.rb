@@ -6,6 +6,16 @@ module Sinatra
       I18n.t(*args)
     end
 
+    def logger
+      return @logger if @logger
+      @logger = HollerbackApp::BaseApp.logger
+      @logger.formatter = proc do |severity, datetime, progname, msg|
+        user_info = (logged_in? ? "#{user.username}:#{user.id}" : "anon_user")
+        "[#{datetime}|#{progname}|#{user_info}] #{msg}\n"
+      end
+      @logger
+    end
+
     def absolute_url(url)
       if Sinatra::Base.production?
         url = "http://www.hollerback.co#{url}"

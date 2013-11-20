@@ -2,6 +2,7 @@ module HollerbackApp
   class ApiApp < BaseApp
     before '/me*' do
       authenticate(:api_token)
+      logger.info("[user: #{current_user.id}]")
       app_version = request.env["HTTP_IOS_APP_VER"]
       if app_version and app_version != current_user.last_app_version
         current_user.update_attribute :last_app_version, app_version
@@ -22,7 +23,13 @@ module HollerbackApp
       error_json 404, msg: "not found"
     end
 
+    # only for dev
+    post '/log' do
+      p params[:p]
+    end
+
     get '/' do
+      logger.info "hello"
       success_json data: "Hollerback App Api v1"
     end
 
