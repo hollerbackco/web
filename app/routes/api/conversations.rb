@@ -65,7 +65,7 @@ module HollerbackApp
 
         if messages.any?
           messages.each(&:seen!)
-          VideoRead.new.perform(messages.map(&:id), current_user.id)
+          VideoRead.perform_async(messages.map(&:id), current_user.id)
         end
       end
 

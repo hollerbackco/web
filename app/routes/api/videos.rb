@@ -69,7 +69,7 @@ module HollerbackApp
         end.flatten
         if messages.any?
           messages.each(&:seen!)
-          VideoRead.new.perform(messages.map(&:id), current_user.id)
+          VideoRead.perform_async(messages.map(&:id), current_user.id)
           unread_count = 0
         end
       end
