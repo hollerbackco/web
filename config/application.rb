@@ -4,6 +4,7 @@ require 'sinatra/multi_route'
 
 module HollerbackApp
   class BaseApp < ::Sinatra::Base
+
     register ::Sinatra::ActiveRecordExtension
     register WillPaginate::Sinatra
 
@@ -25,6 +26,8 @@ module HollerbackApp
 
     # i18n
     configure do
+      enable :logging
+
       ActiveRecord::Base.include_root_in_json = false
       I18n.load_path = Dir[File.join(settings.app_root, 'config', 'locales', '*.yml')]
     end
@@ -46,6 +49,14 @@ module HollerbackApp
       end
       # Setup app
       require File.expand_path('./app/app')
+    end
+
+    def self.logger
+      logger = Logger.new(STDOUT)
+      logger.formatter = proc do |severity, datetime, progname, msg|
+        "formatter: #{msg}"
+      end
+      logger
     end
   end
 end
