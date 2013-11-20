@@ -56,15 +56,17 @@ module HollerbackApp
     post '/me/conversations/:id/goodbye' do
       membership = current_user.memberships.find(params[:id])
 
-      messages = membership.messages.unseen
+      #mark messages as read
       if params[:watched_ids]
+        messages = membership.messages.unseen.received.watchable
         messages = params[:watched_ids].map do |watched_id|
           current_user.messages.find_by_guid(watched_id)
         end.flatten
-      end
 
-      if messages.any?
-        VideoRead.perform_async(messages.map(&:id), current_user.id)
+        if messages.any?
+          messages.each(&:seen!)
+          VideoRead.perform_async(messages.map(&:id), current_user.id)
+        end
       end
 
       ConversationTtyl.perform_async(membership.id)

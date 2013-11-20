@@ -61,27 +61,20 @@ module HollerbackApp
       end
       membership = current_user.memberships.find(params[:id])
 
-      #mark messages as read
-      messages = membership.messages.unseen
+      # mark messages as read
       if params[:watched_ids]
+        messages = membership.messages.unseen.received.watchable
         messages = params[:watched_ids].map do |watched_id|
           current_user.messages.find_by_guid(watched_id)
         end.flatten
         if messages.any?
-          VideoRead.perform_async(messages.map(&:id), current_user.id)
-          unread_count = 0
-        end
-      elsif params.key?("reply")
-        if params[:watched_at]
-          watched_at = Time.parse(params[:watched_at])
-          messages = messages.before(watched_at)
-        end
-        if messages.any?
+          messages.each(&:seen!)
           VideoRead.perform_async(messages.map(&:id), current_user.id)
           unread_count = 0
         end
       end
 
+      # create video stich request
       video = membership.conversation.videos.create({
         user: current_user,
         guid: params[:guid],
