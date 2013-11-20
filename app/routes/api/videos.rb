@@ -67,7 +67,7 @@ module HollerbackApp
         if params[:watched_ids]
           messages = params[:watched_ids].map do |watched_id|
             current_user.messages.find_by_guid(watched_id)
-          end.flatten
+          end.flatten.compact
           if messages.any?
             messages.each(&:seen!)
             VideoRead.perform_async(messages.map(&:id), current_user.id)
