@@ -50,6 +50,14 @@ module HollerbackApp
       # Setup app
       require File.expand_path('./app/app')
     end
+
+    def self.logger
+      logger = Logger.new(STDOUT)
+      logger.formatter = proc do |severity, datetime, progname, msg|
+        "formatter: #{msg}"
+      end
+      logger
+    end
   end
 end
 

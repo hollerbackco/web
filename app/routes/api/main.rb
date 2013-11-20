@@ -28,6 +28,7 @@ module HollerbackApp
     end
 
     get '/' do
+      logger.info "hello"
       success_json data: "Hollerback App Api v1"
     end
 
