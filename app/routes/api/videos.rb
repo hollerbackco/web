@@ -62,8 +62,8 @@ module HollerbackApp
       membership = current_user.memberships.find(params[:id])
 
       # mark messages as read
+      messages = membership.messages.unseen.received.watchable
       if params[:watched_ids]
-        messages = membership.messages.unseen.received.watchable
         messages = params[:watched_ids].map do |watched_id|
           current_user.messages.find_by_guid(watched_id)
         end.flatten
