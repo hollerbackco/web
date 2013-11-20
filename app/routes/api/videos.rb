@@ -56,36 +56,40 @@ module HollerbackApp
     end
 
     post '/me/conversations/:id/videos/parts' do
-      if !params.key?("parts") and !params.key?("part_urls") and !params.key?("urls")
-        return error_json 400, msg: "missing parts param"
-      end
-      membership = current_user.memberships.find(params[:id])
-
-      # mark messages as read
-      messages = membership.messages.unseen.received.watchable
-      if params[:watched_ids]
-        messages = params[:watched_ids].map do |watched_id|
-          current_user.messages.find_by_guid(watched_id)
-        end.flatten
-        if messages.any?
-          messages.each(&:seen!)
-          VideoRead.perform_async(messages.map(&:id), current_user.id)
-          unread_count = 0
+      begin
+        if !params.key?("parts") and !params.key?("part_urls") and !params.key?("urls")
+          return error_json 400, msg: "missing parts param"
         end
+        membership = current_user.memberships.find(params[:id])
+
+        # mark messages as read
+        messages = membership.messages.unseen.received.watchable
+        if params[:watched_ids]
+          messages = params[:watched_ids].map do |watched_id|
+            current_user.messages.find_by_guid(watched_id)
+          end.flatten
+          if messages.any?
+            messages.each(&:seen!)
+            VideoRead.perform_async(messages.map(&:id), current_user.id)
+            unread_count = 0
+          end
+        end
+
+        # create video stich request
+        video = membership.conversation.videos.create({
+          user: current_user,
+          guid: params[:guid],
+          subtitle: params[:subtitle]
+        })
+
+        urls = params.select {|key,value| ["urls", "parts", "part_urls"].include? key }
+
+        VideoStitchRequest.perform_async(video.id, urls, params.key?("reply"), params[:needs_reply])
+
+        success_json data: video.as_json.merge(:conversation_id => membership.id, :unread_count => (unread_count || messages.count))
+      rescue ActiveRecord::RecordNotFound => ex
+        error_json 400, msg: ex.message
       end
-
-      # create video stich request
-      video = membership.conversation.videos.create({
-        user: current_user,
-        guid: params[:guid],
-        subtitle: params[:subtitle]
-      })
-
-      urls = params.select {|key,value| ["urls", "parts", "part_urls"].include? key }
-
-      VideoStitchRequest.perform_async(video.id, urls, params.key?("reply"), params[:needs_reply])
-
-      success_json data: video.as_json.merge(:conversation_id => membership.id, :unread_count => (unread_count || messages.count))
     end
 
     post '/me/conversations/:id/videos' do
