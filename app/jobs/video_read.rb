@@ -8,9 +8,9 @@ class VideoRead
     read_messages(messages)
 
     notify_analytics(messages, current_user)
-    notify_mqtt(messages, current_user)
-    notify_gcm(messages, current_user)
-    notify_apns(current_user)
+    #notify_mqtt(messages, current_user)
+    #notify_gcm(messages, current_user)
+    #notify_apns(current_user)
   end
 
   private
