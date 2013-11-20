@@ -68,7 +68,7 @@ module HollerbackApp
           current_user.messages.find_by_guid(watched_id)
         end.flatten
         if messages.any?
-          VideoRead.perform(messages.map(&:id), current_user.id)
+          VideoRead.new.perform(messages.map(&:id), current_user.id)
           unread_count = 0
         end
       elsif params.key?("reply")
@@ -77,7 +77,7 @@ module HollerbackApp
           messages = messages.before(watched_at)
         end
         if messages.any?
-          VideoRead.perform(messages.map(&:id), current_user.id)
+          VideoRead.new.perform(messages.map(&:id), current_user.id)
           unread_count = 0
         end
       end
