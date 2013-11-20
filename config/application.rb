@@ -27,12 +27,13 @@ module HollerbackApp
     def self.logger
       @logger ||= Logger.new(STDOUT)
     end
+
     # i18n
     configure do
       enable :logging
 
       ActiveRecord::Base.logger.formatter = proc do |severity, datetime, progname, msg|
-        "hello"
+        "[#{datetime}|#{progname}] #{msg}\n"
       end
 
       ActiveRecord::Base.include_root_in_json = false

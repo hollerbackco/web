@@ -10,7 +10,8 @@ module Sinatra
       return @logger if @logger
       @logger = HollerbackApp::BaseApp.logger
       @logger.formatter = proc do |severity, datetime, progname, msg|
-        "" << (logged_in? ? "#{user.username}:#{user.id}" : "anon_user")
+        user_info << (logged_in? ? "#{user.username}:#{user.id}" : "anon_user")
+        str "[#{datetime}|#{progname}|#{user_info}] #{msg}\n"
       end
       @logger
     end
