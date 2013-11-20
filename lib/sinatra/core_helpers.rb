@@ -7,7 +7,12 @@ module Sinatra
     end
 
     def logger
-      HollerbackApp::BaseApp.logger
+      return @logger if @logger
+      @logger = HollerbackApp::BaseApp.logger
+      @logger.formatter = proc do |severity, datetime, progname, msg|
+        "" << (logged_in? ? "#{user.username}:#{user.id}" : "anon_user")
+      end
+      @logger
     end
 
     def absolute_url(url)

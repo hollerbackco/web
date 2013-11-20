@@ -45,8 +45,7 @@ module Hollerback
           data: nil,
           collapse_key: "new_message"
         )
-        puts "GCM status: #{res.status}"
-        puts "GCM body: #{res.body}"
+        puts res
       end
     end
   end

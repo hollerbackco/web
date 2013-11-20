@@ -24,9 +24,14 @@ module HollerbackApp
     end
     set :cache, dalli
 
+    def self.logger
+      @logger ||= Logger.new(STDOUT)
+    end
     # i18n
     configure do
       enable :logging
+
+      ActiveRecord::Base.logger = self.logger
 
       ActiveRecord::Base.include_root_in_json = false
       I18n.load_path = Dir[File.join(settings.app_root, 'config', 'locales', '*.yml')]
@@ -51,16 +56,6 @@ module HollerbackApp
       require File.expand_path('./app/app')
     end
 
-    def logger
-      return @logger if @logger
-
-      @logger = Logger.new(STDOUT)
-      @logger.formatter = proc do |severity, datetime, progname, msg|
-        "" << (logged_in? ? "#{user.username}:#{user.id}" : "anon_user")
-      end
-      ActiveRecord::Base.logger = @logger
-      @logger
-    end
   end
 end
 
