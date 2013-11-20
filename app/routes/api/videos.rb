@@ -77,7 +77,7 @@ module HollerbackApp
           messages = messages.before(watched_at)
         end
         if messages.any?
-          VideoRead.perform_async(messages.map(&:id), current_user.id)
+          VideoRead.perform(messages.map(&:id), current_user.id)
           unread_count = 0
         end
       end
