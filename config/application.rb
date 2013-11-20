@@ -32,10 +32,6 @@ module HollerbackApp
     configure do
       enable :logging
 
-      ActiveRecord::Base.logger.formatter = proc do |severity, datetime, progname, msg|
-        "[#{datetime}|#{progname}] #{msg}\n"
-      end
-
       ActiveRecord::Base.include_root_in_json = false
       I18n.load_path = Dir[File.join(settings.app_root, 'config', 'locales', '*.yml')]
     end
