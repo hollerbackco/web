@@ -56,16 +56,21 @@ class ContentPublisher
     else
       is_sender = false
     end
-    obj = {
-      membership_id: membership.id,
-      is_sender: is_sender,
-      sender_name: sender.also_known_as(for: member),
-      content: content.content_hash,
-      seen_at: seen_at,
-      sent_at: content.created_at,
-      needs_reply: needs_reply
-    }
-    message = Message.create(obj)
+
+    #check for existance
+    unless message = membership.messages.find_by_guid(content.guid)
+      obj = {
+        membership_id: membership.id,
+        is_sender: is_sender,
+        sender_name: sender.also_known_as(for: member),
+        content: content.content_hash,
+        seen_at: seen_at,
+        sent_at: content.created_at,
+        needs_reply: needs_reply
+      }
+      message = Message.create(obj)
+    end
+    message
   end
 
   def sender_message
