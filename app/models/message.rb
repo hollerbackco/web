@@ -29,7 +29,7 @@ class Message < ActiveRecord::Base
   end
 
   def self.find_by_guid(str)
-    where("content -> 'guid'='#{str}'").first
+    self.all_by_guid(str).first
   end
 
   def self.all_by_guid(str)
