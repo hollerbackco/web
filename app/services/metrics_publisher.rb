@@ -6,6 +6,10 @@ class MetricsPublisher
       data = data.merge({user: actor})
     end
 
-    #Keen.publish(topic, data)
+    begin
+      Keen.publish(topic, data)
+    rescue
+      puts "[error] keen publishing error"
+    end
   end
 end
