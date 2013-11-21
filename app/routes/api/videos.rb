@@ -69,9 +69,9 @@ module HollerbackApp
         if params[:watched_ids]
           messages = params[:watched_ids].map do |watched_id|
             logger.debug watched_id
-            messages = current_user.messages.all_by_guid(watched_id)
-            logger.debug messages
-            messages
+            items = current_user.messages.all_by_guid(watched_id)
+            logger.debug items
+            items
           end.flatten.compact
           if messages.any?
             messages.each(&:seen!)
@@ -91,7 +91,7 @@ module HollerbackApp
 
         VideoStitchRequest.perform_async(video.id, urls, params.key?("reply"), params[:needs_reply])
 
-        success_json data: video.as_json.merge(:conversation_id => membership.id, :unread_count => (unread_count || messages.count))
+        success_json data: video.as_json.merge(:conversation_id => membership.id)
       rescue ActiveRecord::RecordNotFound => ex
         error_json 400, msg: ex.message
       end
