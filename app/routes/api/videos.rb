@@ -56,6 +56,8 @@ module HollerbackApp
     end
 
     post '/me/conversations/:id/videos/parts' do
+      logger.debug params
+
       begin
         if !params.key?("parts") and !params.key?("part_urls") and !params.key?("urls")
           return error_json 400, msg: "missing parts param"
@@ -66,7 +68,10 @@ module HollerbackApp
         messages = membership.messages.unseen.received.watchable
         if params[:watched_ids]
           messages = params[:watched_ids].map do |watched_id|
-            current_user.messages.find_by_guid(watched_id)
+            logger.debug watched_id
+            message = current_user.messages.find_by_guid(watched_id)
+            logger.debug message
+            message
           end.flatten.compact
           if messages.any?
             messages.each(&:seen!)
