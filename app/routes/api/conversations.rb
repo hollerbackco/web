@@ -60,7 +60,10 @@ module HollerbackApp
       messages = membership.messages.unseen.received.watchable
       if params[:watched_ids]
         messages = params[:watched_ids].map do |watched_id|
-          current_user.messages.find_by_guid(watched_id)
+          logger.debug watched_id
+          items = current_user.messages.all_by_guid(watched_id)
+          logger.debug items
+          items
         end.flatten.compact
       end
       if messages.any?
