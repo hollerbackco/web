@@ -26,52 +26,54 @@ describe 'API | videos endpoint' do
   let(:subject) { @user }
   let(:access_token) { @access_token }
 
-  it 'POST me/conversations/:id/videos/parts | sends a video' do
-    parts = [
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.0.mp4",
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.1.mp4",
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.2.mp4",
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.3.mp4",
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.4.mp4",
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.5.mp4",
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.6.mp4"
-    ]
+  describe "POST me/conversations/:id/videos/parts" do
+    it 'sends a video' do
+      parts = [
+        "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.0.mp4",
+        "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.1.mp4",
+        "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.2.mp4",
+        "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.3.mp4",
+        "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.4.mp4",
+        "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.5.mp4",
+        "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.6.mp4"
+      ]
 
-    post "/me/conversations/#{subject.memberships.first.id}/videos/parts",
-      access_token: access_token,
-      parts: parts
+      post "/me/conversations/#{subject.memberships.first.id}/videos/parts",
+        access_token: access_token,
+        parts: parts
 
-    last_response.should be_ok
-    VideoStitchRequest.jobs.size.should == 1
-  end
+      last_response.should be_ok
+      VideoStitchRequest.jobs.size.should == 1
+    end
 
-  it 'POST me/conversations/:id/videos/parts | sends a video with a subtitle' do
-    parts = [
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.0.mp4",
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.1.mp4",
-      "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.2.mp4"
-    ]
+    it 'sends a video with a subtitle' do
+      parts = [
+        "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.0.mp4",
+        "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.1.mp4",
+        "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.2.mp4"
+      ]
 
-    post "/me/conversations/#{subject.memberships.first.id}/videos/parts",
-      access_token: access_token,
-      parts: parts,
-      subtitle: "hello whats up"
+      post "/me/conversations/#{subject.memberships.first.id}/videos/parts",
+        access_token: access_token,
+        parts: parts,
+        subtitle: "hello whats up"
 
-    last_response.should be_ok
-    result = JSON.parse(last_response.body)
+      last_response.should be_ok
+      result = JSON.parse(last_response.body)
 
-    VideoStitchRequest.jobs.size.should == 1
-    result["data"]["subtitle"].should == "hello whats up"
-  end
+      VideoStitchRequest.jobs.size.should == 1
+      result["data"]["subtitle"].should == "hello whats up"
+    end
 
-  it 'POST me/conversations/:id/videos/parts | requires parts param' do
-    post "/me/conversations/#{subject.memberships.first.id}/videos/parts", access_token: access_token
+    it 'requires parts param' do
+      post "/me/conversations/#{subject.memberships.first.id}/videos/parts", access_token: access_token
 
-    result = JSON.parse(last_response.body)
-    last_response.should_not be_ok
-    result['meta']['code'].should == 400
-    result['meta']['msg'].should == "missing parts param"
-    VideoStitchRequest.jobs.size.should == 0
+      result = JSON.parse(last_response.body)
+      last_response.should_not be_ok
+      result['meta']['code'].should == 400
+      result['meta']['msg'].should == "missing parts param"
+      VideoStitchRequest.jobs.size.should == 0
+    end
   end
 
   it 'POST me/conversations/:id/videos | sends a video' do
@@ -94,27 +96,29 @@ describe 'API | videos endpoint' do
     result['meta']['msg'].should == "missing filename param"
   end
 
-  it "GET me/conversations/:id/videos | should get all videos" do
-    c = subject.memberships.last
-    get "/me/conversations/#{c.id}/videos", :access_token => access_token
+  describe "GET me/conversations/:id/videos" do
+    it "should get all videos" do
+      c = subject.memberships.last
+      get "/me/conversations/#{c.id}/videos", :access_token => access_token
 
-    messages_count = c.messages.count
+      messages_count = c.messages.count
 
-    result = JSON.parse(last_response.body)
-    last_response.should be_ok
+      result = JSON.parse(last_response.body)
+      last_response.should be_ok
 
-    result["data"].count.should == messages_count
-  end
+      result["data"].count.should == messages_count
+    end
 
-  it "GET me/conversations/:id/videos | should paginate" do
-    c = subject.memberships.last
-    get "/me/conversations/#{c.id}/videos", :access_token => access_token, :page => 1, :perPage => 5
+    it "should paginate" do
+      c = subject.memberships.last
+      get "/me/conversations/#{c.id}/videos", :access_token => access_token, :page => 1, :perPage => 5
 
-    result = JSON.parse(last_response.body)
-    last_response.should be_ok
+      result = JSON.parse(last_response.body)
+      last_response.should be_ok
 
-    result["data"].count.should == 5
-    result["meta"]["last_page"].should be_false
+      result["data"].count.should == 5
+      result["meta"]["last_page"].should be_false
+    end
   end
 
   it 'POST me/videos/:id/read | user reads a video' do
