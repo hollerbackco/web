@@ -5,7 +5,7 @@ module HollerbackApp
         ConversationRead.perform_async(current_user.id)
         membership = current_user.memberships.find(params[:conversation_id])
 
-        messages = membership.messages.order("created_at DESC").scoped
+        messages = membership.messages.watchable.seen.order("created_at DESC").scoped
 
         if params[:page]
           messages = messages.paginate(:page => params[:page], :per_page => (params[:perPage] || 10))
