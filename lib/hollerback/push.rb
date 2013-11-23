@@ -12,6 +12,7 @@ module Hollerback
       #dirty little hack
       def send(dummy, user_id, options)
         options = ::MultiJson.decode(options)
+        p options
 
         alert = options[:alert]
         badge = options[:badge]
