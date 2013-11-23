@@ -34,8 +34,8 @@ module Hollerback
         badge: badge_count,
         sound: "default",
         content_available: true,
-        data: {uuid: SecureRandom.uuid}.to_json
-      })
+        data: {uuid: SecureRandom.uuid}
+      }.to_json)
 
       person.devices.android.each do |device|
         res = ::GCMS.delay.send_notification([device.token],

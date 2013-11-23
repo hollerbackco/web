@@ -9,7 +9,9 @@ module Hollerback
         end
       end
 
-      def send(user_id, options={})
+      def send(user_id, options="{}")
+        options = ::MultiJson.decode(options)
+
         alert = options[:alert]
         badge = options[:badge]
         sound = options[:sound]
