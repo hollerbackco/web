@@ -81,13 +81,14 @@ module HollerbackApp
         end
 
         # create video stich request
+        urls = params.select {|key,value| ["urls", "parts", "part_urls"].include? key }
+
         video = membership.conversation.videos.create({
           user: current_user,
           guid: params[:guid],
-          subtitle: params[:subtitle]
+          subtitle: params[:subtitle],
+          stitch_request: urls
         })
-
-        urls = params.select {|key,value| ["urls", "parts", "part_urls"].include? key }
 
         VideoStitchRequest.perform_async(video.id, urls, params.key?("reply"), params[:needs_reply])
 
