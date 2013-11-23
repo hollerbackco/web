@@ -7,8 +7,11 @@ class Video < ActiveRecord::Base
     CLOUDFRONT_URL = "https://s3.amazonaws.com/hb-media-dev"
   end
 
-  attr_accessible :filename, :user, :conversation, :in_progress, :subtitle, :guid
+  attr_accessible :filename, :user, :conversation,
+    :in_progress, :subtitle, :guid, :stitch_request
   #acts_as_readable :on => :created_at
+
+  serialize :stitch_request, ActiveRecord::Coders::Hstore
 
   belongs_to :user
   belongs_to :conversation
