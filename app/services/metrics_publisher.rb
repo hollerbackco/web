@@ -9,9 +9,9 @@ class MetricsPublisher
 
   def self.publish_with_delay(actor_id, topic, data={})
     begin
-      actor = User.find(actor)
+      actor = User.find(actor_id)
       data = data.merge({user: actor.meta})
-    rescue
+    rescue ActiveRecord::RecordNotFound
       puts "[error|MetricsPublisher] user does not exist"
       return
     end
