@@ -35,10 +35,10 @@ class RemindInactive
     p user.username, message
     return if dryrun
     p "doing the real thing"
-    Hollerback::Push.send(user.id, {
+    Hollerback::Push.send(nil,user.id, {
       alert: message,
       sound: "default"
-    })
+    }.to_json)
   end
 
   def remindable?
