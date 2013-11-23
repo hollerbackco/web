@@ -19,31 +19,28 @@ class ConversationTtyl
   def notify_mqtt(memberships)
     memberships.each do |m|
       channel = "user/#{m.user_id}/sync"
-      data = [m.to_sync]
+      data = [m.to_sync].as_json
 
-      Hollerback::MQTT.publish(channel, data)
+      Hollerback::MQTT.delay.publish(channel, data)
     end
   end
 
   def notify_push(sender_membership, person)
     sender_name = sender_membership.user.also_known_as(for: person)
-
     text = "#{sender_name}: ttyl"
 
     badge_count = person.unseen_memberships_count
-    person.devices.ios.each do |device|
-      Hollerback::Push.send(device.token, {
-        alert: text,
-        badge_count: badge_count,
-        sound: "default",
-        content_available: true,
-        data: {uuid: SecureRandom.uuid}
-      })
-    end
+    Hollerback::Push.delay.send(person.id, {
+      alert: text,
+      badge_count: badge_count,
+      sound: "default",
+      content_available: true,
+      data: {uuid: SecureRandom.uuid}
+    })
 
     data = [sender_membership.to_sync]
     person.devices.android.each do |device|
-      ::GCMS.send_notification([device.token],
+      ::GCMS.delay.send_notification([device.token],
         data: data
       )
     end

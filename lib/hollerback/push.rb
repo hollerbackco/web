@@ -9,28 +9,38 @@ module Hollerback
         end
       end
 
-      def send(token, options={})
+      def send(user_id, options={})
         alert = options[:alert]
         badge = options[:badge]
         sound = options[:sound]
         data = options[:data]
         content_available = options[:content_available]
 
-        notification = Houston::Notification.new(device: token)
-        notification.alert = alert if alert
-        notification.badge = badge if badge
-        notification.sound = sound if sound
-        notification.custom_data = data if data
-        notification.content_available = content_available if content_available
-        @client.push(notification)
+        begin
+          user = User.find(user_id)
+          tokens = user.devices.ios.map(&:token).compact.uniq
+        rescue ActiveRecord::RecordNotFound
+          p "user(#{user_id}) was deleted"
+          return
+        end
 
-        notification = Houston::Notification.new(device: token)
-        notification.alert = alert if alert
-        notification.badge = badge if badge
-        notification.sound = sound if sound
-        notification.custom_data = data if data
-        notification.content_available = content_available if content_available
-        @appstore_client.push(notification) if @appstore_client
+        tokens.each do |token|
+          notification = Houston::Notification.new(device: token)
+          notification.alert = alert if alert
+          notification.badge = badge if badge
+          notification.sound = sound if sound
+          notification.custom_data = data if data
+          notification.content_available = content_available if content_available
+          @client.push(notification)
+
+          notification = Houston::Notification.new(device: token)
+          notification.alert = alert if alert
+          notification.badge = badge if badge
+          notification.sound = sound if sound
+          notification.custom_data = data if data
+          notification.content_available = content_available if content_available
+          @appstore_client.push(notification) if @appstore_client
+        end
       end
 
       def client(pemfile, is_production)

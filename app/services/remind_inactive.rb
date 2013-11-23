@@ -21,9 +21,7 @@ class RemindInactive
     if remindable?
       sender_name = remindable_message.sender_name
 
-      user.devices.ios.each do |device|
-        send_push device.token, sender_name
-      end
+      send_push user, sender_name
 
       user_reminders.create(remindable_message)
       track_metrics(user, remindable_message)
@@ -33,11 +31,11 @@ class RemindInactive
     end
   end
 
-  def send_push(token, message)
-    p token, message
+  def send_push(user, message)
+    p user.username, message
     return if dryrun
     p "doing the real thing"
-    Hollerback::Push.send(token, {
+    Hollerback::Push.send(user.id, {
       alert: message,
       sound: "default"
     })
