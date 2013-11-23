@@ -34,7 +34,7 @@ module Hollerback
         badge: badge_count,
         sound: "default",
         content_available: true,
-        data: {uuid: SecureRandom.uuid}
+        data: {uuid: SecureRandom.uuid}.to_json
       })
 
       person.devices.android.each do |device|
