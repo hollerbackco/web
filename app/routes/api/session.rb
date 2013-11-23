@@ -6,6 +6,10 @@ module HollerbackApp
 
       if params.key? 'email' and params.key? 'password'
         authenticate(:email)
+        if params.key "device_token" and !params["device_token"].blank?
+          devices = Device.where("token" => params["device_token"])
+          devices.destroy_all
+        end
         device = user.device_for(params['device_token'], params['platform'])
 
         data = {

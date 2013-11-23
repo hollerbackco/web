@@ -34,6 +34,7 @@ class ContentPublisher
     if options[:analytics] and is_first_message
       publish_analytics(content, options[:needs_reply], options[:is_reply], last_message_at)
     end
+
     #TODO: currently testing user sent sms
     #sms_invite(conversation, content) if is_first_message
     say_level(sender)
@@ -105,7 +106,7 @@ class ContentPublisher
     phones.each do |phone|
       url = create_video_share_url(content, phone)
       msg = "#{sender.username} sent you a message on hollerback. #{url}"
-      Hollerback::SMS.send_message phone, msg, content.thumb_url
+      Hollerback::SMS.delay.send_message phone, msg, content.thumb_url
     end
   end
 
@@ -114,7 +115,7 @@ class ContentPublisher
       levels = [5,10,25,50,100,250,500,1000]
       if level = levels.index(user.videos.count)
         level = level + 1
-        Hollerback::BMO.say("#{user.username} has leveled up: #{level}")
+        Hollerback::BMO.delay.say("#{user.username} has leveled up: #{level}")
       end
     rescue
     end
