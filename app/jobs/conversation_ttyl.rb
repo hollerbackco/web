@@ -40,7 +40,7 @@ class ConversationTtyl
 
     data = [sender_membership.to_sync]
     person.devices.android.each do |device|
-      ::GCMS.delay.send_notification([device.token],
+      ::GCMS.send_notification([device.token],
         data: data
       )
     end

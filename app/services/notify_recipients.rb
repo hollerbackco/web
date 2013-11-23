@@ -38,7 +38,7 @@ module Hollerback
       }.to_json)
 
       person.devices.android.each do |device|
-        res = ::GCMS.delay.send_notification([device.token],
+        res = ::GCMS.send_notification([device.token],
           data: nil,
           collapse_key: "new_message"
         )
