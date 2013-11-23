@@ -1,6 +1,6 @@
 class MetricsPublisher
   def self.publish(actor, topic, data={})
-    self.class.delay.publish_with_delay(actor.id, topic, data)
+    MetricsPublisher.delay.publish_with_delay(actor.id, topic, data)
   end
 
   def self.publish_with_delay(actor_id, topic, data={})
