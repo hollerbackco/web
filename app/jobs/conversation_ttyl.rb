@@ -36,7 +36,7 @@ class ConversationTtyl
       sound: "default",
       content_available: true,
       data: {uuid: SecureRandom.uuid}
-    })
+    }.to_json)
 
     data = [sender_membership.to_sync]
     person.devices.android.each do |device|
