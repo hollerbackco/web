@@ -14,11 +14,11 @@ module Hollerback
         options = ::MultiJson.decode(options)
         p options
 
-        alert = options[:alert]
-        badge = options[:badge]
-        sound = options[:sound]
-        data = options[:data]
-        content_available = options[:content_available]
+        alert = options["alert"]
+        badge = options["badge"]
+        sound = options["sound"]
+        data = options["data"]
+        content_available = options["content_available"]
 
         begin
           user = User.find(user_id)
