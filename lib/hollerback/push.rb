@@ -21,12 +21,13 @@ module Hollerback
 
         begin
           user = User.find(user_id)
-          tokens = user.devices.ios.map(&:token).compact.uniq
         rescue ActiveRecord::RecordNotFound
           p "user(#{user_id}) was deleted"
           return
         end
 
+        tokens = user.devices.ios.map(&:token).compact.uniq
+        p tokens
         tokens.each do |token|
           notification = Houston::Notification.new(device: token)
           notification.alert = alert if alert

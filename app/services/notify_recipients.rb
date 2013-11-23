@@ -25,7 +25,6 @@ module Hollerback
     end
 
     def notify_push(message, person)
-      user = message.membership.user
       conversation = message.membership.conversation
       badge_count = person.unseen_memberships_count
 
