@@ -35,24 +35,20 @@ module HollerbackApp
 
     get '/app/update' do
       user_version = request.env["HTTP_IOS_APP_VER"]
-      current_version =  REDIS.get("app:current:version")
+      #current_version =  REDIS.get("app:current:version")
       name = logged_in? ? current_user.username : "update"
 
       #todo user_version is app store
       if user_version.match(/1.0/)
-        {"message" => "app up to date"}.to_json
+        #{"message" => "app up to date"}.to_json
         return
-      end
-
-      if user_version != current_version
+      else
         data = {
-          "message" => "Please Update Hollerback (#{current_version})",
-          "button-text" => "Update",
+          "message" => "We've moved to the App Store! Please delete this version",
+          "button-text" => "Go to App Store",
           "url" => "http://www.hollerback.co/beta/#{name}"
         }
         success_json data: data
-      else
-        {"message" => "app up to date"}.to_json
       end
     end
 
