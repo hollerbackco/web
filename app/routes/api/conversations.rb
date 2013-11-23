@@ -73,7 +73,7 @@ module HollerbackApp
 
       ConversationTtyl.perform_async(membership.id)
 
-      MetricsPublisher.delay.publish(current_user.meta, "conversations:ttyl", {
+      MetricsPublisher.publish(current_user, "conversations:ttyl", {
         conversation_id: membership.conversation_id
       })
       success_json data: nil
@@ -82,7 +82,7 @@ module HollerbackApp
     post '/me/conversations/:id/leave' do
       membership = current_user.memberships.find(params[:id])
       if membership.leave!
-        MetricsPublisher.delay.publish(current_user.meta, "conversations:leave")
+        MetricsPublisher.publish(current_user, "conversations:leave")
         success_json data: nil
       else
         error_json 400, msg: "conversation could not be deleted"
