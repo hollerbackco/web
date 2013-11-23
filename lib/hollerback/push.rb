@@ -9,7 +9,10 @@ module Hollerback
         end
       end
 
-      def send(user_id, options="{}")
+      def send(user_id, options, last)
+        p user_id
+        p options
+        p last
         options = ::MultiJson.decode(options)
 
         alert = options[:alert]
