@@ -22,6 +22,7 @@
     %tr
       %td Id
       %td Sender
+      %td URL
       %td Created At
       %td TTYL
   %tbody
@@ -29,6 +30,8 @@
       %tr
         %td= message.id
         %td= message.sender_name
+        %td
+          %a{href: message.url}= message.url
         %td
           %span.date{"data-time" => (message.created_at.to_i * 1000)}= message.created_at
         %td

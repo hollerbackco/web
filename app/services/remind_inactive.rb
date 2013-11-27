@@ -52,12 +52,13 @@ class RemindInactive
 
     # user must not have been reminded in the last
     # 3 days
-    if (Time.now - user.last_active_at > 3.days) and
+    if (user.active?(three_days_ago)) and
       (user_reminders.last_reminder_at < user.last_active_at)
       return true
     end
 
-    if (Time.now - user.last_active_at > 10.days) and
+    ten_days_ago = Time.now - 10.days
+    if (user.active?(ten_days_ago)) and
       (Time.now - user_reminders.last_reminder_at > 7.days)
       return true
     end
