@@ -8,10 +8,10 @@ class ConversationTtyl
     conversation = membership.conversation
 
     notify_mqtt(conversation.memberships)
-    membership.others.each do |other|
-      p "notify push to #{other.username}"
-      notify_push(membership, other)
-    end
+    #membership.others.each do |other|
+      #p "notify push to #{other.username}"
+      #notify_push(membership, other)
+    #end
   end
 
   private
