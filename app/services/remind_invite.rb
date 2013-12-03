@@ -10,7 +10,6 @@ class RemindInvite
     puts "#{counter} invites sent"
   end
 
-
   attr_accessor :dryrun, :user, :invite, :invited_user
   def initialize(invite,dryrun=false)
     @dryrun = dryrun

@@ -21,10 +21,11 @@ class RemindInactive
     if remindable?
       sender_name = remindable_message.sender_name
 
-      send_push user, sender_name
+      if send_push(user, sender_name)
+        user_reminders.create(remindable_message)
+        track_metrics(user, remindable_message)
+      end
 
-      user_reminders.create(remindable_message)
-      track_metrics(user, remindable_message)
       true
     else
       false
@@ -33,12 +34,13 @@ class RemindInactive
 
   def send_push(user, message)
     p user.username, message
-    return if dryrun
+    return false if dryrun
     p "doing the real thing"
     Hollerback::Push.send(nil,user.id, {
       alert: message,
       sound: "default"
     }.to_json)
+    return true
   end
 
   def remindable?
