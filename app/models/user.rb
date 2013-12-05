@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   #has_secure_password
   attr_accessible :name, :email, :phone, :phone_hashed, :username,
     :password, :password_confirmation, :phone_normalized,
-    :device_token, :last_app_version
+    :device_token, :last_app_version, :last_active_at
 
   has_many :devices, autosave: true, :dependent => :destroy
   has_many :memberships, :dependent => :destroy
@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
   has_many :conversations, through: :memberships
   has_many :contacts
 
+  before_create :set_last_active_at
   before_create :set_access_token
   before_create :set_verification_code
   before_validation :downcase_username
@@ -36,6 +37,11 @@ class User < ActiveRecord::Base
   validate :phone_must_be_valid
 
   scope :unverified, where(:verification_code => nil)
+
+
+  def set_last_active_at
+    last_active_at = Time.now
+  end
 
   def phone_must_be_valid
     if phone.blank?
