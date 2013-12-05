@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
 
 
   def set_last_active_at
-    last_active_at = Time.now
+    self.last_active_at = Time.now
   end
 
   def phone_must_be_valid
