@@ -5,31 +5,32 @@ module Hollerback
 
     def conversations_count
       HollerbackApp::BaseApp.settings.cache.fetch "stat-conversations-count" do
-        Conversation.all.count
+        Conversation.count
       end
     end
 
     def users_count
       HollerbackApp::BaseApp.settings.cache.fetch "stat-users-count" do
-        User.all.count
+        User.count
       end
     end
 
     def videos_sent_count
       HollerbackApp::BaseApp.settings.cache.fetch "stat-videos-sent" do
-        Video.all.count
+        Video.count
       end
     end
 
     def videos_unread_count
       HollerbackApp::BaseApp.settings.cache.fetch "stat-videos-unread" do
-        User.all.map{ |u| u.unread_videos.count }.sum
+        Message.unseen.received.count
+        #User.all.map{ |u| u.unread_videos.count }.sum
       end
     end
 
     def memberships_count
       HollerbackApp::BaseApp.settings.cache.fetch "stat-memberships-sent" do
-        Membership.all.count
+        Membership.count
       end
     end
 

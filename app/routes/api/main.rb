@@ -9,6 +9,9 @@ module HollerbackApp
         Hollerback::BMO.say("#{current_user.username} updated to #{app_version}")
       end
 
+      current_user.last_active_at = Time.now
+      current_user.save
+
       ios_model_name = request.env["HTTP_IOS_MODEL_NAME"]
       if ios_model_name
         device = Device.find_by_access_token(params[:access_token])

@@ -12,6 +12,7 @@
       %td Video Invites
       %td Badge
       %td Joined
+      %td Active
       %td App Version
       %td Devices
   %tbody
@@ -30,6 +31,8 @@
         %td= user.unseen_memberships_count
         %td
           %span.date{"data-time" => (user.created_at.to_i * 1000)}= user.created_at
+        %td
+          %span.date{"data-time" => (user.last_active_at.to_i * 1000)}= user.last_active_at
         %td= user.last_app_version
         %td= user.device_names
 = will_paginate(@users)
