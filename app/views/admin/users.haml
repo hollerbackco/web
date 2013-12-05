@@ -29,10 +29,11 @@
         %td= "#{user.messages.sent.count}/#{user.messages.received.count}"
         %td= user.invites.count
         %td= user.unseen_memberships_count
-        %td
-          %span.date{"data-time" => (user.created_at.to_i * 1000)}= user.created_at
-        %td
-          %span.date{"data-time" => (user["last_active_at"].to_i * 1000)}= user["last_active_at"]
+        - if user["last_active_at"]
+          %td
+            %span #{user["last_active_at"].to_pretty}
+        - else
+          %td= ""
         %td= user.last_app_version
         %td= user.device_names
 = will_paginate(@users)
