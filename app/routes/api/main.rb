@@ -62,10 +62,11 @@ module HollerbackApp
     get '/me/friends' do
       users_json = current_user.friends.map do |friend|
         friend.as_json.merge({
-          name: friend.also_known_as(for: user)
+          :name => friend.also_known_as({:for => user}),
+          :is_blocked => current_user.muted?(friend)
         })
       end
-      success_json data: users_json
+      success_json({:data => users_json})
     end
 
     post '/me/invites' do
