@@ -62,34 +62,12 @@ module HollerbackApp
     get '/me/friends' do
       users_json = current_user.friends.map do |friend|
         friend.as_json.merge({
-          name: friend.also_known_as(for: user)
+          :name => friend.also_known_as({:for => user}),
+          :is_blocked => current_user.muted?(friend)
         })
       end
-      success_json data: users_json
-    end
 
-    post '/me/invites' do
-      unless ensure_params(:invites)
-        return error_json 400, msg: "missing required param: invites"
-      end
-      success_json data: nil
-    end
-
-    post '/me' do
-      device = Device.find_by_access_token(params[:access_token])
-      device.token = params["device_token"]
-      current_user.username = params["username"] if params.key? "username"
-      current_user.phone = params["phone"] if params.key? "phone"
-
-      if device.save and current_user.save
-        success_json data: current_user.as_json.merge(conversations: current_user.conversations)
-      else
-        error_json 400, msg: current_user
-      end
-    end
-  end
-end
-      success_json data: current_user.friends.as_json
+      success_json({:data => users_json})
     end
 
     post '/me/invites' do
