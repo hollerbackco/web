@@ -59,6 +59,10 @@ module HollerbackApp
       success_json data: current_user.as_json.merge(conversations: current_user.conversations)
     end
 
+    get '/me/friends' do
+      success_json data: current_user.friends.as_json
+    end
+
     post '/me/invites' do
       unless ensure_params(:invites)
         return error_json 400, msg: "missing required param: invites"
