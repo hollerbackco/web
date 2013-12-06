@@ -15,6 +15,10 @@ describe User do
     user.devices.count.should == 1
   end
 
+  it "should respond to friends" do
+    user.friends.should_not be_nil
+  end
+
   it "should grab general device if it exists and nil values" do
     new_device = user.devices.create(platform: "general")
     get_device = user.device_for(nil,nil)
@@ -68,7 +72,7 @@ describe User do
 
   describe "create" do
     it "should downcase uppercased username" do
-      username = "TESSTER"
+      username = "TESTER"
       user = User.create({
         email: "testemail@email.com",
         username: username,

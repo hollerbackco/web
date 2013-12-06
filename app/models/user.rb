@@ -38,6 +38,11 @@ class User < ActiveRecord::Base
 
   scope :unverified, where(:verification_code => nil)
 
+  def friends
+    user_ids = Membership.where(:conversation_id => conversations).map(&:user_id).uniq
+    user_ids = user_ids - [self.id]
+    User.where(:id => user_ids)
+  end
 
   def set_last_active_at
     self.last_active_at = Time.now
