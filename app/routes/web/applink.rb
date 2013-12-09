@@ -17,7 +17,7 @@ module HollerbackApp
     ['/download', '/invite', '/v/:token'].each do |location|
       get location do
         if ios?
-          sms_download_notification(location)
+          #sms_download_notification(location)
 
           url = 'http://appstore.com/hollerback'
           redirect url
@@ -38,7 +38,7 @@ module HollerbackApp
         url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-staging.plist")
         url = "itms-services://?action=download-manifest&url=#{url}"
       elsif app_link.usable?
-        sms_download_notification(params[:party])
+        #sms_download_notification(params[:party])
         app_link.increment!(:downloads_count)
 
         #to enterprise build

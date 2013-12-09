@@ -12,10 +12,6 @@ class UserRegister
     }
     MetricsPublisher.publish(user, "users:new", data)
 
-    if Sinatra::Base.production?
-      Hollerback::SMS.send_message "+13033595357", "#{user.username} #{user.phone_normalized} signed up"
-    end
-
     Hollerback::BMO.say("#{user.username} just signed up")
   end
 
