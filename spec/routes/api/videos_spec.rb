@@ -64,8 +64,27 @@ describe 'API | videos endpoint' do
       last_response.should be_ok
 
       video = Video.order("created_at DESC").first
+      p video.stitch_request
       saved_parts = MultiJson.decode(video.stitch_request["parts"])
       saved_parts.count.should == parts.count
+    end
+
+    it 'should accept a guid' do
+      parts = [
+        "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.0.mp4",
+        "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.1.mp4",
+        "_testSegmentedVids/4A/6A2B3BFD-AD55-4D6A-9AC1-A79321CC24C5.2.mp4"
+      ]
+      guid = SecureRandom.uuid
+
+      post "/me/conversations/#{subject.memberships.first.id}/videos/parts",
+        access_token: access_token,
+        parts: parts,
+        guid: guid
+
+      last_response.should be_ok
+
+      Video.find_by_guid(guid).present?.should be_true
     end
 
     it 'sends a video with a subtitle' do

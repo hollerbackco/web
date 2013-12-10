@@ -12,14 +12,14 @@ describe RemindInactive do
     @reminders.reset
 
     10.times do
-      membership.messages.create(
+      @membership.messages.create(
         is_sender: false,
         sent_at: (Time.now - 1.week),
         content: {
           guid: "adfas"
         }
       )
-      membership.messages.create(
+      @membership.messages.create(
         is_sender: true,
         sent_at: (Time.now - 1.week),
         content: {
