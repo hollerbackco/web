@@ -91,6 +91,10 @@ class Message < ActiveRecord::Base
     seen_at.blank?
   end
 
+  def seen?
+    seen_at.present?
+  end
+
   def seen!
     self.class.transaction do
       membership.touch

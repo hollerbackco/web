@@ -37,27 +37,24 @@ class Membership < ActiveRecord::Base
   end
 
   def seen_without_response
-    message = messages.last
+    message = messages.watchable.last
     subtitle = message.subtitle
+    all_messages = Message.all_by_guid(message.guid)
 
-    if subtitle.blank?
-      string = "seen by #{user.username}"
+    seen_count = all_messages.each {|m| m.seen?}.count
+
+    if seen_count > 1
+      string = "seen by #{seen_count} people"
     else
-      seen_by_count_string = subtitle.gsub(/[^0-9]/, '')
-      if seen_by_count_string.blank?
-        string = "seen by 2 people"
-      else
-        seen_by_count = seen_by_count_string.to_i + 1
-        string = "seen by #{seen_by_count} people"
-      end
+      string = "seen by #{user.username}"
     end
-    message.content["subtitle"] = string
-    message.save
 
-    recipient_memberships.each do |m|
-      message = m.messages.last
+    messages.each do |message|
       message.content["subtitle"] = string
+      membership = message.membership
+      membership.most_recent_subtitle = string
       message.save
+      membership.save
     end
   end
 
