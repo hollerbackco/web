@@ -41,7 +41,8 @@ class Membership < ActiveRecord::Base
     subtitle = message.subtitle
     all_messages = Message.all_by_guid(message.guid)
 
-    seen_count = all_messages.each {|m| m.seen?}.count
+    # subtract sender
+    seen_count = all_messages.each {|m| m.seen?}.count - 1
 
     if seen_count > 1
       string = "seen by #{seen_count} people"
