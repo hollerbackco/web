@@ -36,9 +36,34 @@ class Membership < ActiveRecord::Base
     collection.map(&:to_sync)
   end
 
+  def seen_without_response
+    message = messages.last
+    subtitle = message.subtitle
+
+    if subtitle.blank?
+      string = "seen by #{user.username}"
+    else
+      seen_by_count_string = subtitle.gsub(/[^0-9]/, '')
+      if seen_by_count_string.blank?
+        string = "seen by 2 people"
+      else
+        seen_by_count = seen_by_count_string.to_i + 1
+        string = "seen by #{seen_by_count} people"
+      end
+    end
+    message.content["subtitle"] = string
+    message.save
+
+    recipient_memberships.each do |m|
+      message = m.messages.last
+      message.content["subtitle"] = string
+      message.save
+    end
+  end
+
   def ttyl
     message = messages.new
-    message.content["subtitle"] = "ttyl"
+    message.content["subtitle"] = "seen"
     message.is_sender = true
     message.sender_name = user.also_known_as(for: user)
     message.save

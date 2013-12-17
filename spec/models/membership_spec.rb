@@ -19,4 +19,10 @@ describe Membership do
     json.key?(:updated_at).should be_true
     json[:updated_at].should == membership.last_message_at
   end
+
+  it "should respond to seen_without_response" do
+    membership.seen_without_response
+    p membership.messages.last.subtitle
+    membership.messages.last.subtitle.present?.should be_true
+  end
 end

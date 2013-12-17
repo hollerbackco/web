@@ -3,7 +3,7 @@ class ConversationTtyl
 
   def perform(membership_id)
     membership = Membership.find(membership_id)
-    membership.ttyl
+    membership.seen_without_response
 
     conversation = membership.conversation
 
