@@ -30,7 +30,7 @@ module HollerbackApp
       haml "admin/settings".to_sym, layout: "layouts/admin".to_sym
     end
 
-    post '/madmin/app/copy' do
+    post '/madmin/settings' do
       if params.any?
         params.each do |key,value|
           REDIS.set("app:copy:#{key}", value)
