@@ -25,6 +25,20 @@ module HollerbackApp
       end
     end
 
+    get '/madmin/app/settings' do
+      @sms_invite_reminder = REDIS.get("app:copy:sms_invite_reminder")
+      haml "admin/settings".to_sym, layout: "layouts/admin".to_sym
+    end
+
+    post '/madmin/app/copy' do
+      if params.any?
+        params.each do |key,value|
+          REDIS.set("app:copy:#{key}", value)
+        end
+      end
+      redirect "/madmin/settings"
+    end
+
     get '/madmin' do
       @broken = Video.where(:filename => nil)
       @videos = Video.paginate(:page => params[:page], :per_page => 20)

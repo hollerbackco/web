@@ -20,7 +20,6 @@ class RemindInvite
 
   def remind
     if remindable?
-      message = "#{user.username} sent you a video on hollerback. download the app here: www.hollerback.co/app"
       if send_sms(invite.phone, message)
         mark_invited(invite)
         mark_keen_invite(user, invite)
@@ -69,5 +68,9 @@ class RemindInvite
   def self.invites
     time = Time.now - 3.days
     Invite.pending.where("invites.created_at < ?", time).uniq { |invite| invite.phone }
+  end
+
+  def message
+    REDIS.get("app:copy:sms_invite_reminder") || "#{user.username} sent you a video on hollerback. download the app here: www.hollerback.co/app"
   end
 end
