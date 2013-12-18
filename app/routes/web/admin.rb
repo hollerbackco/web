@@ -25,7 +25,7 @@ module HollerbackApp
       end
     end
 
-    get '/madmin/app/settings' do
+    get '/madmin/settings' do
       @sms_invite_reminder = REDIS.get("app:copy:sms_invite_reminder")
       haml "admin/settings".to_sym, layout: "layouts/admin".to_sym
     end
