@@ -71,7 +71,10 @@ module HollerbackApp
         VideoRead.perform_async(messages.map(&:id), current_user.id)
       end
 
-      ConversationTtyl.perform_async(membership.id)
+      # only send ttyl if all videos have been watched
+      if membership.reload.messages.unseen.received.watchable.empty?
+        ConversationTtyl.perform_async(membership.id)
+      end
 
       MetricsPublisher.publish(current_user, "conversations:ttyl", {
         conversation_id: membership.conversation_id

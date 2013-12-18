@@ -36,9 +36,32 @@ class Membership < ActiveRecord::Base
     collection.map(&:to_sync)
   end
 
+  def seen_without_response
+    message = messages.watchable.last
+    subtitle = message.subtitle
+    all_messages = Message.all_by_guid(message.guid)
+
+    # subtract sender
+    seen_count = all_messages.each {|m| m.seen?}.count - 1
+
+    if seen_count > 1
+      string = "seen by #{seen_count} people"
+    else
+      string = "seen by #{user.username}"
+    end
+
+    messages.each do |message|
+      message.content["subtitle"] = string
+      membership = message.membership
+      membership.most_recent_subtitle = string
+      message.save
+      membership.save
+    end
+  end
+
   def ttyl
     message = messages.new
-    message.content["subtitle"] = "ttyl"
+    message.content["subtitle"] = "seen"
     message.is_sender = true
     message.sender_name = user.also_known_as(for: user)
     message.save

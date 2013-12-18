@@ -65,6 +65,7 @@ gem 'newrelic_rpm'
 gem 'honeybadger'
 
 #assets
+gem 'therubyracer', :require => 'v8'
 gem 'sprockets'
 gem 'sprockets-helpers'
 gem 'sprockets-sass'

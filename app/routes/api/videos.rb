@@ -83,14 +83,22 @@ module HollerbackApp
         # create video stich request
         urls = params.select {|key,value| ["urls", "parts", "part_urls"].include? key }
 
-        video = membership.conversation.videos.create({
-          user: current_user,
-          guid: params[:guid],
-          subtitle: params[:subtitle],
-          stitch_request: urls
-        })
+        # check for existence
+        video = params.key?("guid") ? Video.find_by_guid(params[:guid].downcase) : nil
 
-        VideoStitchRequest.perform_async(video.id, urls, params.key?("reply"), params[:needs_reply])
+        # if it doesnt exist create the video
+        if video.blank?
+          video = membership.conversation.videos.new({
+            user: current_user,
+            subtitle: params[:subtitle],
+            stitch_request: urls
+          })
+          if params.key?("guid")
+            video.guid = params["guid"]
+          end
+          video.save
+          VideoStitchRequest.perform_async(video.id, urls, params.key?("reply"), params[:needs_reply])
+        end
 
         success_json data: video.as_json.merge(:conversation_id => membership.id)
       rescue ActiveRecord::RecordNotFound => ex

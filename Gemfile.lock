@@ -133,6 +133,7 @@ GEM
     kgio (2.8.1)
     launchy (2.3.0)
       addressable (~> 2.3)
+    libv8 (3.16.14.3)
     listen (1.1.0)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
@@ -184,6 +185,7 @@ GEM
       ruby2ruby (~> 2.0.2)
       ruby_parser (~> 3.1.1)
       sexp_processor
+    ref (1.0.5)
     rerun (0.8.1)
       listen (>= 1.0.3)
     rest-client (1.6.7)
@@ -258,6 +260,9 @@ GEM
     streamio-ffmpeg (0.9.0)
     subexec (0.2.3)
     temple (0.6.4)
+    therubyracer (0.12.0)
+      libv8 (~> 3.16.14.0)
+      ref
     thin (1.5.1)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
@@ -352,6 +357,7 @@ DEPENDENCIES
   sprockets-sass
   sqlite3
   streamio-ffmpeg
+  therubyracer
   thin
   time-lord
   tux
