@@ -2,6 +2,7 @@
   %p
     %label{:for => "sms_invite_reminder"} SMS Invite Reminder Copy
     %br
-    %input{:type => "text", :name => "sms_invite_reminder", :value => @sms_invite_reminder}
+    %textarea{:name => "sms_invite_reminder"}
+      = @sms_invite_reminder
   %p
     %input{:type => "submit", :value => "submit"}
