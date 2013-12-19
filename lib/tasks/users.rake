@@ -22,7 +22,7 @@ namespace :users do
   desc "create conversations with will_from_hollerback"
   task :welcome do
     filename = "batch/welcome.mp4"
-    User.all.each do |user|
+    User.reorder("created_at ASC").all.each do |user|
       p user.username
       next if user == will_user
       next if Conversation.find_by_members([will_user,user])
