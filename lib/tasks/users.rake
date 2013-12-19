@@ -25,7 +25,7 @@ namespace :users do
     User.reorder("created_at ASC").all.each do |user|
       p user.username
       next if user == will_user
-      next if Conversation.find_by_members([will_user,user])
+      next if Conversation.find_by_phone_numbers(will_user, [user.phone])
 
       send_video_to_user(filename, user)
     end
@@ -34,6 +34,7 @@ namespace :users do
   desc "test conversation creation with jeff"
   task :welcome_test do
     filename = "batch/welcome.mp4"
+    return if Conversation.find_by_phone_numbers(user, [will_user.phone])
     user = User.find_by_username("jeff")
 
     send_video_to_user(filename, user)

@@ -28,6 +28,7 @@ class Conversation < ActiveRecord::Base
     raise if !phones.is_a? Array
     phones = phones.uniq.sort
 
+    # fix this. this is ridiculously slow
     includes(:members, :invites).all.select do |c|
       same = (phones == c.involved_phones.uniq.flatten.sort)
     end
