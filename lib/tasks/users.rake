@@ -57,6 +57,6 @@ namespace :users do
   end
 
   def will_user
-    @will ||= User.find_by_username("will_from_hollerback")
+    @will ||= User.find_by_username("will_from_hollerback") || User.find_by_username("will")
   end
 end
