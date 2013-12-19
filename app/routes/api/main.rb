@@ -84,7 +84,7 @@ module HollerbackApp
       current_user.phone = params["phone"] if params.key? "phone"
 
       if device.save and current_user.save
-        success_json data: current_user.as_json.merge(conversations: current_user.conversations)
+        success_json data: current_user
       else
         error_json 400, msg: current_user
       end
