@@ -18,4 +18,45 @@ namespace :users do
   task :push_invite do
     RemindInvite.run(ENV['dryrun'])
   end
+
+  desc "create conversations with will_from_hollerback"
+  task :welcome do
+    filename = "batch/welcome.mp4"
+    User.all.each do |user|
+      next if Conversation.find_by_members([will,user]).any?
+
+      send_video_to_user(filename, user)
+    end
+  end
+
+  desc "test conversation creation with jeff"
+  task :welcome_test do
+    filename = "batch/welcome.mp4"
+    user = User.find_by_username("jeff")
+
+    send_video_to_user(filename, user)
+  end
+
+  def send_video_to_user(filename, user)
+    conversation = user.conversations.create
+    conversation.members << will_user
+    conversation.save
+    membership = Membership.where(conversation_id: conversation.id, user_id: will_user.id).first
+
+    publisher = ContentPublisher.new(membership)
+
+    video = conversation.videos.create({
+      user: will_user,
+      filename: filename
+    })
+
+    publisher.publish(video, {
+      needs_reply: true,
+      is_reply: false
+    })
+  end
+
+  def will_user
+    @will ||= User.find_by_username("will_from_hollerback")
+  end
 end

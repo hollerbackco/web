@@ -153,7 +153,7 @@ class User < ActiveRecord::Base
   def also_known_as(obj={})
     user = obj[:for]
     contact = user.contacts.where(phone_hashed: phone_hashed).first
-    contact.present? ? contact.name : username
+    contact.present? ? contact.name : (name || username)
   end
 
   def self.authenticate(phone, code)
