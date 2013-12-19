@@ -23,7 +23,7 @@ namespace :users do
   task :welcome do
     filename = "batch/welcome.mp4"
     User.all.each do |user|
-      next if Conversation.find_by_members([will_user,user]).any?
+      next if Conversation.find_by_members([will_user,user])
 
       send_video_to_user(filename, user)
     end
