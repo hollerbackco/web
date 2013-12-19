@@ -22,10 +22,10 @@ namespace :users do
   desc "create conversations with will_from_hollerback"
   task :welcome do
     filename = "batch/welcome.mp4"
-    User.reorder("created_at ASC").all.each do |user|
+    User.reorder("created_at DESC").all.each do |user|
       p user.username
       next if user == will_user
-      next if Conversation.find_by_phone_numbers(will_user, [user.phone])
+      next if Conversation.find_by_phone_numbers(user, [will_user.phone])
 
       send_video_to_user(filename, user)
     end
