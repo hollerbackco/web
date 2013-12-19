@@ -34,8 +34,8 @@ namespace :users do
   desc "test conversation creation with jeff"
   task :welcome_test do
     filename = "batch/welcome.mp4"
-    return if Conversation.find_by_phone_numbers(user, [will_user.phone])
     user = User.find_by_username("jeff")
+    return if Conversation.find_by_phone_numbers(user, [will_user.phone])
 
     send_video_to_user(filename, user)
   end
