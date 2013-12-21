@@ -42,7 +42,7 @@ class Membership < ActiveRecord::Base
     all_messages = Message.all_by_guid(message.guid)
 
     # subtract sender
-    seen_count = all_messages.each {|m| m.seen?}.count - 1
+    seen_count = all_messages.select {|m| m.seen?}.count - 1
 
     if seen_count > 1
       string = "seen by #{seen_count} people"
@@ -50,11 +50,11 @@ class Membership < ActiveRecord::Base
       string = "seen by #{user.username}"
     end
 
-    messages.each do |message|
-      message.content["subtitle"] = string
-      membership = message.membership
+    all_messages.each do |m|
+      m.content["subtitle"] = string
+      membership = m.membership
       membership.most_recent_subtitle = string
-      message.save
+      m.save
       membership.save
     end
   end
