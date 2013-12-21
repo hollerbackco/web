@@ -44,7 +44,7 @@ class Membership < ActiveRecord::Base
     # subtract sender
     seen_count = all_messages.select {|m| m.seen?}.count - 1
 
-    if seen_count > 0
+    if seen_count > 1
       string = "seen by #{seen_count} people"
     else
       string = "seen by #{user.username}"
