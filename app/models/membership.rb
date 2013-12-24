@@ -105,6 +105,7 @@ class Membership < ActiveRecord::Base
   end
 
   def auto_generated_name
+    return conversation.name if conversation.name.present?
     names = others.map {|other| other.also_known_as(:for => user)}
     names = names + conversation.invites.map do |invite|
       invite.also_known_as(:for => user)
