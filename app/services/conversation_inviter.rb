@@ -9,9 +9,9 @@ module Hollerback
     end
 
     def invite
-      if self.conversation = fetch_conversation_if_exists
-        return true
-      end
+      #if self.conversation = fetch_conversation_if_exists
+        #return true
+      #end
 
       success = Conversation.transaction do
         self.conversation = create_conversation
