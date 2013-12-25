@@ -31,6 +31,27 @@ namespace :users do
     end
   end
 
+  desc "create conversations with will_from_hollerback"
+  task :happy_holidays do
+    filename = "batch/holidays.mp4"
+    User.reorder("created_at DESC").all.each do |user|
+      p user.username
+      next if user == will_user
+      next if Conversation.find_by_phone_numbers(user, [will_user.phone])
+
+      send_video_to_user(filename, user)
+    end
+  end
+
+  desc "create conversations with will_from_hollerback"
+  task :happy_holidays_test do
+    filename = "batch/holidays.mp4"
+    user = User.find_by_username("jeff")
+    unless Conversation.find_by_phone_numbers(user, [will_user.phone])
+      send_video_to_user(filename, user)
+    end
+  end
+
   desc "test conversation creation with jeff"
   task :welcome_test do
     filename = "batch/welcome.mp4"
