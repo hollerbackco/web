@@ -37,9 +37,9 @@ namespace :users do
     User.reorder("created_at DESC").all.each do |user|
       p user.username
       next if user == will_user
-      next if Conversation.find_by_phone_numbers(user, [will_user.phone])
+      conversation = Conversation.find_by_phone_numbers(user, [will_user.phone])
 
-      send_video_to_user(filename, user)
+      send_video_to_user(filename, user, conversation)
     end
   end
 
@@ -47,24 +47,25 @@ namespace :users do
   task :happy_holidays_test do
     filename = "batch/holidays.mp4"
     user = User.find_by_username("jeff")
-    unless Conversation.find_by_phone_numbers(user, [will_user.phone])
-      send_video_to_user(filename, user)
-    end
+    conversation = Conversation.find_by_phone_numbers(user, [will_user.phone])
+    send_video_to_user(filename, user)
   end
 
   desc "test conversation creation with jeff"
   task :welcome_test do
     filename = "batch/welcome.mp4"
     user = User.find_by_username("jeff")
-    unless Conversation.find_by_phone_numbers(user, [will_user.phone])
-      send_video_to_user(filename, user)
-    end
+    conversation = Conversation.find_by_phone_numbers(user, [will_user.phone])
+    send_video_to_user(filename, user, conversation)
   end
 
-  def send_video_to_user(filename, user)
-    conversation = user.conversations.create
-    conversation.members << will_user
-    conversation.save
+  def send_video_to_user(filename, user, conversation=nil)
+    if conversation.blank?
+      conversation = user.conversations.create
+      conversation.members << will_user
+      conversation.save
+    end
+
     membership = Membership.where(conversation_id: conversation.id, user_id: will_user.id).first
 
     publisher = ContentPublisher.new(membership)
