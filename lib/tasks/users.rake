@@ -9,6 +9,11 @@ namespace :users do
     p users.destroy_all
   end
 
+  desc "email messages waiting reminder"
+  task :email_remind do
+    EmailInactive.run(ENV['dryrun'])
+  end
+
   desc "push notification reminder"
   task :push_remind do
     RemindInactive.run(ENV['dryrun'])
