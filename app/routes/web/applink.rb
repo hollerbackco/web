@@ -21,7 +21,7 @@ module HollerbackApp
     ['/download', '/invite', '/v/:token', '/usc'].each do |location|
       get location do
         if ios?
-          if location == "usc"
+          if location == "/usc"
             MetricsPublisher.delay.publish_delay("email:usc:app_visit")
           end
           url = 'http://appstore.com/hollerback'
