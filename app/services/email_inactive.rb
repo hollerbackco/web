@@ -19,8 +19,8 @@ class EmailInactive
 
   def remind
     if remindable?
-      from_username = from_membership.name
-      message_count = from_membership.messages.watchable.unseen.count
+      from_username = from_membership.messages.received.watchable.first.sender_name
+      message_count = from_membership.messages.recieved.watchable.unseen.count
       send_email(from_username, message_count)
       create_record
       return true
@@ -32,10 +32,9 @@ class EmailInactive
     puts "sent email to #{user.email}"
     puts from_username
     puts message_count
-    sender = user
+    receiver = user
     Mail.deliver do
-      #to sender.email
-      to "jnoh12388@gmail.com"
+      to receiver.email
       from 'no-reply@hollerback.co'
       subject "#{from_username} sent you a message on Hollerback"
 
