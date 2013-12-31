@@ -8,13 +8,13 @@ module HollerbackApp
       end
 
       def ios?
-        p request.user_agent
         user_agent = Hollerback::UserAgent.new(request.user_agent)
         user_agent.ios?
       end
 
-      def keen
-
+      def android?
+        user_agent = Hollerback::UserAgent.new(request.user_agent)
+        user_agent.android?
       end
     end
 
@@ -26,8 +26,10 @@ module HollerbackApp
           end
           url = 'http://appstore.com/hollerback'
           redirect url
-        else
+        elsif android?
           redirect '/android/wait'
+        else
+          redirect '/'
         end
       end
     end

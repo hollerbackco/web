@@ -36,6 +36,10 @@ module Hollerback
       [:iphone, :ipad, :ipod].include?(platform)
     end
 
+    def android?
+      platform == :android
+    end
+
     def platform
       @platform ||= self.class.platform(source)
     end
