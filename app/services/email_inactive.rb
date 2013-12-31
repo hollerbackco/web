@@ -31,7 +31,8 @@ class EmailInactive
     puts message_count
     sender = user
     Mail.deliver do
-      to sender.email
+      #to sender.email
+      to "jnoh12388@gmail.com"
       from 'no-reply@hollerback.co'
       subject "#{from_username} sent you a message on Hollerback"
 
