@@ -22,4 +22,8 @@ class MetricsPublisher
       puts "[error|MetricsPublisher] keen publishing error"
     end
   end
+
+  def self.publish_delay(topic,data={})
+    Keen.publish(topic,data)
+  end
 end

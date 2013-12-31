@@ -12,13 +12,18 @@ module HollerbackApp
         user_agent = Hollerback::UserAgent.new(request.user_agent)
         user_agent.ios?
       end
+
+      def keen
+
+      end
     end
 
-    ['/download', '/invite', '/v/:token'].each do |location|
+    ['/download', '/invite', '/v/:token', 'usc'].each do |location|
       get location do
         if ios?
-          #sms_download_notification(location)
-
+          if location == "usc"
+            MetricsPublisher.delay.publish_delay("email:usc:app_visit")
+          end
           url = 'http://appstore.com/hollerback'
           redirect url
         else
