@@ -19,7 +19,7 @@ class EmailInactive
 
   def remind
     if remindable?
-      from_username = from_membership.messages.received.watchable.first.sender_name
+      from_username = from_membership.messages.received.watchable.unseen.first.sender_name
       message_count = from_membership.messages.recieved.watchable.unseen.count
       send_email(from_username, message_count)
       create_record
