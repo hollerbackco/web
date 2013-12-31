@@ -29,6 +29,7 @@ class EmailInactive
   end
 
   def send_email(from_username, message_count)
+    return if user.email.blank?
     puts "sent email to #{user.email}"
     puts from_username
     puts message_count
