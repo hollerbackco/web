@@ -22,7 +22,7 @@ class EmailInactive
       from_username = from_membership.name
       message_count = from_membership.messages.watchable.unseen.count
       send_email(from_username, message_count)
-      #create_record
+      create_record
       return true
     end
     return false
@@ -34,7 +34,6 @@ class EmailInactive
     puts message_count
     sender = user
     Mail.deliver do
-      content_type 'text/html; charset=UTF-8'
       #to sender.email
       to "jnoh12388@gmail.com"
       from 'no-reply@hollerback.co'
