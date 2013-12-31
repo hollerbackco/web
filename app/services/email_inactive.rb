@@ -23,7 +23,9 @@ class EmailInactive
       message_count = from_membership.messages.watchable.unseen.count
       send_email(from_username, message_count)
       #create_record
+      return true
     end
+    return false
   end
 
   def send_email(from_username, message_count)
@@ -32,13 +34,14 @@ class EmailInactive
     puts message_count
     sender = user
     Mail.deliver do
+      content_type 'text/html; charset=UTF-8'
       #to sender.email
       to "jnoh12388@gmail.com"
       from 'no-reply@hollerback.co'
       subject "#{from_username} sent you a message on Hollerback"
 
       html_part do
-        body "<p>Hey there,</p><p>You have #{message_count} new message#{message_count > 1 ? "s" : ""} on Hollerback from #{from_username}.</p><p><a href='hollerback://'>View message</a></p>"
+        body "<p>Hey there,</p><p>You have #{message_count} new message#{message_count > 1 ? "s" : ""} on Hollerback from #{from_username}.</p><p><a href='http://www.hollerback.co/app'>View message</a></p>"
       end
     end
   end

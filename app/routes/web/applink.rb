@@ -18,6 +18,10 @@ module HollerbackApp
       end
     end
 
+    get '/app' do
+      redirect "hollerback://"
+    end
+
     ['/download', '/invite', '/v/:token', '/usc'].each do |location|
       get location do
         if android?
