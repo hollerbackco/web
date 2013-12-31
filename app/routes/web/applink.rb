@@ -18,7 +18,7 @@ module HollerbackApp
       end
     end
 
-    ['/download', '/invite', '/v/:token', 'usc'].each do |location|
+    ['/download', '/invite', '/v/:token', '/usc'].each do |location|
       get location do
         if ios?
           if location == "usc"
