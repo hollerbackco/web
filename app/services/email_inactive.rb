@@ -1,5 +1,6 @@
 class EmailInactive
   def self.run(dryrun=false)
+    counter = 0 
     User.find_each do |user|
       emailer = self.new(user: user, dryrun: dryrun)
       if emailer.remind
