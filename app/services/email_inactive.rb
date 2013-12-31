@@ -59,8 +59,8 @@ class EmailInactive
   end
 
   def inactive_for_more_than_a_week?
-    return true if user.last_active_at.blank?
-    user.last_active_at < (Time.now - 1.week)
+    return true if user["last_active_at"].blank?
+    user["last_active_at"] < (Time.now - 1.week)
   end
 
   def email_reminded?
