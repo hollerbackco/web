@@ -21,6 +21,12 @@ module Hollerback
       end
     end
 
+    def videos_received_count
+      HollerbackApp::BaseApp.settings.cache.fetch "stat-videos-sent" do
+        Message.received.watchable.count
+      end
+    end
+
     def videos_unread_count
       HollerbackApp::BaseApp.settings.cache.fetch "stat-videos-unread" do
         Message.unseen.received.count
@@ -51,14 +57,6 @@ module Hollerback
         else
           0
         end
-      end
-    end
-
-    def videos_received_count
-      HollerbackApp::BaseApp.settings.cache.fetch "stat-videos-received-count" do
-        Conversation.all.map do |conversation|
-          (conversation.members.count - 1) * conversation.videos.count
-        end.flatten.sum
       end
     end
 

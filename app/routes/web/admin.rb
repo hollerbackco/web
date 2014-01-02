@@ -110,7 +110,7 @@ module HollerbackApp
     end
 
     get '/madmin/stats' do
-    stats = Hollerback::Statistics.new
+      stats = Hollerback::Statistics.new
       {
         users_count: stats.users_count,
         conversations_count: stats.conversations_count,
