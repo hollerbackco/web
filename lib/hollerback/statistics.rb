@@ -22,7 +22,7 @@ module Hollerback
     end
 
     def videos_received_count
-      HollerbackApp::BaseApp.settings.cache.fetch "stat-videos-sent" do
+      HollerbackApp::BaseApp.settings.cache.fetch "stat-videos-received" do
         Message.received.watchable.count
       end
     end
