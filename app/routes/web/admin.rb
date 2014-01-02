@@ -115,9 +115,7 @@ module HollerbackApp
         users_count: stats.users_count,
         conversations_count: stats.conversations_count,
         videos_count: stats.videos_sent_count,
-        received_count: stats.videos_received_count,
-        members_per_conversation_avg: stats.members_in_conversations_avg,
-        videos_per_conversation_avg: stats.videos_in_conversations_avg
+        received_count: stats.videos_received_count
       }.to_json
     end
   end
