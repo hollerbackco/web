@@ -11,10 +11,12 @@ module HollerbackApp
           devices.destroy_all
         end
         if params.key? "device_id"
-          device = user.devices.find_by_device_key(params["device_id"])
-          device.token = params["device_token"]
-          device.save
-        else
+          if device = user.devices.find_by_device_key(params["device_id"])
+            device.token = params["device_token"]
+            device.save
+          end
+        end
+        if device.blank?
           device = user.device_for(params['device_token'], params['platform'])
         end
 
