@@ -60,7 +60,7 @@ module HollerbackApp
 
     get '/madmin/users' do
       @users = User
-      if params.key?(:android)
+      if params.key?("android")
         @users = User.android
       end
       @users = @users.order("created_at ASC").includes(:memberships, :messages, :devices)
