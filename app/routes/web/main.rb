@@ -16,6 +16,7 @@ module HollerbackApp
       haml :privacy
     end
 
+
     #TODO deprecate, replaced by v/:token
     get '/from/:username/:id' do
       video = Video.find_by_code(params[:id])
@@ -85,6 +86,27 @@ module HollerbackApp
         {
           :success => false,
           :msg => waitlister.errors.first
+        }.to_json
+      end
+    end
+
+    post '/sms_app_link.json' do
+      if phone_string = params["phone"]
+        phone = Phoner::Phone.parse(phone_string).to_s
+      end
+
+      if phone
+        body = "Download hollerback: http://appstore.com/hollerback"
+        Hollerback::SMS.send_message(phone, body)
+        {
+          :success => true,
+          :msg => "Thanks, check the message on your phone"
+        }.to_json
+      else
+        msg = "Invalid phone number"
+        {
+          :success => false,
+          :msg => msg
         }.to_json
       end
     end

@@ -18,6 +18,14 @@ textarea {
   background: #10a6e9;
 }
 
+#send-link-form {
+  margin-top: 40px;
+}
+
+footer {
+  margin-top: 40px;
+}
+
 #splash {
   color: #ffffff;
 
@@ -250,23 +258,25 @@ textarea {
     color: #fff;
   }
 
-  form {
-    padding: 15px 15px 15px;
+  .error-messages {
+    padding: 0;
+    margin: 0;
 
-    .error-messages {
-      padding: 0;
-      margin: 0;
+    li {
+      padding: 5px;
+      margin-bottom: 15px;
+      font-weight: bold;
+      font-size: 32px;
+      line-height: 1.5em;
 
-      li {
-        padding: 5px;
-        margin-bottom: 15px;
-        font-weight: bold;
-
-        &.success {
-          color: green;
-        }
+      &.success {
+        color: white;
       }
     }
+  }
+
+  form {
+    padding: 15px 15px 15px;
 
     h2 {
       text-align: left;
@@ -360,9 +370,6 @@ textarea {
     }
   }
 
-  footer {
-    border-top: 1px solid #ddd;
-  }
 }
 
 .modal-backdrop {
