@@ -47,22 +47,20 @@
           Hollerback
           -#=image_tag "welcome-hollerback-logo.png"
         %h2= t("meta.description")
-        %p
-          %a.button.primary{:href => "#invite-modal", "data-toggle" => "modal"}= t("splash.primary")
-    -#%footer= image_tag "iphone.png"
-    #invite-modal.modal
-      .modal-header
-        %h3 hollerback will be ready soon
-      .modal-body
-        %form#invite-form{method: "POST", action: "/waitlist.json"}
+        #send-link-form
           %ul.error-messages
-          %input{type: "text", name: "email", placeholder: "enter your email"}
-          %input.button.primary{type: "submit", value: "let me know"}
+          %form#send-link{method: "POST", action: "/sms_app_link.json"}
+            %input{type: "text", name: "phone", placeholder: "555 555 5555"}
+            %input.button.primary{type: "submit", value: "Get the app"}
+    %footer
+      %a{href: "http://appstore.com/hollerback"}
+        %img{src: "/assets/appstore.png", width: 200}
 
     :javascript
       $(".modal").modal().modal("hide");
 
       var errorDiv = $(".error-messages");
+
       var addErrorMessage = function(msg,cssClass) {
         errorDiv.html("");
         var li = $("<li />");
@@ -71,39 +69,40 @@
         errorDiv.append(li);
       };
 
-      var sendInvite = function(event) {
+      var sendAppLink = function(event) {
         event.preventDefault();
 
         var url = $(this).attr("action");
-        var email = $("input[name=email]").val()
+        var phone = $("input[name=phone]").val()
 
-        if(email !== "") {
+        if(phone !== "") {
 
           var promise = $.ajax({
             url: url,
             method: "post",
             dataType: "json",
             data: {
-              email: email
+              phone: phone
             }
           });
 
           promise.done(function(message) {
             if(message.success) {
-              addErrorMessage(message.msg[1], "success");
+              $("#send-link").hide();
+              addErrorMessage(message.msg, "success");
             } else {
-              addErrorMessage(message.msg[1], "success");
+              addErrorMessage(message.msg, "success");
             };
           });
 
           promise.error(function() {
-            addErrorMessage("could not add your email", "error");
+            addErrorMessage("Invalid phone number", "error");
           });
 
         } else {
-          addErrorMessage("please enter an email", "error");
+          addErrorMessage("please enter phone number", "error");
         }
 
       }
 
-      $("#invite-modal form").submit(sendInvite);
+      $("#send-link").submit(sendAppLink);
