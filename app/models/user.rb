@@ -38,6 +38,10 @@ class User < ActiveRecord::Base
 
   scope :unverified, where(:verification_code => nil)
 
+  def self.android
+    User.where(:id => Device.android.pluck("distinct user_id"))
+  end
+
   def friends
     user_ids = Membership.where(:conversation_id => conversations).map(&:user_id).uniq
     user_ids = user_ids - [self.id]
