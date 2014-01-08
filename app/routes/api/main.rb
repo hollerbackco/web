@@ -18,6 +18,7 @@ module HollerbackApp
       current_user.save
 
       # set device name
+      p request.env
       if params.key?("access_token") and
         device = Device.find_by_access_token(params[:access_token])
 
