@@ -2,23 +2,35 @@ module HollerbackApp
   class ApiApp < BaseApp
     before '/me*' do
       authenticate(:api_token)
+
       logger.info("[user: #{current_user.id}]")
-      app_version = request.env["HTTP_IOS_APP_VER"]
+
+      # set last_active_at
+      current_user.last_active_at = Time.now
+
+      # set app version
+      app_version = request.env["HTTP_IOS_APP_VER"] || request.env["HTTP_ANDROID_APP_VERSION"]
       if app_version and app_version != current_user.last_app_version
-        current_user.update_attribute :last_app_version, app_version
+        current_user.last_app_version = app_version
         Hollerback::BMO.say("#{current_user.username} updated to #{app_version}")
       end
 
-      current_user.last_active_at = Time.now
       current_user.save
 
-      ios_model_name = request.env["HTTP_IOS_MODEL_NAME"]
-      if ios_model_name
+      # set device name
+      p request.env
+      if params.key?("access_token") and
         device = Device.find_by_access_token(params[:access_token])
-        if device and device != device.description
+
+        if ios_model_name = request.env["HTTP_IOS_MODEL_NAME"]
           device.description = ios_model_name
-          device.save
         end
+
+        if android_model_name = request.env["HTTP_ANDROID_MODEL_NAME"]
+          device.description = android_model_name
+        end
+
+        device.save
       end
     end
 

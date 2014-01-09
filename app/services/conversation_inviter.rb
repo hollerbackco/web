@@ -64,7 +64,7 @@ module Hollerback
     end
 
     def create_conversation
-      conversation = Conversation.create(creator: inviter)
+      conversation = Conversation.create(creator: inviter, name: name)
 
       #creates a membership
       conversation.members << inviter
