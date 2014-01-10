@@ -213,7 +213,6 @@ footer {
 
   #header {
     position: absolute;
-    min-width: 600px;
     width: 100%;
     top: 50%;
     margin-top: -18%;
@@ -533,6 +532,19 @@ footer {
 }
 
 @media only screen and (max-width: 767px) {
+  .splash-body #header {
+    margin-top: -48%;
+
+    .wordmark {
+      margin: 0 10%;
+      background-position: center;
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 80%;
+      height: 2em;
+    }
+  }
+
   body#pledge-splash .participate {
     background: #000;
   }
@@ -556,8 +568,6 @@ footer {
       }
     }
   }
-
-
 
   #welcome-splash section {
     width: 100%;
@@ -584,6 +594,10 @@ footer {
 }
 
 @media only screen and (min-width: 480px) and (max-width: 767px) {
+  .splash-body #header {
+    margin-top: -38%;
+  }
+
   #welcome-splash section {
     width: 100%;
   }
@@ -611,5 +625,4 @@ footer {
     padding: 10px;
     margin: -10px;
   }
-
 }
