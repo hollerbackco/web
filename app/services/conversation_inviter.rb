@@ -28,6 +28,10 @@ module Hollerback
             )
           end
         end
+        if membership.auto_generated_name != name
+          conversation.name = name
+          conversation.save
+        end
         run_analytics
       end
     end
@@ -69,10 +73,6 @@ module Hollerback
       #creates a membership
       conversation.members << inviter
       membership = inviter.memberships.find(:first, conditions: {conversation_id: conversation.id})
-      if membership.auto_generated_name != name
-        conversation.name = name
-        conversation.save
-      end
       membership.save
 
       conversation
