@@ -8,6 +8,10 @@ module HollerbackApp
       haml :about
     end
 
+    get '/jobs' do
+      haml :jobs
+    end
+
     get '/waitlist' do
       haml :waitlist
     end
