@@ -56,6 +56,28 @@ header {
   }
 }
 
+.page {
+  background: #fff;
+  color: #000;
+
+  .container {
+    margin: 100px auto 30px;
+    width: 600px;
+  }
+
+  #header {
+    display: block;
+    float: left;
+    width: 100px;
+    margin-left: -140px;
+  }
+
+  p {
+    font-size: 14px;
+    line-height: 1.5em;
+  }
+}
+
 section.content {
   h2 {
     font-size: 1.8em;

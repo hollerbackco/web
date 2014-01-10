@@ -39,22 +39,29 @@
       });
 
   %body#welcome-splash.splash-body
-    .container
-      %section#header
-        .logo
-          -#=image_tag "banana-logo.png"
+    %section
+      #header
         %h1.wordmark
           Hollerback
-          -#=image_tag "welcome-hollerback-logo.png"
-        %h2= t("meta.description")
-        #send-link-form
-          %ul.error-messages
-          %form#send-link{method: "POST", action: "/sms_app_link.json"}
-            %input{type: "text", name: "phone", placeholder: "555 555 5555"}
-            %input.button.primary{type: "submit", value: "Get the app"}
-    %footer
-      %a{href: "http://appstore.com/hollerback"}
-        %img{src: "/assets/appstore.png", width: 200}
+        %h2.slogan= t("meta.description")
+        .stores
+          %a{href: "http://appstore.com/hollerback"}
+            %img{src: "/assets/appstore.png", width: 200}
+      #footer
+        %nav
+          %ul
+            %li
+              %a{:href => "/"} home
+            %li
+              %a{:href => "/blog"} blog
+            %li
+              %a{:href => "/about"} about
+            %li
+              %a{:href => "/jobs"} jobs
+            %li
+              %a{:href => "/terms"} terms
+            %li
+              %a{:href => "/privacy"} privacy
 
     :javascript
       $(".modal").modal().modal("hide");

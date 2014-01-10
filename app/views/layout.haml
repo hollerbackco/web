@@ -33,7 +33,26 @@
         }, 0);
       });
 
-  %body
+  %body.page
     .container
       %section
+        #header
+          #logo= image_tag "banana-logo.png"
+
         = yield
+      #footer
+        %nav
+          %ul
+            %li
+              %a{:href => "/"} home
+            %li
+              %a{:href => "/blog"} blog
+            %li
+              %a{:href => "/about"} about
+            %li
+              %a{:href => "/jobs"} jobs
+            %li
+              %a{:href => "/terms"} terms
+            %li
+              %a{:href => "/privacy"} privacy
+
