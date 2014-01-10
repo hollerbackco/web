@@ -69,7 +69,10 @@ module Hollerback
       #creates a membership
       conversation.members << inviter
       membership = inviter.memberships.find(:first, conditions: {conversation_id: conversation.id})
-      membership.name = name
+      if membership.auto_generated_name != name
+        conversation.name = name
+        conversation.save
+      end
       membership.save
 
       conversation
