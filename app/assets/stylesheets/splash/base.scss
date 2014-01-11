@@ -215,7 +215,7 @@ footer {
     position: absolute;
     width: 100%;
     top: 50%;
-    margin-top: -18%;
+    margin-top: -23%;
     text-align: center;
 
     .logo {
@@ -615,6 +615,20 @@ footer {
 }
 
 @media only screen and (max-width: 480px) {
+  body {
+    min-height: 600px;
+  }
+
+  #welcome-splash section {
+    position: relative;
+    height: 100%;
+  }
+
+  .splash-body #header {
+    top: 0%;
+    margin-top: 20px;
+  }
+
   .modal {
     top: 10px;
     right: 10px;
@@ -624,5 +638,9 @@ footer {
   .modal-header .close {
     padding: 10px;
     margin: -10px;
+  }
+
+  #footer {
+    position: absolute !important;
   }
 }
