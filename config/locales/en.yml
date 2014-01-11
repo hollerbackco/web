@@ -1,7 +1,10 @@
 en:
   meta:
     title: Hollerback
-    description:  this is going to be fun
+    description: |
+      chat with friends through
+      <br />
+      short video messages
     keywords:  iphone, ios, app, video, facetime, conversations
   activerecord:
     errors:

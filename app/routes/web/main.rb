@@ -4,6 +4,14 @@ module HollerbackApp
       haml :index, layout: false
     end
 
+    get '/about' do
+      haml :about
+    end
+
+    get '/jobs' do
+      haml :jobs
+    end
+
     get '/waitlist' do
       haml :waitlist
     end
@@ -15,7 +23,6 @@ module HollerbackApp
     get '/privacy' do
       haml :privacy
     end
-
 
     #TODO deprecate, replaced by v/:token
     get '/from/:username/:id' do

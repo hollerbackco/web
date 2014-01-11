@@ -33,7 +33,25 @@
         }, 0);
       });
 
-  %body
+  %body.page
     .container
       %section
+        #header
+          #logo= image_tag "banana-logo.png"
+          %nav
+            %ul
+              %li
+                %a{:href => "/"} home
+              %li
+                %a{:href => "/blog"} blog
         = yield
+      #footer
+        %nav
+          %ul
+            %li
+              %a{:href => "/terms"} terms
+            %li
+              %a{:href => "/privacy"} privacy
+            %li
+              %a{:href => "http://www.twitter.com/hollerback"} @hollerback
+        .copyright © 2013 Hollerback
