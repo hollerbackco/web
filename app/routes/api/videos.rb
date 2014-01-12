@@ -47,7 +47,7 @@ module HollerbackApp
     end
 
     post '/me/videos/:id/read' do
-      message = Message.find(params[:id])
+      message = Message.find_by_guid(params[:id])
       message.seen!
 
       VideoRead.perform_async([message.id], current_user.id)
