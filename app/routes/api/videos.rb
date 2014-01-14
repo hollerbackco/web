@@ -47,12 +47,12 @@ module HollerbackApp
     end
 
     post '/me/videos/:id/read' do
-      message = Message.find(params[:id])
-      message.seen!
-
-      VideoRead.perform_async([message.id], current_user.id)
-
-      success_json data: message.as_json
+      messages = current_user.messages.all_by_guid(params[:id])
+      if messages.any?
+        messages.each(&:seen!)
+        VideoRead.perform_async(messages.map(&:id), current_user.id)
+      end
+      success_json data: messages.first.as_json
     end
 
     post '/me/conversations/:id/videos/parts' do
