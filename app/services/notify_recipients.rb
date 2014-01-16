@@ -25,7 +25,7 @@ module Hollerback
     end
 
     def notify_push(message, person)
-      conversation = message.membership.conversation
+      membership = message.membership
       badge_count = person.unseen_memberships_count
 
       Hollerback::Push.delay.send(person.id, {
@@ -33,7 +33,7 @@ module Hollerback
         badge: badge_count,
         sound: "default",
         content_available: true,
-        data: {uuid: SecureRandom.uuid}
+        data: {uuid: SecureRandom.uuid, conversation_id: membership.id}
       }.to_json)
 
       person.devices.android.each do |device|
