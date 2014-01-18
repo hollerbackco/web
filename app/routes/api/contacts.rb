@@ -39,6 +39,16 @@ module HollerbackApp
       success_json data: contacts.as_json
     end
 
+    get '/friends' do
+      friends = current_user.friends
+
+      data = {
+        recent_friends: [],
+        friends: friends
+      }
+      success_json data: data.as_json
+    end
+
 
     helpers do
       def prepare_only_hashed_numbers(contact_params)
