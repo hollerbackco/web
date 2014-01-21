@@ -14,10 +14,11 @@ module HollerbackApp
     end
 
     get '/me/friends' do
+      recent_friends = current_user.friends.order("updated_at DESC").limit(3)
       friends = current_user.friends
 
       data = {
-        recent_friends: [],
+        recent_friends: friend_objects_for_user(recent_friends, current_user),
         friends: friend_objects_for_user(friends, current_user)
       }
 
