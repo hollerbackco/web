@@ -12,12 +12,18 @@ module HollerbackApp
     end
 
     post '/me/friends/add' do
-      friend = User.find_by_username(params[:username])
-      if friend
-        current_user.friendships.where(friend_id: friend.id).first_or_create
-        success_json data: current_user.friends
+      if params[:username] and params[:username].is_a? String
+        usernames = [params[:username]]
+      end
+
+      friends = User.where(:username => usernames)
+      if friends.any?
+        for friend in friends
+          current_user.friendships.where(friend_id: friend.id).first_or_create
+        end
+        success_json data: friends.as_json
       else
-        success_json data: nil
+        success_json data: []
       end
     end
 
