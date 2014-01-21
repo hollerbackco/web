@@ -47,6 +47,8 @@ module HollerbackApp
     post '/me/friends/remove' do
       friend = User.find_by_username(params[:username])
       current_user.friends
+
+      success_json data: nil
     end
   end
 end
