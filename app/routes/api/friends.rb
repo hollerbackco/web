@@ -14,8 +14,7 @@ module HollerbackApp
     post '/me/friends/add' do
       friend = User.find_by_username(params[:username])
       if friend
-        friendship = current_user.friendships.create(friend_id: friend.id)
-        p current_user.reload.friends.to_sql
+        current_user.friendships.where(friend_id: friend.id).first_or_create
         success_json data: current_user.friends
       else
         success_json data: nil
