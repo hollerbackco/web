@@ -25,10 +25,15 @@ module HollerbackApp
         invites = invites.split(",")
       end
 
+      usernames = params["usernames"]
+      if usernames and usernames.is_a? String
+        usernames = usernames.split(",")
+      end
+
       name = params["name"]
       name = nil if params["name"] == "<null>" #TODO: iOs sometimes sends a null value
 
-      inviter = Hollerback::ConversationInviter.new(current_user, invites, name)
+      inviter = Hollerback::ConversationInviter.new(current_user, invites, usernames, name)
 
       if inviter.invite
         conversation = inviter.conversation
