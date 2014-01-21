@@ -21,6 +21,8 @@ module Hollerback
           if user = User.find_by_username(username)
             next if conversation.members.exists?(user)
             conversation.members << user
+            friendship = inviter.friendships.where(:friend_id => user.id).first
+            friendship.touch
           end
         end
 

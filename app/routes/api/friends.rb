@@ -2,24 +2,26 @@ module HollerbackApp
   class ApiApp < BaseApp
 
     helpers do
-      def friend_objects_for_user(friends, user)
-        friends.map do |friend|
+      def friend_objects_for_user(friendships, user)
+        friendships.map do |friendship|
+          friend = friendship.friend
           {
             id: friend.id,
             username: friend.username,
-            name: friend.also_known_as(for: user)
+            name: friend.also_known_as(for: user),
+            last_sent_at: friendship.updated_at
           }
         end
       end
     end
 
     get '/me/friends' do
-      recent_friends = current_user.friends.order("updated_at DESC").limit(3)
-      friends = current_user.friends
+      recent_friendships = current_user.friendships.order("updated_at DESC").limit(3)
+      friendships = current_user.friendships
 
       data = {
-        recent_friends: friend_objects_for_user(recent_friends, current_user),
-        friends: friend_objects_for_user(friends, current_user)
+        recent_friends: friend_objects_for_user(recent_friendships, current_user),
+        friends: friend_objects_for_user(friendships, current_user)
       }
 
       success_json data: data.as_json
@@ -32,11 +34,11 @@ module HollerbackApp
 
       friends = User.where(:username => usernames)
       if friends.any?
-        for friend in friends
+        friendships = friends.map do |friend|
           current_user.friendships.where(friend_id: friend.id).first_or_create
         end
 
-        success_json data: friend_objects_for_user(friends, current_user)
+        success_json data: friend_objects_for_user(friendships, current_user)
       else
         success_json data: []
       end
