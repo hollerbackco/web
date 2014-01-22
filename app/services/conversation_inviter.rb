@@ -2,10 +2,10 @@ module Hollerback
   class ConversationInviter
     attr_accessor :inviter, :conversation, :usernames, :phones, :name
 
-    def initialize(user, numbers, usernames=nil, name=nil)
+    def initialize(user, numbers, usernames, name=nil)
       self.inviter = user
-      self.phones = numbers
-      self.usernames = usernames
+      self.phones = numbers || []
+      self.usernames = usernames || []
       self.name = name
     end
 
