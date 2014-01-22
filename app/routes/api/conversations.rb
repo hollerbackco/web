@@ -16,8 +16,8 @@ module HollerbackApp
     # params
     #   invites: array of phone numbers
     post '/me/conversations' do
-      unless ensure_params(:invites)
-        return error_json 400, msg: "missing invites param"
+      if !ensure_params(:invites) or !ensure_params(:usernames)
+        return error_json 400, msg: "missing invites or usernames"
       end
 
       invites = params["invites"]
