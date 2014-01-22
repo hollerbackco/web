@@ -16,7 +16,7 @@ module HollerbackApp
     end
 
     post '/me/users/search' do
-      user = User.find_by_username(params[:username])
+      user = User.find_by_username(params[:username].downcase)
 
       if user
         success_json data: {id: user.id, username: user.username}
