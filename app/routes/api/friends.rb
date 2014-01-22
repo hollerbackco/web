@@ -15,6 +15,16 @@ module HollerbackApp
       end
     end
 
+    post '/me/users/search' do
+      user = User.find_by_username(params[:username])
+
+      if user
+        success_json data: {id: user.id, username: user.username}
+      else
+        success_json data: nil
+      end
+    end
+
     get '/me/friends' do
       recent_friendships = current_user.friendships.order("updated_at DESC").limit(3)
       friendships = current_user.friendships
