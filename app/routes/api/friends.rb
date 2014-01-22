@@ -26,7 +26,7 @@ module HollerbackApp
     end
 
     get '/me/friends/unadded' do
-      success_json data: current_user.unadded_friends
+      success_json data: current_user.unadded_friends.map {|user| {id: user.id, username: user.username}}
     end
 
     get '/me/friends' do
