@@ -45,10 +45,21 @@ module HollerbackApp
     end
 
     post '/me/friends/remove' do
-      friend = User.find_by_username(params[:username])
-      current_user.friends
+      if usernames = params[:username] and usernames.is_a? String
+        usernames = [params[:username]]
+      end
 
-      success_json data: nil
+      friends = User.where(:username => usernames)
+      if friends.any?
+        friends.each do |friend|
+          friendship = current_user.friendships.where(friend_id: friend.id).first
+          friendship and friendship.destroy
+        end
+
+        success_json data: nil
+      else
+        success_json data: []
+      end
     end
   end
 end
