@@ -25,6 +25,10 @@ module HollerbackApp
       end
     end
 
+    get '/me/friends/unadded' do
+      success_json data: current_user.unadded_friends
+    end
+
     get '/me/friends' do
       recent_friendships = current_user.friendships.order("updated_at DESC").limit(3)
       friendships = current_user.friendships

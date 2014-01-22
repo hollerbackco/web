@@ -20,6 +20,8 @@ class User < ActiveRecord::Base
 
   has_many :friendships
   has_many :friends, :through => :friendships
+  has_many :inverse_friendships, :class_name => "Friendship", :foreign_key => "friend_id"
+  has_many :inverse_friends, :through => :inverse_friendships, :source => :user
 
   has_many :conversations, through: :memberships
   has_many :contacts
@@ -43,6 +45,10 @@ class User < ActiveRecord::Base
 
   def self.android
     User.where(:id => Device.android.pluck("distinct user_id"))
+  end
+
+  def unadded_friends
+    inverse_friends - friends
   end
 
   #def friends
