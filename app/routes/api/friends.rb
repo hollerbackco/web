@@ -28,7 +28,7 @@ module HollerbackApp
     end
 
     post '/me/friends/add' do
-      if params[:username] and params[:username].is_a? String
+      if usernames = params[:username] and usernames.is_a? String
         usernames = [params[:username]]
       end
 
