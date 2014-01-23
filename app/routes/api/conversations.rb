@@ -16,8 +16,8 @@ module HollerbackApp
     # params
     #   invites: array of phone numbers
     post '/me/conversations' do
-      unless ensure_params(:invites)
-        return error_json 400, msg: "missing invites param"
+      if !ensure_params(:invites) and !ensure_params(:username)
+        return error_json 400, msg: "missing invites or username"
       end
 
       invites = params["invites"]
@@ -25,10 +25,15 @@ module HollerbackApp
         invites = invites.split(",")
       end
 
+      usernames = params["username"]
+      if usernames and usernames.is_a? String
+        usernames = usernames.split(",")
+      end
+
       name = params["name"]
       name = nil if params["name"] == "<null>" #TODO: iOs sometimes sends a null value
 
-      inviter = Hollerback::ConversationInviter.new(current_user, invites, name)
+      inviter = Hollerback::ConversationInviter.new(current_user, invites, usernames, name)
 
       if inviter.invite
         conversation = inviter.conversation

@@ -1,10 +1,11 @@
 module Hollerback
   class ConversationInviter
-    attr_accessor :inviter, :conversation, :phones, :name
+    attr_accessor :inviter, :conversation, :usernames, :phones, :name
 
-    def initialize(user, numbers, name=nil)
+    def initialize(user, numbers, usernames, name=nil)
       self.inviter = user
-      self.phones = numbers
+      self.phones = numbers || []
+      self.usernames = usernames || []
       self.name = name
     end
 
@@ -15,6 +16,16 @@ module Hollerback
 
       success = Conversation.transaction do
         self.conversation = create_conversation
+
+        usernames.each do |username|
+          if user = User.find_by_username(username)
+            next if conversation.members.exists?(user)
+            conversation.members << user
+            friendship = inviter.friendships.where(:friend_id => user.id).first
+            friendship.touch
+          end
+        end
+
         parsed_phones.each do |phone|
           if users = User.where(phone_normalized: phone) and users.any?
             user = users.first

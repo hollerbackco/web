@@ -18,6 +18,11 @@ class User < ActiveRecord::Base
     :foreign_key => :inviter_id,
     :class_name => "Invite"
 
+  has_many :friendships
+  has_many :friends, :through => :friendships
+  has_many :inverse_friendships, :class_name => "Friendship", :foreign_key => "friend_id"
+  has_many :inverse_friends, :through => :inverse_friendships, :source => :user
+
   has_many :conversations, through: :memberships
   has_many :contacts
 
@@ -42,11 +47,15 @@ class User < ActiveRecord::Base
     User.where(:id => Device.android.pluck("distinct user_id"))
   end
 
-  def friends
-    user_ids = Membership.where(:conversation_id => conversations).map(&:user_id).uniq
-    user_ids = user_ids - [self.id]
-    User.where(:id => user_ids)
+  def unadded_friends
+    inverse_friends - friends
   end
+
+  #def friends
+    #user_ids = Membership.where(:conversation_id => conversations).map(&:user_id).uniq
+    #user_ids = user_ids - [self.id]
+    #User.where(:id => user_ids)
+  #end
 
   def set_last_active_at
     self.last_active_at = Time.now
