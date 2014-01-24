@@ -25,7 +25,7 @@ module HollerbackApp
     ['/download', '/invite', '/v/:token', '/usc'].each do |location|
       get location do
         if android?
-          redirect '/android/wait'
+          redirect '/beta'
         else
           if location == "/usc"
             MetricsPublisher.delay.publish_delay("email:usc:app_visit")

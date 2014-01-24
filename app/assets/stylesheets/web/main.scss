@@ -49,11 +49,20 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: normal;
 }
 
+.tagline {
+  font-weight: 300;
+  line-height: 1.5em;
+}
+
 header {
   text-align: center;
   &> div {
     display: inline-block;
   }
+}
+
+ol li {
+  padding: 10px 0;
 }
 
 .page {
@@ -247,3 +256,16 @@ section.content {
   }
 }
 
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+  body.page .container {
+    width: 100%;
+    margin: 0 10px;
+  }
+}
+
+@media only screen and (max-width: 480px){
+  body.page .container {
+    width: 100%;
+    margin: 0 10px;
+  }
+}
