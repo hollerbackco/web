@@ -598,6 +598,10 @@ footer {
     margin-top: -38%;
   }
 
+  .page .container {
+    width: 100%;
+  }
+
   #welcome-splash section {
     width: 100%;
   }
@@ -617,6 +621,10 @@ footer {
 @media only screen and (max-width: 480px) {
   body {
     min-height: 600px;
+  }
+
+  .page .container {
+    width: 100%;
   }
 
   #welcome-splash section {

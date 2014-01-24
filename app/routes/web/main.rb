@@ -24,6 +24,10 @@ module HollerbackApp
       haml :privacy
     end
 
+    get '/beta' do
+      haml "android/beta".to_sym
+    end
+
     #TODO deprecate, replaced by v/:token
     get '/from/:username/:id' do
       video = Video.find_by_code(params[:id])
