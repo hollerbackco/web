@@ -115,7 +115,7 @@ module HollerbackApp
     get '/me/conversations/:id/members' do
       begin
         membership = current_user.memberships.find(params[:id])
-        success_json data: membership.members
+        success_json data: membership.members.map {|u| u.meta }
       rescue ActiveRecord::RecordNotFound
         not_found
       end
