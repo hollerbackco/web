@@ -88,6 +88,7 @@ class Membership < ActiveRecord::Base
       {
         id: other.id,
         name: other.also_known_as(for: user),
+        username: other.username,
         is_blocked: user.muted?(other)
       }
     end
