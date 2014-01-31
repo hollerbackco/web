@@ -268,7 +268,7 @@ class User < ActiveRecord::Base
 
   def level
     levels = [5,10,25,50,100,250,500,1000]
-    levels.index(user.videos.count) + 1
+    levels.index(videos.count) + 1
   end
   private
 
