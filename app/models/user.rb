@@ -254,7 +254,7 @@ class User < ActiveRecord::Base
       name: username,
       username: username,
       phone: phone_normalized,
-      level: level
+      videos_sent: videos.count
     }
   end
 
@@ -266,10 +266,6 @@ class User < ActiveRecord::Base
     self.verification_code ||= SecureRandom.random_number(8999) + 1000
   end
 
-  def level
-    levels = [5,10,25,50,100,250,500,1000]
-    levels.index(videos.count) + 1
-  end
   private
 
   def phoner
