@@ -35,7 +35,7 @@ class WelcomeUser
   end
 
   def notify_friend_join
-    friends = Contact.where(phone_hashed: user.phone_hashed).map {|contact| contact.user }
+    friends = Contact.where(phone_hashed: user.phone_hashed).map {|contact| contact.user }.compact
     for friend in friends
       Hollerback::Push.delay.send(friend.id, {
         alert: "#{user.username} just joined",
