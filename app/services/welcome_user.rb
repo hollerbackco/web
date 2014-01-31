@@ -33,4 +33,16 @@ class WelcomeUser
   def will_user
     @will ||= User.find_by_username("will_from_hollerback") || User.find_by_username("will")
   end
+
+  def notify_friend_join
+    friends = Contact.where(phone_hashed: user.phone_hashed).map {|contact| contact.user }
+    for friend in friends
+      Hollerback::Push.delay.send(friend.id, {
+        alert: "#{user.username} just joined",
+        sound: "default",
+        content_available: true,
+        data: {uuid: SecureRandom.uuid}
+      }).to_json
+    end
+  end
 end
