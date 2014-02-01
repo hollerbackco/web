@@ -9,6 +9,7 @@ class WelcomeUser
   def run
     filename = "batch/welcome.mp4"
     send_video_to_user(filename, user)
+    notify_friend_join
   end
 
   def send_video_to_user(filename, user)
@@ -38,7 +39,7 @@ class WelcomeUser
     friends = Contact.where(phone_hashed: user.phone_hashed).map {|contact| contact.user }.compact
     for friend in friends
       msg = "#{user.username} just joined"
-      p msg
+      MetricsPublisher.publish(friend, "friends:join")
       Hollerback::Push.delay.send(friend.id, {
         alert: msg,
         sound: "default",
