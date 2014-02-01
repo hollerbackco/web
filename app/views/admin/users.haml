@@ -13,7 +13,6 @@
       %td Conversations
       %td Videos (S/R)
       %td Video Invites
-      %td Badge
       %td Joined
       %td Active
       %td App Version
@@ -31,7 +30,6 @@
         %td= user.memberships.count
         %td= "#{user.messages.sent.count}/#{user.messages.received.count}"
         %td= user.invites.count
-        %td= user.unseen_memberships_count
         %td.date
           %span{"data-time" => (user.created_at.to_i * 1000)}= user.created_at
         - if user["last_active_at"]
