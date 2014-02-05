@@ -287,3 +287,5 @@ class User < ActiveRecord::Base
     self.email = email.downcase
   end
 end
+
+# February 5, 2014 -- jeff was here

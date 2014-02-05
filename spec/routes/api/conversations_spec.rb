@@ -68,29 +68,32 @@ describe 'API | conversations endpoint' do
     subject.memberships.reload.find_by_name(name).should_not be_nil
   end
 
-  it 'POST me/conversations | should not create another conversation' do
-    count = subject.conversations.reload.count
+  # feb 5, 2014 (Jeffrey Noh) we currently support multiple conversations with the
+  # same recipients.
 
-    post '/me/conversations',
-      :access_token => access_token,
-      "invites[]" => [secondary_subject.phone_normalized,"+18887777777"]
+  #it 'POST me/conversations | should not create another conversation' do
+    #count = subject.conversations.reload.count
 
-    last_response.should be_ok
-    result = JSON.parse(last_response.body)
-    subject.conversations.reload.count.should == count
-  end
+    #post '/me/conversations',
+      #:access_token => access_token,
+      #"invites[]" => [secondary_subject.phone_normalized,"+18887777777"]
 
-  it 'POST me/conversations | return error if no invites sent' do
-    count = subject.memberships.count
-    post '/me/conversations', :access_token => access_token
+    #last_response.should be_ok
+    #result = JSON.parse(last_response.body)
+    #subject.conversations.reload.count.should == count
+  #end
 
-    result = JSON.parse(last_response.body)
+  #it 'POST me/conversations | return error if no invites sent' do
+    #count = subject.memberships.count
+    #post '/me/conversations', :access_token => access_token
 
-    last_response.should_not be_ok
-    result['meta']['code'].should == 400
-    result['meta']['msg'].should == "missing invites param"
-    subject.memberships.reload.count.should == count
-  end
+    #result = JSON.parse(last_response.body)
+
+    #last_response.should_not be_ok
+    #result['meta']['code'].should == 400
+    #result['meta']['msg'].should == "missing invites param"
+    #subject.memberships.reload.count.should == count
+  #end
 
   it 'POST me/conversations/:id/watch_all | clear all video notifications' do
     c = secondary_subject.memberships.reload.first

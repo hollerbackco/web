@@ -13,6 +13,7 @@ class WelcomeUser
   end
 
   def send_video_to_user(filename, user)
+    return unless will_user
     conversation = user.conversations.create
     conversation.members << will_user
     conversation.save
@@ -36,6 +37,7 @@ class WelcomeUser
   end
 
   def notify_friend_join
+    return unless user
     friends = Contact.where(phone_hashed: user.phone_hashed).map {|contact| contact.user }.compact
     for friend in friends
       msg = "#{user.username} just joined"

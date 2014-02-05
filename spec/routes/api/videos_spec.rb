@@ -169,7 +169,7 @@ describe 'API | videos endpoint' do
     message.save
     message.unseen?.should be_true
 
-    post "/me/videos/#{message.id}/read", access_token: access_token
+    post "/me/videos/#{message.guid}/read", access_token: access_token
     last_response.should be_ok
     message.reload.unseen?.should be_false
   end
