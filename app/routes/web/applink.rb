@@ -1,5 +1,9 @@
 module HollerbackApp
   class WebApp < BaseApp
+    
+    APP_DOWNLOAD_LINK = "http://appstore.com/hollerback"
+    ENTERPRISE_APP_DOWNLOAD_LINK = "http://www.hollerback.co/beta/test/master"
+    
     helpers do
       def sms_download_notification(name)
         if Sinatra::Base.production? and ! params.key? :test
@@ -30,7 +34,7 @@ module HollerbackApp
           if location == "/usc"
             MetricsPublisher.delay.publish_delay("email:usc:app_visit")
           end
-          url = 'http://appstore.com/hollerback'
+          url = ENTERPRISE_APP_DOWNLOAD_LINK
           redirect url
         end
       end
@@ -54,7 +58,7 @@ module HollerbackApp
         #url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-master.plist")
         #url =  "itms-services://?action=download-manifest&url=#{url}"
 
-        url = "http://appstore.com/hollerback"
+        url = ENTERPRISE_APP_DOWNLOAD_LINK
       else
         url = "/"
       end
