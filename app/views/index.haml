@@ -44,10 +44,9 @@
         .banana-logo= image_tag "/assets/banana-logo.png"
         %h1.wordmark
           Hollerback
-        %h2.slogan= t("meta.description")
         #invite-modal
           .modal-header
-            %h2.slogan hollerback will be ready soon
+            %h2.slogan we'll be ready soon
           .modal-body
             %form#invite-form{method: "POST", action: "/waitlist.json"}
               %ul.error-messages
