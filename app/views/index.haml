@@ -99,9 +99,9 @@
 
           promise.done(function(message) {
             if(message.success) {
-              addErrorMessage(message.msg[1], "success");
+              addErrorMessage("we'll be in touch :)", "success");
             } else {
-              addErrorMessage(message.msg[1], "success");
+              addErrorMessage(message.msg, "success");
             };
           });
 
