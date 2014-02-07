@@ -45,14 +45,14 @@
         %h1.wordmark
           Hollerback
         %h2.slogan= t("meta.description")
-        #invite-modal.modal
-          .modal-header
-            %h2.slogan hollerback will be ready soon
-          .modal-body
-            %form#invite-form{method: "POST", action: "/waitlist.json"}
-              %ul.error-messages
-              %input{type: "text", name: "email", placeholder: "enter your email"}
-              %input.button.primary{type: "submit", value: "let me know"}
+      #invite-modal
+        .modal-header
+          %h2.slogan hollerback will be ready soon
+        .modal-body
+          %form#invite-form{method: "POST", action: "/waitlist.json"}
+            %ul.error-messages
+            %input{type: "text", name: "email", placeholder: "enter your email"}
+            %input.button.primary{type: "submit", value: "let me know"}
       #footer
         %nav
           %ul
