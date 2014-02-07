@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131027012606) do
+ActiveRecord::Schema.define(:version => 20140121200253) do
 
   create_table "app_links", :force => true do |t|
     t.string   "slug"
@@ -52,10 +52,23 @@ ActiveRecord::Schema.define(:version => 20131027012606) do
     t.string  "token"
     t.string  "access_token"
     t.string  "description"
+    t.string  "device_key"
   end
 
   add_index "devices", ["access_token"], :name => "index_devices_on_access_token", :unique => true
+  add_index "devices", ["device_key"], :name => "index_devices_on_device_key"
   add_index "devices", ["user_id"], :name => "index_devices_on_user_id"
+
+  create_table "friendships", :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "friend_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "friendships", ["friend_id"], :name => "index_friendships_on_friend_id"
+  add_index "friendships", ["updated_at"], :name => "index_friendships_on_updated_at"
+  add_index "friendships", ["user_id"], :name => "index_friendships_on_user_id"
 
   create_table "invites", :force => true do |t|
     t.string   "phone"
@@ -64,6 +77,7 @@ ActiveRecord::Schema.define(:version => 20131027012606) do
     t.boolean  "accepted",        :default => false, :null => false
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false
+    t.boolean  "waitlisted"
   end
 
   add_index "invites", ["conversation_id"], :name => "index_invites_on_conversation_id"
@@ -78,6 +92,7 @@ ActiveRecord::Schema.define(:version => 20131027012606) do
     t.string   "most_recent_thumb_url"
     t.string   "name"
     t.string   "most_recent_subtitle"
+    t.datetime "deleted_at"
   end
 
   add_index "memberships", ["conversation_id", "user_id"], :name => "index_memberships_on_conversation_id_and_user_id", :unique => true
@@ -124,6 +139,7 @@ ActiveRecord::Schema.define(:version => 20131027012606) do
     t.string   "last_app_version"
     t.string   "phone_hashed"
     t.text     "muted"
+    t.datetime "last_active_at"
   end
 
   add_index "users", ["access_token"], :name => "index_users_on_access_token", :unique => true
@@ -133,27 +149,14 @@ ActiveRecord::Schema.define(:version => 20131027012606) do
   add_index "users", ["phone_normalized"], :name => "index_users_on_phone_normalized"
   add_index "users", ["username"], :name => "index_users_on_username", :unique => true
 
-  create_table "videos", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "conversation_id"
-    t.string   "filename"
-    t.datetime "created_at",                                       :null => false
-    t.datetime "updated_at",                                       :null => false
-    t.boolean  "in_progress",                    :default => true, :null => false
-    t.string   "streamname"
-    t.string   "guid",            :limit => nil,                   :null => false
-    t.string   "subtitle"
-  end
-
-  add_index "videos", ["conversation_id"], :name => "index_videos_on_conversation_id"
-  add_index "videos", ["created_at"], :name => "index_videos_on_created_at"
-  add_index "videos", ["guid"], :name => "index_videos_on_guid", :unique => true
-  add_index "videos", ["user_id"], :name => "index_videos_on_user_id"
+# Could not dump table "videos" because of following StandardError
+#   Unknown type 'hstore' for column 'stitch_request'
 
   create_table "waitlisters", :force => true do |t|
     t.string   "email"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.string   "phone"
   end
 
   add_index "waitlisters", ["email"], :name => "index_waitlisters_on_email"
