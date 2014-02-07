@@ -45,9 +45,16 @@
         %h1.wordmark
           Hollerback
         %h2.slogan= t("meta.description")
-        .stores
-          %a{href: "http://appstore.com/hollerback"}
-            %img{src: "/assets/appstore.png", width: 200}
+        .modal-header
+          %h3 hollerback will be ready soon
+        .modal-body
+          %form#invite-form{method: "POST", action: "/waitlist.json"}
+            %ul.error-messages
+            %input{type: "text", name: "email", placeholder: "enter your email"}
+            %input.button.primary{type: "submit", value: "let me know"}
+        // .stores
+        //   %a{href: "http://appstore.com/hollerback"}
+        //     %img{src: "/assets/appstore.png", width: 200}
       #footer
         %nav
           %ul
