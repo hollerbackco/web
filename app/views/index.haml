@@ -45,9 +45,14 @@
         %h1.wordmark
           Hollerback
         %h2.slogan= t("meta.description")
-        .stores
-          %a{href: "http://appstore.com/hollerback"}
-            %img{src: "/assets/appstore.png", width: 200}
+        #invite-modal
+          .modal-header
+            %h2.slogan hollerback will be ready soon
+          .modal-body
+            %form#invite-form{method: "POST", action: "/waitlist.json"}
+              %ul.error-messages
+              %input{type: "text", name: "email", placeholder: "enter your email"}
+              %input.button.primary{type: "submit", value: "let me know"}
       #footer
         %nav
           %ul
@@ -72,6 +77,45 @@
         li.html(msg);
         errorDiv.append(li);
       };
+
+
+      var sendInvite = function(event) {
+
+        event.preventDefault();
+
+        var url = $(this).attr("action");
+        var email = $("input[name=email]").val();
+
+        if(email !== "") {
+
+          var promise = $.ajax({
+            url: url,
+            method: "post",
+            dataType: "json",
+            data: {
+              email: email
+            }
+          });
+
+          promise.done(function(message) {
+            if(message.success) {
+              addErrorMessage("we'll be in touch :)", "success");
+            } else {
+              addErrorMessage(message.msg, "success");
+            };
+          });
+
+          promise.error(function() {
+            addErrorMessage("could not add your email", "error");
+          });
+
+        } else {
+          addErrorMessage("please enter an email", "error");
+        }
+      }
+
+
+
 
       var sendAppLink = function(event) {
         event.preventDefault();
@@ -109,4 +153,4 @@
 
       }
 
-      $("#send-link").submit(sendAppLink);
+      $("#invite-modal form").submit(sendInvite);
