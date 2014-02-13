@@ -5,11 +5,13 @@ class Message < ActiveRecord::Base
 
   scope :seen, where("seen_at is not null")
   scope :unseen, where(:seen_at => nil)
+  scope :unseen_within_memberships, lambda {|ids| where("messages.seen_at is null AND messages.membership_id IN (?)", ids)}
   scope :received, where("is_sender IS NOT TRUE")
   scope :sent, where("is_sender IS TRUE")
-  scope :updated_since, lambda {|updated_at| where("messages.updated_at > ?", updated_at)}
-  scope :before_last_message_at, lambda {|before_message_time, ids| where("messages.updated_at < ? AND messages.membership_id IN (?)", before_message_time, ids)}
-  scope :before, lambda {|time| where("messages.sent_at < ?", time)}
+  scope :updated_since, lambda { |updated_at| where("messages.updated_at > ? ", updated_at) }
+  scope :updated_since_within_memberships, lambda { |updated_at, ids| where("messages.updated_at > ? AND messages.membership_id IN (?)", updated_at, ids) }
+  scope :before_last_message_at, lambda { |before_message_time, ids| where("messages.updated_at < ? AND messages.membership_id IN (?)", before_message_time, ids) }
+  scope :before, lambda { |time| where("messages.sent_at < ?", time) }
   scope :watchable, where("content ? 'guid'")
 
   after_create do |record|
@@ -40,27 +42,27 @@ class Message < ActiveRecord::Base
   def self.sync_objects(opts={})
     raise ArgumentError if opts[:user].blank?
     options = {
-      :since => nil,
-      :before => nil,
-      :membership_ids => nil
+        :since => nil,
+        :before => nil,
+        :membership_ids => []
     }.merge(opts)
 
     collection = options[:user].messages.watchable
 
     collection = if options[:since]
-      collection.updated_since(options[:since])
-      elsif options[:before] && options[:membership_ids]
-      collection.before_last_message_at(options[:before], options[:membership_ids])
-      else
-      collection.unseen
-    end
+                   collection.updated_since_within_memberships("messages.membership_id IN (?)", options[:membership_ids])
+                 elsif options[:before]
+                   collection.before_last_message_at(options[:before], options[:membership_ids])
+                 else               #how much of an improvement will one query be? Quite a bit!
+                   collection.unseen_within_memberships(options[:membership_ids])
+                 end
 
     collection.map(&:to_sync)
   end
 
   def user
     {
-      name: sender_name
+        name: sender_name
     }
   end
 
@@ -118,6 +120,7 @@ class Message < ActiveRecord::Base
   def deleted?
     deleted_at.present?
   end
+
   alias_method :is_deleted, :deleted?
 
   def conversation_id
@@ -126,10 +129,10 @@ class Message < ActiveRecord::Base
 
   def to_sync
     {
-      type: "message",
-      sync: as_json({
-        :methods => [:guid, :url, :thumb_url, :conversation_id, :user, :is_deleted, :subtitle]
-      })
+        type: "message",
+        sync: as_json({
+                          :methods => [:guid, :url, :thumb_url, :conversation_id, :user, :is_deleted, :subtitle]
+                      })
     }
   end
 

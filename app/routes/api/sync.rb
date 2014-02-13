@@ -5,11 +5,8 @@ module HollerbackApp
       updated_at = Time.parse(params[:updated_at]) if params[:updated_at]
       before_last_message_at = Time.parse(params[:before_last_message_at]) if params[:before_last_message_at]
 
-      #user_agent = UserAgent.new(request.user_agent)
-
-      count = 10  # if user_agent.ios? && @app_version &&  GEM::RUBY_VERSION.new(@app_version) >  GEM::RUBY_VERSION.new('1.1.4')
-
-      syncable = [Membership, Message]
+      user_agent = Hollerback::UserAgent.new(request.user_agent)
+      count = HollerbackApp::IOS_MAX_SYNC_OBJECTS if user_agent.ios? && @app_version &&  GEM::RUBY_VERSION.new(@app_version) >  GEM::RUBY_VERSION.new('1.1.5')
 
       sync_objects = []
 
@@ -19,13 +16,6 @@ module HollerbackApp
 
       #get the messages associated with these memberships
       sync_objects = sync_objects.concat(Message.sync_objects(user: current_user, since: updated_at, before: before_last_message_at, membership_ids: ids))
-
-      # get the sync objects basedon the client request
-      #syncable.each do |collection|
-      #  objects = collection.sync_objects(user: current_user, since: updated_at, before: before_last_message_at, count: count)
-      #
-      #  sync_objects = sync_objects.concat(objects)
-      #end
 
       ConversationRead.perform_async(current_user.id)
 

@@ -22,18 +22,15 @@ class Membership < ActiveRecord::Base
         :before => nil,
         :count => nil,
     }.merge(opts)
-    logger.debug "sync options: " + options.to_s
     collection = self.where(user_id: options[:user].id)
 
     if options[:since]
       collection = collection.updated_since(options[:since])
     elsif options[:before] && options[:count]
-      logger.debug "sending before option"
       collection = collection.before_last_message_at(options[:before], options[:count])
     else
       collection = collection.where("memberships.deleted_at IS null")
       collection = collection.limit(options[:count]) if options[:count] #limit the number we send if it's set
-      logger.debug "sync size: " + collection.size.to_s
     end
 
     collection = collection
