@@ -3,6 +3,7 @@
 *.rbc
 *.sass-cache
 .idea
+*.orig
 .rvmrc
 config/local_env.yml
 log/newrelic_agent.log

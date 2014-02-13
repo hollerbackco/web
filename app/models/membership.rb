@@ -91,9 +91,10 @@ class Membership < ActiveRecord::Base
   def members
     others.map do |other|
       {
-          id: other.id,
-          name: other.also_known_as(for: user),
-          is_blocked: user.muted?(other)
+        id: other.id,
+        name: other.also_known_as(for: user),
+        username: other.username,
+        is_blocked: user.muted?(other)
       }
     end
   end

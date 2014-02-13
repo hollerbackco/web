@@ -28,7 +28,7 @@ module Hollerback
       membership = message.membership
       badge_count = person.unseen_memberships_count
 
-      Hollerback::Push.delay.send(person.id, {
+      Hollerback::Push.delay.send(person.id, {  #are we sending it to apple anyways?
         alert: message.sender_name,
         badge: badge_count,
         sound: "default",

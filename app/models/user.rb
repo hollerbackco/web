@@ -251,8 +251,10 @@ class User < ActiveRecord::Base
   def meta
     {
       id: id,
+      name: username,
       username: username,
-      phone: phone_normalized
+      phone: phone_normalized,
+      videos_sent: videos.count
     }
   end
 
@@ -285,3 +287,5 @@ class User < ActiveRecord::Base
     self.email = email.downcase
   end
 end
+
+# February 5, 2014 -- jeff was here
