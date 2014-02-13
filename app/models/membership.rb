@@ -12,28 +12,36 @@ class Membership < ActiveRecord::Base
 
   before_create { |record| record.last_message_at = Time.now }
 
-  scope :updated_since, lambda {|updated_at| where("memberships.updated_at > ?", updated_at)}
+  scope :updated_since, lambda { |updated_at| where("memberships.updated_at > ?", updated_at) }
+  scope :before_last_message_at, lambda {|before_message_at, count| where("memberships.updated_at < ?", before_message_at).limit(count)}
 
   def self.sync_objects(opts={})
     raise ArgumentError if opts[:user].blank? and !opts[:user].is_a? User
-    options =  {
-      :since => nil,
+    options = {
+        :since => nil,
+        :before => nil,
+        :count => nil,
     }.merge(opts)
-
+    logger.debug "sync options: " + options.to_s
     collection = self.where(user_id: options[:user].id)
 
     if options[:since]
       collection = collection.updated_since(options[:since])
+    elsif options[:before] && options[:count]
+      logger.debug "sending before option"
+      collection = collection.before_last_message_at(options[:before], options[:count])
     else
       collection = collection.where("memberships.deleted_at IS null")
+      collection = collection.limit(options[:count]) if options[:count] #limit the number we send if it's set
+      logger.debug "sync size: " + collection.size.to_s
     end
 
     collection = collection
-      .joins("LEFT OUTER JOIN messages ON memberships.id = messages.membership_id AND messages.seen_at is null AND messages.content ? 'guid'")
-      .group("memberships.id")
-      .select('memberships.*, count(messages) as unseen_count')
+    .joins("LEFT OUTER JOIN messages ON memberships.id = messages.membership_id AND messages.seen_at is null AND messages.content ? 'guid'")
+    .group("memberships.id")
+    .select('memberships.*, count(messages) as unseen_count')
 
-    collection.map(&:to_sync)
+    return collection.map(&:to_sync), collection.map {|membership| membership.conversation_id}
   end
 
   def seen_without_response
@@ -42,7 +50,7 @@ class Membership < ActiveRecord::Base
     all_messages = Message.all_by_guid(message.guid)
 
     # subtract sender
-    seen_count = all_messages.select {|m| m.seen?}.count - 1
+    seen_count = all_messages.select { |m| m.seen? }.count - 1
 
     if seen_count > 1
       string = "seen by #{seen_count} people"
@@ -86,9 +94,9 @@ class Membership < ActiveRecord::Base
   def members
     others.map do |other|
       {
-        id: other.id,
-        name: other.also_known_as(for: user),
-        is_blocked: user.muted?(other)
+          id: other.id,
+          name: other.also_known_as(for: user),
+          is_blocked: user.muted?(other)
       }
     end
   end
@@ -106,7 +114,7 @@ class Membership < ActiveRecord::Base
 
   def auto_generated_name
     return conversation.name if conversation.name.present?
-    names = others.map {|other| other.also_known_as(:for => user)}
+    names = others.map { |other| other.also_known_as(:for => user) }
     names = names + conversation.invites.map do |invite|
       invite.also_known_as(:for => user)
     end
@@ -125,17 +133,19 @@ class Membership < ActiveRecord::Base
   end
 
   def view_all
-    messages.unseen.each {|m| m.seen! }
+    messages.unseen.each { |m| m.seen! }
   end
 
   def group?
     conversation.group?
   end
+
   alias_method :is_group, :group?
 
   def unseen_count
     self["unseen_count"] || messages.watchable.received.unseen.count
   end
+
   alias_method :unread_count, :unseen_count
 
   def update_seen!
@@ -168,8 +178,8 @@ class Membership < ActiveRecord::Base
 
   def to_sync
     {
-      type: "conversation",
-      sync: as_json
+        type: "conversation",
+        sync: as_json
     }
   end
 end

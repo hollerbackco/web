@@ -1,5 +1,8 @@
 module HollerbackApp
   class ApiApp < BaseApp
+
+    attr_accessor :app_version
+
     before '/me*' do
       authenticate(:api_token)
 
@@ -10,6 +13,8 @@ module HollerbackApp
 
       # set app version
       app_version = request.env["HTTP_IOS_APP_VER"] || request.env["HTTP_ANDROID_APP_VERSION"]
+      @app_version = app_version
+
       if app_version and app_version != current_user.last_app_version
         current_user.last_app_version = app_version
         Hollerback::BMO.say("#{current_user.username} updated to #{app_version}")

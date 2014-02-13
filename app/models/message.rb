@@ -8,6 +8,7 @@ class Message < ActiveRecord::Base
   scope :received, where("is_sender IS NOT TRUE")
   scope :sent, where("is_sender IS TRUE")
   scope :updated_since, lambda {|updated_at| where("messages.updated_at > ?", updated_at)}
+  scope :before_last_message_at, lambda {|before_message_time, ids| where("messages.updated_at < ? AND messages.membership_id IN (?)", before_message_time, ids)}
   scope :before, lambda {|time| where("messages.sent_at < ?", time)}
   scope :watchable, where("content ? 'guid'")
 
@@ -39,14 +40,18 @@ class Message < ActiveRecord::Base
   def self.sync_objects(opts={})
     raise ArgumentError if opts[:user].blank?
     options = {
-      :since => nil
+      :since => nil,
+      :before => nil,
+      :membership_ids => nil
     }.merge(opts)
 
     collection = options[:user].messages.watchable
 
     collection = if options[:since]
       collection.updated_since(options[:since])
-    else
+      elsif options[:before] && options[:membership_ids]
+      collection.before_last_message_at(options[:before], options[:membership_ids])
+      else
       collection.unseen
     end
 
