@@ -9,7 +9,11 @@ class WelcomeUser
   def run
     filename = "batch/welcome.mp4"
     send_video_to_user(filename, user)
-    notify_friend_join
+    begin
+      notify_friend_join
+    rescue Exception => e
+      logger.error e.to_s
+    end
   end
 
   def send_video_to_user(filename, user)
