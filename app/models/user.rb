@@ -251,8 +251,10 @@ class User < ActiveRecord::Base
   def meta
     {
       id: id,
+      name: username,
       username: username,
-      phone: phone_normalized
+      phone: phone_normalized,
+      videos_sent: videos.count
     }
   end
 
