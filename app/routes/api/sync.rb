@@ -17,6 +17,7 @@ module HollerbackApp
       #get the messages associated with these memberships
       sync_objects = sync_objects.concat(Message.sync_objects(user: current_user, since: updated_at, before: before_last_message_at, membership_ids: ids))
 
+      #the following operation is a very long running query
       ConversationRead.perform_async(current_user.id)
 
       data = success_json(
