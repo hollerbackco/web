@@ -38,7 +38,8 @@ class Membership < ActiveRecord::Base
     .group("memberships.id")
     .select('memberships.*, count(messages) as unseen_count')
 
-    return collection.map(&:to_sync), collection.map {|membership| membership.conversation_id}
+    return collection.map(&:to_sync), collection.map {|membership| membership.id }
+
   end
 
   def seen_without_response
