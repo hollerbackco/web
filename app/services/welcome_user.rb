@@ -39,11 +39,12 @@ class WelcomeUser
 
   def notify_friend_join
     return unless user
-    friends = Contact.where(phone_hashed: user.phone_hashed).map {|contact| contact.user }.compact
-    for friend in friends
-      msg = "#{user.username} just joined"
-      MetricsPublisher.publish(friend, "friends:join")
-      Hollerback::Push.delay.send(friend.id, {
+    friends = Contact.where(phone_hashed: user.phone_hashed)
+
+    friends.each do |friend|
+      msg = "#{friend.name} just joined"
+      MetricsPublisher.publish(friend.user, "friends:join")
+      Hollerback::Push.delay.send(friend.user.id, {
         alert: msg,
         sound: "default",
         content_available: true,
