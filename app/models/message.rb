@@ -50,7 +50,7 @@ class Message < ActiveRecord::Base
     collection = options[:user].messages.watchable
 
     collection = if options[:since]
-                   collection.updated_since_within_memberships("messages.membership_id IN (?)", options[:membership_ids])
+                   collection.updated_since_within_memberships(options[:since], options[:membership_ids])
                  elsif options[:before]
                    collection.before_last_message_at(options[:before], options[:membership_ids])
                  else               #how much of an improvement will one query be? Quite a bit!
