@@ -14,6 +14,7 @@ class WelcomeUser
   def send_video_to_user(filename, user)
     conversation = user.conversations.create
     conversation.members << will_user
+    conversation.name = "Welcome to Hollerback"
     conversation.save
     membership = Membership.where(conversation_id: conversation.id, user_id: will_user.id).first
 
