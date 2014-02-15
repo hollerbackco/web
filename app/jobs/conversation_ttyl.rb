@@ -40,9 +40,6 @@ class ConversationTtyl
 
     data = [sender_membership.to_sync]
     person.devices.android.each do |device|
-      #::GCMS.send_notification([device.token],
-      #  data: data
-      #)
       Hollerback::GcmWrapper.send_notification([device.token], Hollerback::GcmWrapper::TYPE::SYNC, data)
     end
   end

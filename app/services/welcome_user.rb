@@ -54,6 +54,12 @@ class WelcomeUser
         content_available: true,
         data: {uuid: SecureRandom.uuid}
       }.to_json)
+
+      tokens =  friend.user.devices.android.map {|device| device.token}
+      payload = {:message => msg}
+      if(!tokens.empty?)
+        Hollerback::GcmWrapper.send_notification(tokens, Hollerback::GcmWrapper::TYPE::NOTIFICATION, payload)
+      end
     end
   end
 end

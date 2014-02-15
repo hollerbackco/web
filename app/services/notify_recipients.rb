@@ -37,10 +37,6 @@ module Hollerback
       }.to_json)
 
       person.devices.android.each do |device|
-        #res = ::GCMS.send_notification([device.token],
-        #  data: nil,
-        #  collapse_key: "new_message"
-        #)
         res = Hollerback::GcmWrapper.send_notification([device.token],                     #tokens
                                                        Hollerback::GcmWrapper::TYPE::SYNC, #type
                                                        nil,                                #payload
