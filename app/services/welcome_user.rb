@@ -35,6 +35,4 @@ class WelcomeUser
   def will_user
     @will ||= User.find_by_username("will_from_hollerback") || User.find_by_username("will")
   end
-
-
 end
