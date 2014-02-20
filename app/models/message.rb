@@ -71,6 +71,10 @@ class Message < ActiveRecord::Base
     content["thumb_url"]
   end
 
+  def gif_url
+    content["gif_url"]
+  end
+
   def subtitle
     (content["subtitle"] || "").force_encoding("UTF-8")
   end
@@ -121,16 +125,16 @@ class Message < ActiveRecord::Base
 
   def to_sync
     {
-      type: "message",
-      sync: as_json({
-        :methods => [:guid, :url, :thumb_url, :conversation_id, :user, :is_deleted, :subtitle]
-      })
+        type: "message",
+        sync: as_json({
+                          :methods => [:guid, :url, :thumb_url, :gif_url, :conversation_id, :user, :is_deleted, :subtitle]
+                      })
     }
   end
 
   def as_json(opts={})
     options = {}
-    options = options.merge(:methods => [:guid, :url, :thumb_url, :conversation_id, :user, :is_deleted, :subtitle])
+    options = options.merge(:methods => [:guid, :url, :thumb_url, :gif_url,  :conversation_id, :user, :is_deleted, :subtitle])
     options = options.merge(:only => [:created_at, :sender_name, :sent_at, :needs_reply])
     options = options.merge(opts)
     super(options).merge({isRead: !unseen?, id: guid})
