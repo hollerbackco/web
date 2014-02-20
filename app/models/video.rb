@@ -59,6 +59,13 @@ class Video < ActiveRecord::Base
     #end
   end
 
+  def gif_url
+    return "" if filename.blank?
+
+    [CLOUDFRONT_URL, gif_object.key].join("/")
+
+  end
+
   def metadata
     video_object.metadata
   end
@@ -68,7 +75,8 @@ class Video < ActiveRecord::Base
       guid: guid,
       url: url,
       thumb_url: thumb_url,
-      subtitle: subtitle
+      subtitle: subtitle,
+      gif_url: gif_url
     }
   end
 
@@ -107,5 +115,10 @@ class Video < ActiveRecord::Base
   def thumb_object
     thumb = filename.split(".").first << "-thumb.png"
     self.class.bucket.objects[thumb]
+  end
+
+  def gif_object
+    gif = filename.split(".").first << ".gif"
+    self.class.bucket.objects[gif]
   end
 end
