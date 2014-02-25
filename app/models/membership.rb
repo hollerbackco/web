@@ -13,7 +13,9 @@ class Membership < ActiveRecord::Base
   before_create { |record| record.last_message_at = Time.now }
 
   scope :updated_since, lambda { |updated_at| where("memberships.updated_at > ?", updated_at) }
-  scope :before_last_message_at, lambda {|before_message_at, count| where("memberships.updated_at < ?", before_message_at).limit(count)}
+  scope :updated_since_with_limit, lambda { |updated_at, count| where("memberships.updated_at > ?", updated_at).limit(count) }
+  scope :before_last_message_at_with_limit, lambda { |before_message_at, count| where("memberships.updated_at < ?", before_message_at).limit(count) }
+  scope :before_last_message_at, lambda { |before_message_at| where("memberships.updated_at < ?", before_message_at) }
 
   def self.sync_objects(opts={})
     raise ArgumentError if opts[:user].blank? and !opts[:user].is_a? User
@@ -25,12 +27,25 @@ class Membership < ActiveRecord::Base
     collection = self.where(user_id: options[:user].id)
 
     if options[:since]
-      collection = collection.updated_since(options[:since])
-    elsif options[:before] && options[:count]
-      collection = collection.before_last_message_at(options[:before], options[:count])
+      if (options[:count])
+        collection = collection.updated_since_with_limit(options[:since], options[:count])
+      else
+        collection = collection.updated_since(options[:since])
+      end
+
+    elsif options[:before]
+      if (options[:count])
+        collection = collection.before_last_message_at_with_limit(options[:before], options[:count])
+      else
+        collection = collection.before_last_message_at(options[:before])
+      end
     else
-      collection = collection.where("memberships.deleted_at IS null")
-      collection = collection.limit(options[:count]) if options[:count] #limit the number we send if it's set
+      if (options[:count])
+        collection = collection.where("memberships.deleted_at IS null").limit(options[:count])
+      else
+        collection = collection.where("memberships.deleted_at IS null") #limit the number we send if it's set
+      end
+
     end
 
     collection = collection
@@ -38,7 +53,7 @@ class Membership < ActiveRecord::Base
     .group("memberships.id")
     .select('memberships.*, count(messages) as unseen_count')
 
-    return collection.map(&:to_sync), collection.map {|membership| membership.id }
+    return collection.map(&:to_sync), collection.map { |membership| membership.id }
 
   end
 
@@ -92,10 +107,10 @@ class Membership < ActiveRecord::Base
   def members
     others.map do |other|
       {
-        id: other.id,
-        name: other.also_known_as(for: user),
-        username: other.username,
-        is_blocked: user.muted?(other)
+          id: other.id,
+          name: other.also_known_as(for: user),
+          username: other.username,
+          is_blocked: user.muted?(other)
       }
     end
   end

@@ -6,7 +6,7 @@ module HollerbackApp
       before_last_message_at = Time.parse(params[:before_last_message_at]) if params[:before_last_message_at]
 
       user_agent = Hollerback::UserAgent.new(request.user_agent)
-      count = HollerbackApp::IOS_MAX_SYNC_OBJECTS if user_agent.ios? && @app_version &&  GEM::RUBY_VERSION.new(@app_version) >  GEM::RUBY_VERSION.new('1.1.5')
+      count = params[:count] #HollerbackApp::IOS_MAX_SYNC_OBJECTS if user_agent.ios? && @app_version &&  GEM::RUBY_VERSION.new(@app_version) >  GEM::RUBY_VERSION.new('1.1.5')
 
       sync_objects = []
 

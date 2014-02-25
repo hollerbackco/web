@@ -9,8 +9,8 @@ class Message < ActiveRecord::Base
   scope :received, where("is_sender IS NOT TRUE")
   scope :sent, where("is_sender IS TRUE")
   scope :updated_since, lambda { |updated_at| where("messages.updated_at > ? ", updated_at) }
-  scope :updated_since_within_memberships, lambda { |updated_at, ids| where("messages.updated_at > ? AND messages.membership_id IN (?)", updated_at, ids) }
-  scope :before_last_message_at, lambda { |before_message_time, ids| where("messages.updated_at < ? AND messages.membership_id IN (?)", before_message_time, ids) }
+  scope :updated_since_within_memberships, lambda { |updated_at, ids| where("messages.seen_at is null AND messages.updated_at > ? AND messages.membership_id IN (?)", updated_at, ids) }
+  scope :before_last_message_at, lambda { |before_message_time, ids| where("messages.seen_at is null AND messages.updated_at < ? AND messages.membership_id IN (?)", before_message_time, ids) }
   scope :before, lambda { |time| where("messages.sent_at < ?", time) }
   scope :watchable, where("content ? 'guid'")
 
@@ -49,12 +49,14 @@ class Message < ActiveRecord::Base
 
     collection = options[:user].messages.watchable
 
+    logger.debug "memberships ids: " + options[:membership_ids].to_s
+
     collection = if options[:since]
                    collection.updated_since_within_memberships(options[:since], options[:membership_ids])
                  elsif options[:before]
                    collection.before_last_message_at(options[:before], options[:membership_ids])
                  else               #how much of an improvement will one query be? Quite a bit!
-                   collection.unseen_within_memberships(options[:membership_ids])
+                   collection = collection.unseen_within_memberships(options[:membership_ids])
                  end
 
     collection.map(&:to_sync)
