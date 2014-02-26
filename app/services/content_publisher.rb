@@ -14,7 +14,7 @@ class ContentPublisher
     @is_first_message = true
   end
 
-  def publish(content, opts={})
+  def publish(content, opts={}) #content is actually the video object
     options = {
       notify: true,
       analytics: true,
