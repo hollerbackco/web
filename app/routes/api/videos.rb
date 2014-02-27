@@ -107,7 +107,7 @@ module HollerbackApp
     end
 
     post '/me/conversations/:id/videos' do
-      if !ensure_params :filename
+      if !ensure_params(:filename)
         return error_json 400, msg: "missing filename param"
       end
 

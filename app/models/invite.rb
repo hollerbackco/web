@@ -7,7 +7,7 @@ class Invite < ActiveRecord::Base
   scope :pending, where(accepted: false)
   scope :waitlisted, where(waitlisted: true)
   scope :not_waitlisted, where("waitlisted is not true")
-  scope :pending_for_user, lambda {|user| pending.where(phone: user.phone_normalized)}
+  scope :pending_for_user, lambda { |user| pending.where(phone: user.phone_normalized) }
   default_scope not_waitlisted
 
   validates :phone, presence: true
@@ -27,11 +27,15 @@ class Invite < ActiveRecord::Base
   end
 
   def accept!(user)
+
     self.transaction do
-      conversation.members << user
+      if (conversation)
+        conversation.members << user
+      end
       self.accepted = true
       save!
     end
+
     MetricsPublisher.publish(user, "invite:accept", {invite_id: self.id})
   end
 
@@ -49,7 +53,9 @@ class Invite < ActiveRecord::Base
     invites = Invite.where(phone: user.phone_normalized)
 
     for invite in invites
-      next if invite.conversation.members.exists?(user)
+      unless invite.conversation.nil?
+        next if invite.conversation.members.exists?(user)
+      end
       invite.accept! user
     end
   end

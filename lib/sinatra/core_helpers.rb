@@ -16,6 +16,12 @@ module Sinatra
       @logger
     end
 
+    def parse_phones(phones, country_code, area_code)
+      phones.map do |phone|
+        Phoner::Phone.parse(phone, country_code: country_code, area_code: area_code).to_s
+      end.compact.uniq
+    end
+
     def absolute_url(url)
       if Sinatra::Base.production?
         url = "http://www.hollerback.co#{url}"

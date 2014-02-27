@@ -39,6 +39,29 @@ module HollerbackApp
       success_json data: contacts.as_json
     end
 
+    #the invite endpoint
+    post '/me/invite' do
+
+      if !ensure_params(:invites)
+        return error_json 400, msg: "missing required invites param"
+      end
+
+      invites = params[:invites]
+
+      if(invites.is_a?(String))
+        invites = invites.split(",")
+      end
+
+      #cleanse the phones
+      invites = parse_phones(invites, current_user.phone_country_code, current_user.phone_area_code)
+      logger.debug invites
+      #kick off a sidekiq task and just return to the user immediately
+      CreateInvite.perform_async(current_user.id, invites)
+
+      success_json();
+
+    end
+
 
     helpers do
       def prepare_only_hashed_numbers(contact_params)
