@@ -1,14 +1,33 @@
-
 class CreateInvite
   include Sidekiq::Worker
 
   #add the invitations to the user's invites
   def perform(user_id, invites)
-    logger.debug "executing invite task"
     user = User.find(user_id)
 
     return unless user
 
+    #ensure that the values passed in aren't actual users
+    existing_users = User.where('phone IN (?)', invites)
+    unless existing_users.empty?
+      invites = invites.reduce([]) do |filtered_invites, invite|
+
+        remove = false
+        existing_users.each do |existing_user|
+          if existing_user.phone == invite
+            remove = true
+            break
+          end
+        end
+
+        filtered_invites << invite unless remove
+        filtered_invites
+      end
+    end
+
+    return if invites.empty?
+
+    #create the invitations
     User.transaction do
       invites.each do |invited_phone|
         unless user.invites.where(:phone => invited_phone).any?
@@ -16,7 +35,6 @@ class CreateInvite
           data = {
               invited_phone: invited_phone
           }
-          logger.debug "created invite " + invited_phone + " for " + user.username
           MetricsPublisher.publish(user, "users:invite:explicit", data)
         end
       end
