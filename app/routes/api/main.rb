@@ -75,13 +75,6 @@ module HollerbackApp
       success_json data: current_user.as_json.merge(conversations: current_user.conversations)
     end
 
-    post '/me/invites' do
-      unless ensure_params(:invites)
-        return error_json 400, msg: "missing required param: invites"
-      end
-      success_json data: nil
-    end
-
     post '/me' do
       device = Device.find_by_access_token(params[:access_token])
       device.token = params["device_token"]
