@@ -58,8 +58,11 @@ class Message < ActiveRecord::Base
                  else               #how much of an improvement will one query be? Quite a bit!
                    collection.unseen_within_memberships(options[:membership_ids])
                  end
-
-    Message.set_message_display_info(collection)
+    begin
+      Message.set_message_display_info(collection)
+    rescue Exception => e
+      logger.error e
+    end
 
     collection.map(&:to_sync)
   end
