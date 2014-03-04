@@ -3,6 +3,8 @@ class Message < ActiveRecord::Base
 
   serialize :content, ActiveRecord::Coders::Hstore
 
+  attr_accessor :display
+
   scope :seen, where("seen_at is not null")
   scope :unseen, where(:seen_at => nil)
   scope :unseen_within_memberships, lambda {|ids| where("messages.seen_at is null AND messages.membership_id IN (?)", ids)}
@@ -142,7 +144,7 @@ class Message < ActiveRecord::Base
 
   def as_json(opts={})
     options = {}
-    options = options.merge(:methods => [:guid, :url, :thumb_url, :gif_url,  :conversation_id, :user, :is_deleted, :subtitle])
+    options = options.merge(:methods => [:guid, :url, :thumb_url, :gif_url,  :conversation_id, :user, :is_deleted, :subtitle, :display])
     options = options.merge(:only => [:created_at, :sender_name, :sent_at, :needs_reply])
     options = options.merge(opts)
     super(options).merge({isRead: !unseen?, id: guid})

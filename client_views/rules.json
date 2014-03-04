@@ -1,0 +1,13 @@
+{
+    "video_cell_display_rules":{
+        "user":{
+            "thumb_gravity": "left",
+            "thumb_style": "round"
+        },
+
+        "others":{
+            "thumb_gravity": "right",
+            "thumb_style": "round"
+        }
+    }
+}

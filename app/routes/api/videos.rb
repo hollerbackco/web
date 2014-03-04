@@ -12,6 +12,20 @@ module HollerbackApp
           last_page = messages.current_page == messages.total_pages
         end
 
+        video_rules = HollerbackApp::ClientDisplayManager.get_rules_by_name('video_cell_display_rules')
+
+        #user display info
+        user_display = video_rules['user']
+
+        #other display info
+        other_display = video_rules['others']
+
+        #for each message add it's display info
+        messages.each do |message|
+          message.is_sender? ? message.display = user_display : message.display = other_display
+          p message
+        end
+
         success_json({
           data: messages.as_json,
           meta: {
