@@ -142,7 +142,7 @@ class Message < ActiveRecord::Base
     {
         type: "message",
         sync: as_json({
-                          :methods => [:guid, :url, :thumb_url, :gif_url, :conversation_id, :user, :is_deleted, :subtitle]
+                          :methods => [:guid, :url, :thumb_url, :gif_url, :conversation_id, :user, :is_deleted, :subtitle, :display]
                       })
     }
   end
