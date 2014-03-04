@@ -12,30 +12,23 @@ module HollerbackApp
           last_page = messages.current_page == messages.total_pages
         end
 
-        video_rules = HollerbackApp::ClientDisplayManager.get_rules_by_name('video_cell_display_rules')
-
-        #user display info
-        user_display = video_rules['user']
-
-        #other display info
-        other_display = video_rules['others']
-
-        #for each message add it's display info
-        messages.each do |message|
-          message.is_sender? ? message.display = user_display : message.display = other_display
-          p message
+        begin
+          set_message_display_info(messages)
+        rescue Exception => e
+          logger.error e
         end
 
         success_json({
-          data: messages.as_json,
-          meta: {
-            last_page: last_page
-          }
-        })
+                         data: messages.as_json,
+                         meta: {
+                             last_page: last_page
+                         }
+                     })
       rescue ActiveRecord::RecordNotFound
         not_found
       end
     end
+
 
     get '/me/conversations/:conversation_id/history' do
       begin
@@ -49,12 +42,19 @@ module HollerbackApp
           last_page = messages.current_page == messages.total_pages
         end
 
+        begin
+          set_message_display_info(messages)
+        rescue Exception => e
+          logger.error e
+        end
+
+
         success_json({
-          data: messages.as_json,
-          meta: {
-            last_page: last_page
-          }
-        })
+                         data: messages.as_json,
+                         meta: {
+                             last_page: last_page
+                         }
+                     })
       rescue ActiveRecord::RecordNotFound
         not_found
       end
@@ -95,7 +95,7 @@ module HollerbackApp
         end
 
         # create video stich request
-        urls = params.select {|key,value| ["urls", "parts", "part_urls"].include? key }
+        urls = params.select { |key, value| ["urls", "parts", "part_urls"].include? key }
 
         # check for existence
         video = params.key?("guid") ? Video.find_by_guid(params[:guid].downcase) : nil
@@ -103,10 +103,10 @@ module HollerbackApp
         # if it doesnt exist create the video
         if video.blank?
           video = membership.conversation.videos.new({
-            user: current_user,
-            subtitle: params[:subtitle],
-            stitch_request: urls
-          })
+                                                         user: current_user,
+                                                         subtitle: params[:subtitle],
+                                                         stitch_request: urls
+                                                     })
           if params.key?("guid")
             video.guid = params["guid"]
           end
@@ -132,9 +132,9 @@ module HollerbackApp
 
         # generate the piece of content
         video = Video.new(
-          user: current_user,
-          conversation: conversation,
-          filename: params[:filename]
+            user: current_user,
+            conversation: conversation,
+            filename: params[:filename]
         )
 
         if video.save

@@ -61,6 +61,7 @@ end
 HollerbackApp::BaseApp.load_lib
 HollerbackApp::BaseApp.helpers ::Sinatra::Warden::Helpers
 HollerbackApp::BaseApp.helpers ::Sinatra::CoreHelpers
+HollerbackApp::BaseApp.helpers ::Sinatra::DisplayHelpers
 HollerbackApp::BaseApp.helpers WillPaginate::Sinatra::Helpers
 HollerbackApp::BaseApp.register Sinatra::MultiRoute
 #HollerbackApp::BaseApp.register ::Sinatra::ActiveRecordExtension
