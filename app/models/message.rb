@@ -59,6 +59,8 @@ class Message < ActiveRecord::Base
                    collection.unseen_within_memberships(options[:membership_ids])
                  end
 
+    Message.set_message_display_info(collection)
+
     collection.map(&:to_sync)
   end
 
@@ -148,5 +150,21 @@ class Message < ActiveRecord::Base
     options = options.merge(:only => [:created_at, :sender_name, :sent_at, :needs_reply])
     options = options.merge(opts)
     super(options).merge({isRead: !unseen?, id: guid})
+  end
+
+  def self.set_message_display_info(messages)
+
+    video_rules = HollerbackApp::ClientDisplayManager.get_rules_by_name('video_cell_display_rules')
+
+    #user display info
+    user_display = video_rules['user']
+
+    #other display info
+    other_display = video_rules['others']
+
+    #for each message add it's display info
+    messages.each do |message|
+      message.is_sender? ? message.display = user_display : message.display = other_display
+    end
   end
 end
