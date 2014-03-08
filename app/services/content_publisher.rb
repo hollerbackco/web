@@ -71,6 +71,10 @@ class ContentPublisher
       }
       message = Message.create(obj)
     end
+
+    #update the membership in memcache and also the video message in memcache
+
+
     message
   end
 

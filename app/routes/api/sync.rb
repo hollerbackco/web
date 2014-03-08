@@ -10,9 +10,61 @@ module HollerbackApp
 
       sync_objects = []
 
-      #get the memberships
+      #check to see if the key exists in the cache, note, the cached_membership is an array of memberships
+      #and the memberships are object representation of the active record object
+      cached_memberships = settings.cache.get(Membership.cache_key(current_user.id))
+
+      unless cached_memberships
+        cached_memberships = Membership.get_memberships_as_objects(current_user.id)
+
+        #save the cached memberships
+        settings.cache.set(Membership.cache_key(current_user.id), cached_memberships)
+      end
+
+      logger.debug "cached entities" + cached_memberships.to_s
+
+
       memberships, ids = Membership.sync_objects(user: current_user, since: updated_at, before: before_last_message_at, count: count)
-      sync_objects = sync_objects.concat(memberships);
+
+      #get the memberships within the cached_memberships (already sorted)
+
+
+      cached_memberships_copy = Array.new(cached_memberships)
+
+      unless before_last_message_at
+        cached_memberships_copy.reverse()
+      end
+
+
+      sync_memberships = cached_memberships_copy.reduce([]) do |filtered, membership|
+
+        if(updated_at)
+
+          if(Date.parse(membership.updated_at) >= Date.parse(updated_at))
+            filtered << membership
+          end
+
+        elsif(before_last_message_at)
+
+          if(Date.parse(membership.updated_at <= Date.parse(before_last_message_at)))
+            filtered << membership
+          end
+
+        else
+          filtered << membership
+        end
+      end
+
+
+      #create the sync objects
+      sync_memberships = sync_memberships.map do |membership|
+        {
+            type: "conversation",
+            sync: membership
+        }
+      end
+
+      sync_objects = sync_objects.concat(sync_memberships)
 
       #get the messages associated with these memberships
       sync_objects = sync_objects.concat(Message.sync_objects(user: current_user, since: updated_at, before: before_last_message_at, membership_ids: ids))

@@ -17,6 +17,11 @@ class Membership < ActiveRecord::Base
   scope :before_last_message_at_with_limit, lambda { |before_message_at, count| where("memberships.updated_at < ?", before_message_at).limit(count) }
   scope :before_last_message_at, lambda { |before_message_at| where("memberships.updated_at < ?", before_message_at) }
 
+  def self.get_memberships_as_objects(user_id)
+    collection = self.where("user_id=#{user_id} AND memberships.deleted_at IS null")
+    collection.map(&:as_json)
+  end
+
   def self.sync_objects(opts={})
     raise ArgumentError if opts[:user].blank? and !opts[:user].is_a? User
     options = {
@@ -195,5 +200,10 @@ class Membership < ActiveRecord::Base
         type: "conversation",
         sync: as_json
     }
+  end
+
+  #the cache key for all the user's memberships
+  def self.cache_key(user_id)
+    "memberships_#{user_id}"
   end
 end

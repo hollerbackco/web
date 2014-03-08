@@ -27,7 +27,7 @@ map '/sidekiq' do
 end
 
 ::Sidekiq::Web.use Rack::Auth::Basic do |username, password|
-  username == 'jnoh' && password == 'watchthis'
+  username == 'h0113R3@<k' && password == 'videoftw123'
 end
 
 map HollerbackApp::WebApp.settings.assets_prefix do
