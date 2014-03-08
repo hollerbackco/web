@@ -34,7 +34,7 @@ module HollerbackApp
           if location == "/usc"
             MetricsPublisher.delay.publish_delay("email:usc:app_visit")
           end
-          url = ENTERPRISE_APP_DOWNLOAD_LINK
+          url = APP_DOWNLOAD_LINK
           redirect url
         end
       end
@@ -58,7 +58,7 @@ module HollerbackApp
         #url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-master.plist")
         #url =  "itms-services://?action=download-manifest&url=#{url}"
 
-        url = ENTERPRISE_APP_DOWNLOAD_LINK
+        url = APP_DOWNLOAD_LINK
       else
         url = "/"
       end
