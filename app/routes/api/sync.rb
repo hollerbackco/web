@@ -40,19 +40,20 @@ module HollerbackApp
 
         if(updated_at)
 
-          if(Date.parse(membership.updated_at) >= Date.parse(updated_at))
+          if(membership[:updated_at] >= updated_at)
             filtered << membership
           end
 
         elsif(before_last_message_at)
 
-          if(Date.parse(membership.updated_at <= Date.parse(before_last_message_at)))
+          if(membership[:updated_at] <= before_last_message_at)
             filtered << membership
           end
 
         else
           filtered << membership
         end
+        filtered
       end
 
 
