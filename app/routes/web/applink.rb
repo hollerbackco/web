@@ -49,8 +49,15 @@ module HollerbackApp
     end
 
     get '/beta/test/:branch' do
-      url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-#{params[:branch]}.plist")
-      redirect "itms-services://?action=download-manifest&url=#{url}"
+      redirect_url = ""
+      if(android?)
+        redirect_url = '/beta'
+      else
+        url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-#{params[:branch]}.plist")
+        redirect_url "itms-services://?action=download-manifest&url=#{url}"
+      end
+
+      redirect redirect_url
     end
 
     get '/beta/:party' do
