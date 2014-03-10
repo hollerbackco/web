@@ -73,6 +73,15 @@ class ContentPublisher
     end
 
     #update the membership in memcache and also the video message in memcache
+    cached_memberships = settings.cache.get(Membership.cache_key(membership.user_id))
+    if(cached_memberships)
+      target_membership = cached_memberships.detect { |cached| cached.conversation_id == membership.conversation_id }
+      if(target_membership)
+        target_index = cached_memberships.find_index(target_membership)
+        cached_memberships.delete_at(target_index)
+        cached_memberships.unshift(membership.as_json)
+      end
+    end
 
 
     message

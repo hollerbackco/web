@@ -78,7 +78,7 @@ module HollerbackApp
         end
         membership = current_user.memberships.find(params[:id])
 
-        # mark messages as read
+        # mark messages as read (Move this whole thing into a background task?)
         messages = membership.messages.unseen.received.watchable
         if params[:watched_ids]
           messages = params[:watched_ids].map do |watched_id|
@@ -93,6 +93,8 @@ module HollerbackApp
             unread_count = 0
           end
         end
+
+        #TODO: [memcache] Update the cached messages with the watched ones
 
         # create video stich request
         urls = params.select { |key, value| ["urls", "parts", "part_urls"].include? key }
@@ -113,6 +115,8 @@ module HollerbackApp
           video.save
           VideoStitchRequest.perform_async(video.id, urls, params.key?("reply"), params[:needs_reply])
         end
+
+        #TODO: [memcache] Update the cached messages with this new video
 
         success_json data: video.as_json.merge(:conversation_id => membership.id)
       rescue ActiveRecord::RecordNotFound => ex

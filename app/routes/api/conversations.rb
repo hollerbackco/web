@@ -43,6 +43,20 @@ module HollerbackApp
           video = conversation.videos.create(user: current_user, guid: params[:guid])
           VideoStitchRequest.perform_async(video.id, urls)
         end
+
+        #for each of the conversation memberships, insert it into the cache if a cache entry exists
+        conversation.memberships.each do |new_membership|
+          #add the membership to memcache if a cached entry exists
+          cached_memberships = setting.cache.get(Membership.cache_key(new_membership.user_id))
+
+          #add the membership to the cached entry if it exists
+          if(cached_memberships)
+            cached_memberships.unshift(new_membership.as_json)
+          end
+        end
+
+
+
         success_json data: inviter.inviter_membership.as_json
       else
         error_json 400, for: inviter, msg: "conversation could not be created"
@@ -51,6 +65,7 @@ module HollerbackApp
 
     get '/me/conversations/:id' do
       begin
+        #TODO: look this up from cache if it exists
         membership = current_user.memberships.find(params[:id])
         success_json data: membership.as_json.merge(members: membership.members, invites: membership.invites)
       rescue ActiveRecord::RecordNotFound

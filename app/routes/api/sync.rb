@@ -19,9 +19,12 @@ module HollerbackApp
 
         #save the cached memberships
         settings.cache.set(Membership.cache_key(current_user.id), cached_memberships)
+      else
+          logger.debug "loaded memberships from cache"
+          logger.debug "cached entities" + cached_memberships.to_s
       end
 
-      logger.debug "cached entities" + cached_memberships.to_s
+
 
 
       memberships, ids = Membership.sync_objects(user: current_user, since: updated_at, before: before_last_message_at, count: count)
@@ -35,7 +38,7 @@ module HollerbackApp
         cached_memberships_copy.reverse()
       end
 
-
+      #get the correct sync objects
       sync_memberships = cached_memberships_copy.reduce([]) do |filtered, membership|
 
         if(updated_at)

@@ -82,7 +82,7 @@ module Hollerback
     def create_conversation
       conversation = Conversation.create(creator: inviter)
 
-      #creates a membership
+      #creates a membership!
       conversation.members << inviter
 
       membership = inviter.memberships.find(:first, conditions: {conversation_id: conversation.id})
