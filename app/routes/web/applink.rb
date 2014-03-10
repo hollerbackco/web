@@ -1,9 +1,10 @@
 module HollerbackApp
   class WebApp < BaseApp
-    
+
     APP_DOWNLOAD_LINK = "http://appstore.com/hollerback"
     ENTERPRISE_APP_DOWNLOAD_LINK = "http://www.hollerback.co/beta/test/master"
-    
+    ALLOWED_LOCALES = ["AU", "NZ"]
+
     helpers do
       def sms_download_notification(name)
         if Sinatra::Base.production? and ! params.key? :test
@@ -34,7 +35,14 @@ module HollerbackApp
           if location == "/usc"
             MetricsPublisher.delay.publish_delay("email:usc:app_visit")
           end
-          url = APP_DOWNLOAD_LINK
+
+          locale = Timeout::timeout(5) { Net::HTTP.get_response(URI.parse('http://api.hostip.info/country.php?ip=' + request.remote_ip )).body } rescue "US"
+          available = ALLOWED_LOCALES.detect { |allowed| locale == allowed }
+          if(available)
+            url = APP_DOWNLOAD_LINK
+          else
+            url = "/waitlist"
+          end
           redirect url
         end
       end
