@@ -96,7 +96,9 @@ class ContentPublisher
       conversation: {
         id: conversation.id,
         videos_count: conversation.videos.count
-      }
+      },
+      new_user: content.user.created_at.today? ? 1 : 0
+
     }
     MetricsPublisher.publish(content.user, "video:create", data)
   end

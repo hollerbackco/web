@@ -37,10 +37,6 @@ module HollerbackApp
           "user.created_at" => user.created_at
       }
 
-      unless current_user.has_sent?
-        MetricsPublisher.publish(current_user, "users:has_sent", data)
-      end
-
       inviter = Hollerback::ConversationInviter.new(current_user, invites, usernames, name)
 
 
