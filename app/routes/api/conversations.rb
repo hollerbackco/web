@@ -33,7 +33,16 @@ module HollerbackApp
       name = params["name"]
       name = nil if params["name"] == "<null>" #TODO: iOs sometimes sends a null value
 
+      data = {
+          "user.created_at" => user.created_at
+      }
+
+      unless current_user.has_sent?
+        MetricsPublisher.publish(current_user, "users:has_sent", data)
+      end
+
       inviter = Hollerback::ConversationInviter.new(current_user, invites, usernames, name)
+
 
       if inviter.invite
         conversation = inviter.conversation

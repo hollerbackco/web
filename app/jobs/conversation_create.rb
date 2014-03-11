@@ -8,7 +8,8 @@ class ConversationCreate
     data = {
       :name => conversation.name,
       :total_invited_count => invites.count,
-      :already_users_count => conversation.members.count
+      :already_users_count => conversation.members.count,
+      :conversation_count => conversation.count
     }
     MetricsPublisher.publish(user, "conversations:create", data)
 
