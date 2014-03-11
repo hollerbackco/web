@@ -9,7 +9,7 @@ class ConversationCreate
       :name => conversation.name,
       :total_invited_count => invites.count,
       :already_users_count => conversation.members.count,
-      :conversation_count => conversation.all.count
+      :conversation_count => Conversation.all.count
     }
     MetricsPublisher.publish(user, "conversations:create", data)
 
