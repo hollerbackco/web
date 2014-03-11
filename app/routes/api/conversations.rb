@@ -37,7 +37,10 @@ module HollerbackApp
           "user.created_at" => user.created_at
       }
 
+      logger.info "has sent #{current_user.has_sent?}"
+
       unless current_user.has_sent?
+        logger.info "user has not sent a message yet"
         MetricsPublisher.publish(current_user, "users:has_sent", data)
       end
 

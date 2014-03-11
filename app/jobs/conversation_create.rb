@@ -11,7 +11,6 @@ class ConversationCreate
       :already_users_count => conversation.members.count,
       :conversation_count => user.conversations.count
     }
-    logger.debug "convo size: #{data[:conversation_count]}"
     MetricsPublisher.publish(user, "conversations:create", data)
 
     publish_invited(user, conversation)
