@@ -13,6 +13,9 @@ module Hollerback
       Blackberry    = /blackberry/i
       WindowsPhone  = /windows (ce|phone|mobile)( os)?/i
       Symbian       = /symbian(os)?/i
+      Safari_iPad   = /mozilla\/5\.0 \((ipad)/i
+      Safari_iPod   = /mozilla\/5\.0 \((ipod)/i
+      Safari_iPhone = /mozilla\/5\.0 \((iphone)/i
     end
 
     def self.platform(string)
@@ -21,6 +24,9 @@ module Hollerback
       when Platform::Ipad     then :ipad
       when Platform::Ipod     then :ipod
       when Platform::Iphone   then :iphone
+      when Platform::Safari_iPad then :ipad
+      when Platform::Safari_iPhone then :iphone
+      when Platform::Safari_iPod then :ipod
       else
         :other
       end
