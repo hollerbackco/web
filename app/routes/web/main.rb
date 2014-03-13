@@ -1,7 +1,8 @@
 module HollerbackApp
   class WebApp < BaseApp
     get '/' do
-      haml :index, layout: false
+      #haml :index, layout: false
+      File.read(File.join('public', 'index.html'))
     end
 
     get '/about' do
