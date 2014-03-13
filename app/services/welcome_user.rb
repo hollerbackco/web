@@ -60,6 +60,17 @@ class WelcomeUser
       if(!tokens.empty?)
         Hollerback::GcmWrapper.send_notification(tokens, Hollerback::GcmWrapper::TYPE::NOTIFICATION, payload)
       end
+
+      Mail.deliver do
+        to friend.user.email
+        from 'no-reply@hollerback.co'
+        subject "#{friend.name} just joined Hollerback"
+
+        text_part do
+          body "Just wanted to let you know that #{friend.name} just joined Hollerback! Send them a message."
+        end
+      end
+
     end
   end
 end
