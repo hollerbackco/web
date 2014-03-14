@@ -127,20 +127,16 @@ module HollerbackApp
     end
 
     post '/me/conversations/:id/members/add' do
-      if(!ensure_params(:username))
+      if(!ensure_params(:usernames))
         error_json 400, msg: "missing required parameter username"
       end
 
       begin
-        new_member = User.find_by_username(params[:username])
 
-
-        #make sure that the user exists
-
+        new_member = User.find_by_username(params[:usernames])
         membership = current_user.memberships.find(params[:id])
         conversation = Conversation.find(membership.conversation_id)
-
-
+        conversation.members << new_member # add the member
 
       rescue
         not_found
