@@ -24,7 +24,7 @@ module HollerbackApp
 
       # set device name
       if params.key?("access_token") and
-        device = Device.find_by_access_token(params[:access_token])
+          device = Device.find_by_access_token(params[:access_token])
 
         if ios_model_name = request.env["HTTP_IOS_MODEL_NAME"]
           device.description = ios_model_name
@@ -53,21 +53,43 @@ module HollerbackApp
     end
 
     get '/app/update' do
+
+      if (!ensure_params(:beta))
+        return
+      end
+
+      beta = params[:beta]
+
       user_version = request.env["HTTP_IOS_APP_VER"]
       #current_version =  REDIS.get("app:current:version")
       name = logged_in? ? current_user.username : "update"
 
-      #todo user_version is app store
-      if user_version.match(/1./)
-        #{"message" => "app up to date"}.to_json
-        return
+      if (beta == 'true')
+        #todo user_version is app store
+        if user_version.match(/1./)
+          #{"message" => "app up to date"}.to_json
+          return
+        else
+          data = {
+              "message" => "We've moved to the App Store! Please delete this version",
+              "button-text" => "Go to App Store",
+              "url" => "http://www.hollerback.co/beta/#{name}"
+          }
+          success_json data: data
+        end
       else
-        data = {
-          "message" => "We've moved to the App Store! Please delete this version",
-          "button-text" => "Go to App Store",
-          "url" => "http://www.hollerback.co/beta/#{name}"
-        }
-        success_json data: data
+        #todo user_version is app store
+        if user_version.match(/1./)
+          #{"message" => "app up to date"}.to_json
+          return
+        else
+          data = {
+              "message" => "We've moved to the App Store! Please delete this version",
+              "button-text" => "Go to App Store",
+              "url" => "http://www.hollerback.co/beta/#{name}"
+          }
+          success_json data: data
+        end
       end
     end
 
