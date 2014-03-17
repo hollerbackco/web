@@ -67,8 +67,8 @@ module HollerbackApp
       #ensure that the version matches
       if(user_version.match(/1\.2\.7/) || user_version.match(/1\.2\.9/))
         data = {
-            "message" => "We've updated the app, please download the latest",
-            "button-text" => "Get the App",
+            "message" => "We've updated the app, please download the latest.",
+            "button-text" => "Get it!",
             "url" => "http://www.hollerback.co/beta/test/download"
         }
         return success_json data: data
@@ -83,8 +83,8 @@ module HollerbackApp
           return
         else
           data = {
-              "message" => "We've updated the app, please download the latest",
-              "button-text" => "Get the App",
+              "message" => "We've updated the app, please download the latest.",
+              "button-text" => "Get it!",
               "url" => "http://www.hollerback.co/beta/test/download"
           }
           success_json data: data
