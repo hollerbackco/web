@@ -54,11 +54,7 @@ module HollerbackApp
 
     get '/app/update' do
 
-      if (!ensure_params(:beta))
-        return
-      end
-
-      beta = params[:beta]
+      beta = (params[:beta] ? params[:beta] : false) #use the beta flag if present, or false otherwise
 
       user_version = request.env["HTTP_IOS_APP_VER"]
       #current_version =  REDIS.get("app:current:version")
