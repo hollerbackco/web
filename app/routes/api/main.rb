@@ -66,7 +66,7 @@ module HollerbackApp
 
 
       #ensure that the version matches
-      if(user_version.match(/1\.2\.7/) || user_version.match(/1\.2\.9/))
+      if(user_version.match(/1\.2\.7/))
         data = {
             "message" => "We've updated the app, please download the latest.",
             "button-text" => "Get it!",
