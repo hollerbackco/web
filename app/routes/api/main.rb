@@ -64,6 +64,16 @@ module HollerbackApp
       #current_version =  REDIS.get("app:current:version")
       name = logged_in? ? current_user.username : "update"
 
+      #ensure that the version matches
+      if(user_version.match(/1\.2\.7/) || user_version.match(/1\.2\.9/))
+        data = {
+            "message" => "We've updated the app, please download the latest",
+            "button-text" => "Go to App Store",
+            "url" => "http://www.hollerback.co/beta/test/download"
+        }
+        return success_json data: data
+      end
+
       if (beta == 'true')
         target_ios_version = REDIS.get("app:copy:min_beta_ios_version_for_force_upgrade")
         return if target_ios_version.blank?
