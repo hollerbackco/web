@@ -61,6 +61,7 @@ module HollerbackApp
       beta = params[:beta]
 
       user_version = request.env["HTTP_IOS_APP_VER"]
+      logger.debug "ios app version: " + user_version
       #current_version =  REDIS.get("app:current:version")
       name = logged_in? ? current_user.username : "update"
 
