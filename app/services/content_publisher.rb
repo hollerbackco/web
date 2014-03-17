@@ -118,6 +118,9 @@ class ContentPublisher
       if level = levels.index(user.videos.count)
         level = level + 1
         Hollerback::BMO.delay.say("#{user.username} has leveled up: #{level}")
+
+        #send push on level up to friends regarding the video count
+        PushOnLevelUp.perform_async(user.id, user.videos.count)
       end
     rescue
     end
