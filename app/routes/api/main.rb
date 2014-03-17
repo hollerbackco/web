@@ -54,11 +54,16 @@ module HollerbackApp
 
     get '/app/update' do
 
+      user_version = request.env["HTTP_IOS_APP_VER"]
+
+      return if user_version.blank?
+
       beta = (params[:beta].nil? ? false : params[:beta]) #use the beta flag if present, or false otherwise
 
-      user_version = request.env["HTTP_IOS_APP_VER"]
+
       #current_version =  REDIS.get("app:current:version")
       name = logged_in? ? current_user.username : "update"
+
 
       #ensure that the version matches
       if(user_version.match(/1\.2\.7/) || user_version.match(/1\.2\.9/))
