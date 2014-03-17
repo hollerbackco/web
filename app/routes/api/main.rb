@@ -65,15 +65,17 @@ module HollerbackApp
       name = logged_in? ? current_user.username : "update"
 
       if (beta == 'true')
-        #todo user_version is app store
-        if user_version.match(/1./)
+        target_ios_version = REDIS.get("app:copy:min_beta_ios_version_for_force_upgrade")
+        return if target_ios_version.blank?
+
+        if(Gem::Version.new(user_version) >= Gem::Version.new(target_ios_version))
           #{"message" => "app up to date"}.to_json
           return
         else
           data = {
-              "message" => "We've moved to the App Store! Please delete this version",
+              "message" => "We've updated the app, please download the latest",
               "button-text" => "Go to App Store",
-              "url" => "http://www.hollerback.co/beta/#{name}"
+              "url" => "http://www.hollerback.co/beta/test/download"
           }
           success_json data: data
         end
