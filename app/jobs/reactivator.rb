@@ -25,18 +25,18 @@ class Reactivator
 
     def initialize
       @video_track =      [
-                            {VIDEO_DAY_1 => {:target_date => (DateTime.now - 1)}},
-                            {VIDEO_DAY_3 => {:target_date => (DateTime.now - 3)}},
-                            {VIDEO_DAY_7 => {:target_date => (DateTime.now - 7)}},
-                            {VIDEO_DAY_12 =>{:target_date => (DateTime.now - 12)}},
-                            {VIDEO_DAY_21 =>{:target_date => (DateTime.now - 21)}}
+                            {VIDEO_DAY_1 => {:target_date => (DateTime.now - 1), :message => "You have a video waiting for you", :has_params => false, :num_params => 1, :param1_type => 'video_sender'}},
+                            {VIDEO_DAY_3 => {:target_date => (DateTime.now - 3), :message => "You have a video waiting for you", :has_params => false, :num_params => 1, :param1_type => 'video_sender'}},
+                            {VIDEO_DAY_7 => {:target_date => (DateTime.now - 7), :message => "You have unwatched videos", :has_param => false}},
+                            {VIDEO_DAY_12 =>{:target_date => (DateTime.now - 12), :message => "You have unwatched videos", :has_params => false}},
+                            {VIDEO_DAY_21 =>{:target_date => (DateTime.now - 21), :message => "You have unwatched videos", :has_params => false}}
                           ]
       @engagement_track = [
-                            {ENGAGEMENT_DAY_3 =>  {:target_date => (DateTime.now - 3)}},
-                            {ENGAGEMENT_DAY_7 =>  {:target_date => (DateTime.now - 7)}},
-                            {ENGAGEMENT_DAY_14 => {:target_date => (DateTime.now - 14)}},
-                            {ENGAGEMENT_DAY_21 => {:target_date => (DateTime.now - 21)}},
-                            {ENGAGEMENT_DAY_30 => {:target_date => (DateTime.now - 30)}}
+                            {ENGAGEMENT_DAY_3 =>  {:target_date => (DateTime.now - 3), :message => "Come back and send a video to your friends", :has_params => false}},
+                            {ENGAGEMENT_DAY_7 =>  {:target_date => (DateTime.now - 7), :message => "Come back and send a video to your family", :has_params => false}},
+                            {ENGAGEMENT_DAY_14 => {:target_date => (DateTime.now - 14), :message => "Your friends are waiting to see you", :has_params => false}},
+                            {ENGAGEMENT_DAY_21 => {:target_date => (DateTime.now - 21), :message => "Come back and send your friends a video", :has_params => false}},
+                            {ENGAGEMENT_DAY_30 => {:target_date => (DateTime.now - 30), :message => "Come back and send a video to your family", :has_params => false}}
                           ]
     end
 
@@ -47,19 +47,25 @@ class Reactivator
   end
 
   #add a dry run flag
-  def perform()
-    @tracks = Tracks.new
+  def perform(dry_run)
+    begin #don't crash production
+      @dry_run = dry_run
+      @tracks = Tracks.new
 
-    #get all users on a track and put them on a track_level
-    users_on_a_track = User.joins(:reactivation).where('reactivations.track is not null')
-    update_user_track(users_on_a_track)
+      #get all users on a track and put them on a track_level
+      users_on_a_track = User.joins(:reactivation).where('reactivations.track is not null')
+      update_user_track(users_on_a_track)
 
 
-    #The following will process users that aren't on a track
+      #The following will process users that aren't on a track
 
-    #get all the users that haven't been active for over 24hrs that don't have a reactivation track
-    users_not_on_a_track = User.where("users.last_active_at is not null AND users.last_active_at < :target_date AND users.id not in (select user_id from reactivations)", {:target_date => (DateTime.now - 1)})
-    put_on_track(users_not_on_a_track)
+      #get all the users that haven't been active for over 24hrs that don't have a reactivation track
+      users_not_on_a_track = User.where("users.last_active_at is not null AND users.last_active_at < :target_date AND users.id not in (select user_id from reactivations)", {:target_date => (DateTime.now - 1)})
+      put_on_track(users_not_on_a_track)
+    rescue Exception => e
+      puts e.message
+      puts e.backtrace.inspect
+    end
 
   end
 
@@ -96,8 +102,10 @@ class Reactivator
     users_to_reactivate.concat(update_video_track(video_track_users))
     users_to_reactivate.concat(update_enagement_track(engagement_track_users))
 
+    p "num users to udpate: " + users_to_reactivate.size.to_s
+
     #TODO: Send push to these users
-    push_to_users(users_to_reactivate)
+    push_to_users(prepare_push(users_to_reactivate))
   end
 
   def update_enagement_track(users)
@@ -151,7 +159,7 @@ class Reactivator
     put_on_video_track(video_track_users)
     put_on_engagement_track(engagement_track_users)
 
-    push_to_users(video_track_users.concat(engagement_track_users))
+    push_to_users(prepare_push(video_track_users.concat(engagement_track_users)))
   end
 
   def put_on_video_track(users)
@@ -185,8 +193,69 @@ class Reactivator
     end
   end
 
-  def push_to_users(users)
-      p users
+  #prepare users for push by bundling users with the appropriate message
+  def prepare_push(users)
+    users.reduce([]) do |push_list, user|
+      #get the user reactivation
+      reactivation = user.reactivation
+
+      track = {}
+      if(reactivation)
+        if(reactivation.track == Tracks::VIDEO_TRACK)
+            track = @tracks.video_track.detect {|track| track.has_key?(reactivation.track_level)}
+        else
+            track = @tracks.engagement_track.detect {|track| track.has_key?(reactivation.track_level)}
+        end
+
+        track_detail = track[reactivation.track_level]
+
+        message = track_detail[:message]
+        has_params = track_detail[:has_params]
+        if(has_params)
+          num_params = track_detail[:num_params]
+
+          params = []
+          for i in 1..num_params
+
+            param_type_key = "param#{i}_type"
+            param_type = track_detail[param_type_key.to_sym]
+
+            case param_type
+              when 'video_sender' # this is way way too slow; need to find an alternative
+                unseen = user.unseen_messages
+                if(unseen.any?)
+                  sender_name = unseen.first.sender_name
+                  params << sender_name
+                else
+                  params << "a friend"
+                end
+            end
+
+          end
+
+          message = message % params
+          p message
+        end
+
+        push_list << {:user => user, :message => message}
+      end
+      p message
+      push_list
+    end
+  end
+
+  def push_to_users(push_payload)
+    unless @dry_run
+      p 'the real deal'
+      push_payload.each do |user_info|
+        #Hollerback::Push.send(nil,user_info[:user].id, {
+        #    alert: user_info[:message],
+        #    sound: "default"
+        #}.to_json)
+      end
+    else
+      p 'dry run'
+    end
   end
 
 end
