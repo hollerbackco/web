@@ -10,9 +10,9 @@ module HollerbackApp
 
       # set last_active_at
       current_user.last_active_at = Time.now
-      current_user.reactivation.track = nil
 
       unless current_user.reacitvation.blank?
+        current_user.reactivation.track = nil
         current_user.reactivation.track_level = nil
         current_user.reactivation.last_reactivation = nil
         current_user.reactivation.save

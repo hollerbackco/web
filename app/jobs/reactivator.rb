@@ -248,10 +248,20 @@ class Reactivator
     unless @dry_run
       p 'the real deal'
       push_payload.each do |user_info|
-        #Hollerback::Push.send(nil,user_info[:user].id, {
-        #    alert: user_info[:message],
-        #    sound: "default"
-        #}.to_json)
+        user = user_info[:user]
+        message = user_info[:message]
+
+        Hollerback::Push.send(nil,user.id, {
+            alert: message,
+            sound: "default"
+        }.to_json)
+
+        tokens =  user.devices.android.map {|device| device.token}
+        payload = {:message => message}
+        if(!tokens.empty?)
+          Hollerback::GcmWrapper.send_notification(tokens, Hollerback::GcmWrapper::TYPE::NOTIFICATION, payload)
+        end
+
       end
     else
       p 'dry run'
