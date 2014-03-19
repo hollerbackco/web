@@ -144,8 +144,8 @@ class Reactivator
   def put_on_track(users)
     #split the users to see what track we should put them on, video or engagement track
     #SQL: SELECT "users".* FROM "users" INNER JOIN "memberships" ON "memberships"."user_id" = "users"."id" INNER JOIN "messages" ON "messages"."membership_id" = "memberships"."id" WHERE (messages.seen_at is null)
-    video_track_users = users.joins(:memberships => :messages).where('messages.seen_at is null').uniq_by {|u| u.id}
-    engagement_track_users = users.joins(:memberships => :messages).where('messages.seen_at is not null').uniq_by {|u| u.id}
+    video_track_users = users.joins(:memberships => :messages).where("messages.seen_at is null AND content ? 'guid' AND is_sender IS NOT TRUE").uniq_by {|u| u.id}
+    engagement_track_users = users - video_track_users
 
 
     put_on_video_track(video_track_users)

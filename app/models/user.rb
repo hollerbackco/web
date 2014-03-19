@@ -83,6 +83,7 @@ class User < ActiveRecord::Base
     messages.sent.where("sent_at > ?", since).any?
   end
 
+  #Not Used
   def active_within_days?(days)
     Time.now - last_active_at
   end
