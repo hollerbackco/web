@@ -10,6 +10,13 @@ module HollerbackApp
 
       # set last_active_at
       current_user.last_active_at = Time.now
+      current_user.reactivation.track = nil
+
+      unless current_user.reacitvation.blank?
+        current_user.reactivation.track_level = nil
+        current_user.reactivation.last_reactivation = nil
+        current_user.reactivation.save
+      end
 
       # set app version
       app_version = request.env["HTTP_IOS_APP_VER"] || request.env["HTTP_ANDROID_APP_VERSION"]

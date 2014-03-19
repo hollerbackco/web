@@ -1,4 +1,4 @@
-#this class Reactivates
+#this class Reactivates users
 class Reactivator
   include Sidekiq::Worker
 
@@ -51,7 +51,7 @@ class Reactivator
     @tracks = Tracks.new
 
     #get all users on a track and put them on a track_level
-    users_on_a_track = User.joins(:reactivation)
+    users_on_a_track = User.joins(:reactivation).where('reactivations.track is not null')
     update_user_track(users_on_a_track)
 
 
