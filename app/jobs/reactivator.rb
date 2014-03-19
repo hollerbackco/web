@@ -60,7 +60,7 @@ class Reactivator
       #The following will process users that aren't on a track
 
       #get all the users that haven't been active for over 24hrs that don't have a reactivation track
-      users_not_on_a_track = User.where("users.last_active_at is not null AND users.last_active_at < :target_date AND users.id not in (select user_id from reactivations)", {:target_date => (DateTime.now - 1)})
+      users_not_on_a_track = User.where("users.last_active_at is not null AND users.last_active_at < :target_date AND users.id not in (select user_id from reactivations)", {:target_date => (DateTime.now - 1.5)})
       put_on_track(users_not_on_a_track)
     rescue Exception => e
       puts e.message
