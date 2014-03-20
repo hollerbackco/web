@@ -63,6 +63,7 @@ class ContentPublisher
       obj = {
         membership_id: membership.id,
         is_sender: is_sender,
+        sender_id: content.user_id,
         sender_name: sender.also_known_as(for: member),
         content: content.content_hash,
         seen_at: seen_at,

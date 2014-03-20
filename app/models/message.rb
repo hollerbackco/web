@@ -69,7 +69,8 @@ class Message < ActiveRecord::Base
 
   def user
     {
-        name: sender_name
+        name: sender_name,
+        sender_id: sender_id
     }
   end
 
