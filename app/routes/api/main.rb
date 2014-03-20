@@ -11,7 +11,17 @@ module HollerbackApp
       # set last_active_at
       current_user.last_active_at = Time.now
 
-      unless current_user.reacitvation.blank?
+      unless current_user.reactivation.blank?
+
+        if(!current_user.reactivation.track.blank?)
+          data ={
+              track: current_user.reactivation.track,
+              track_level: current_user.reactivation.track_level
+          }
+
+          MetricsPublisher.publish(current_user, "user:reactivated", data)
+        end
+
         current_user.reactivation.track = nil
         current_user.reactivation.track_level = nil
         current_user.reactivation.last_reactivation = nil

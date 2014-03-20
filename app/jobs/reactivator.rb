@@ -262,6 +262,13 @@ class Reactivator
           Hollerback::GcmWrapper.send_notification(tokens, Hollerback::GcmWrapper::TYPE::NOTIFICATION, payload)
         end
 
+        data = {
+            track: user.reactivation.track,
+            track_level: user.reactivation.track_level
+        }
+
+        MetricsPublisher.publish(user, "push:reengage", data)
+
       end
     else
       p 'dry run'
