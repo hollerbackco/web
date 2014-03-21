@@ -25,6 +25,7 @@ class User < ActiveRecord::Base
 
   has_many :conversations, through: :memberships
   has_many :contacts
+  has_one  :reactivation, :dependent => :destroy
 
   before_create :set_last_active_at
   before_create :set_access_token
@@ -82,18 +83,19 @@ class User < ActiveRecord::Base
     messages.sent.where("sent_at > ?", since).any?
   end
 
+  #Not Used
   def active_within_days?(days)
     Time.now - last_active_at
   end
 
-  def last_active_at
-    message = messages
-      .sent
-      .reorder("sent_at DESC")
-      .first
-
-    message.present? ? message.sent_at : Time.now
-  end
+  #def last_active_at
+  #  message = messages
+  #    .sent
+  #    .reorder("sent_at DESC")
+  #    .first
+  #
+  #  message.present? ? message.sent_at : Time.now
+  #end
 
   def unseen_memberships_count
     messages.watchable.unseen.group_by(&:membership_id).length
