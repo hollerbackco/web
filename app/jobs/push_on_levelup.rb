@@ -8,7 +8,7 @@ class PushOnLevelUp
       friends = Contact.where(:phone_hashed => user.phone_hashed)
 
       friends.each do |friend|
-        msg = "#{friend.name} sent #{message_count} messages"
+        msg = "#{friend.name} sent #{message_count} videos to friends and family"
 
         Hollerback::Push.delay.send(friend.user.id, {
                                                   alert: msg,
