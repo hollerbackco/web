@@ -14,18 +14,19 @@ module HollerbackApp
       unless current_user.reactivation.blank?
 
         if(!current_user.reactivation.track.blank?)
-          data ={
-              track: current_user.reactivation.track,
-              track_level: current_user.reactivation.track_level
-          }
+            data ={
+                track: current_user.reactivation.track,
+                track_level: current_user.reactivation.track_level
+            }
 
-          MetricsPublisher.publish(current_user, "user:reactivated", data)
+            MetricsPublisher.publish(current_user, "user:reactivated", data)
+
+
+          current_user.reactivation.track = nil
+          current_user.reactivation.track_level = nil
+          current_user.reactivation.last_reactivation = nil
+          current_user.reactivation.save
         end
-
-        current_user.reactivation.track = nil
-        current_user.reactivation.track_level = nil
-        current_user.reactivation.last_reactivation = nil
-        current_user.reactivation.save
       end
 
       # set app version
