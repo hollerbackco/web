@@ -1,4 +1,4 @@
-class Createmessagegroup < ActiveRecord::Migration
+class CreateMessageGroups < ActiveRecord::Migration
   def up
     create_table :message_groups do |t|
       t.integer     :membership_id
