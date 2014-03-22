@@ -1,5 +1,6 @@
 class Message < ActiveRecord::Base
   belongs_to :membership
+  belongs_to :message_group
 
   serialize :content, ActiveRecord::Coders::Hstore
 

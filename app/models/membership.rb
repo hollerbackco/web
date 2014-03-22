@@ -5,6 +5,7 @@ class Membership < ActiveRecord::Base
   belongs_to :user
   belongs_to :conversation
   has_many :messages
+  has_many :message_groups
 
   delegate :invites, to: :conversation
 
