@@ -5,7 +5,7 @@ class Membership < ActiveRecord::Base
   belongs_to :user
   belongs_to :conversation
   has_many :messages
-  has_many :message_groups
+  has_many :message_groups, dependent: destroy
 
   delegate :invites, to: :conversation
 
