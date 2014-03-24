@@ -99,7 +99,7 @@ class ContentPublisher
 
         groups = membership.message_groups.where("membership_id = :membership_id AND group_info->'end_time' between :start_time AND :end_time and group_info->'sender_id' = :sender_id", {:membership_id => membership.id, :start_time => message.sent_at, :end_time => message.sent_at - 60, :sender_id => message.sender_id.to_s})
         if (groups.any?)
-          p "adding message to existing group"
+          logger.debug "sajjad: creating a new message group"
           #throw Exception if groups.size > 1
           group = groups.first #there shouldn't really be more than a single group!
           group << message
@@ -111,7 +111,7 @@ class ContentPublisher
       else #there aren't any groups yet, but lets see if we can create one
         last_message = membership.messages.order(:sent_at).last
         if(message.sent_at - last_message.sent_at <= 60 && last_message.sender_id == message.sender_id)
-          p "creating a new message group"
+          logger.debug "sajjad: creating a new message group: lid: #{last_message.sent_at} cid: #{message.sender_id}"
 
           msg_group = MessageGroup.create()
           msg_group.group_info["start_time"] = last_message.sent_at
