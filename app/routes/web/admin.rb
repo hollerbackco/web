@@ -65,7 +65,7 @@ module HollerbackApp
       if params.key?("android")
         @users = User.android
       end
-      @users = @users.order("created_at ASC").includes(:memberships, :messages, :devices)
+      @users = @users.order("created_at DESC").includes(:memberships, :messages, :devices)
         .paginate(:page => params[:page], :per_page => 50)
 
       haml "admin/users".to_sym, layout: "layouts/admin".to_sym
