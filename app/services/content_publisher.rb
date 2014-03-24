@@ -2,7 +2,7 @@ class ContentPublisher
   include Sinatra::CoreHelpers
 
   attr_accessor :membership, :conversation, :messages, :is_first_message,
-    :sender
+                :sender
 
   def initialize(membership, is_reply=false)
     @membership = membership
@@ -16,11 +16,11 @@ class ContentPublisher
 
   def publish(content, opts={}) #content is actually the video object
     options = {
-      notify: true,
-      analytics: true,
-      is_reply: true,
-      needs_reply: true,
-      to: conversation.memberships
+        notify: true,
+        analytics: true,
+        is_reply: true,
+        needs_reply: true,
+        to: conversation.memberships
     }.merge(opts)
 
     memberships = options[:to]
@@ -61,22 +61,25 @@ class ContentPublisher
     #check for existance
     unless message = membership.messages.find_by_guid(content.guid)
       obj = {
-        membership_id: membership.id,
-        is_sender: is_sender,
-        sender_id: content.user_id,
-        sender_name: sender.also_known_as(for: member),
-        content: content.content_hash,
-        seen_at: seen_at,
-        sent_at: content.created_at,
-        needs_reply: needs_reply
+          membership_id: membership.id,
+          is_sender: is_sender,
+          sender_id: content.user_id,
+          sender_name: sender.also_known_as(for: member),
+          content: content.content_hash,
+          seen_at: seen_at,
+          sent_at: content.created_at,
+          needs_reply: needs_reply
       }
       message = Message.create(obj)
     end
+
+    add_to_group(membership, message)
+
     message
   end
 
   def sender_message
-    messages.select {|m| m.is_sender }.first
+    messages.select { |m| m.is_sender }.first
   end
 
   private
@@ -85,20 +88,64 @@ class ContentPublisher
     Hollerback::NotifyRecipients.new(messages).run
   end
 
+  def add_to_group(membership, message)
+
+
+    #make sure that the last message was sent from the same user, otherwise, don't group
+    if (membership.messages.any? && membership.messages.last.sender_id == message.sender_id)
+
+      #check to see if any group exists
+      if (membership.groups.any?)
+
+        groups = membership.message_groups.where("membership_id = :membership_id AND group_info->'end_time' between :start_time AND :end_time and group_info->'sender_id' = :sender_id", {:membership_id => membership.id, :start_time => message.sent_at, :end_time => message.sent_at - 60})
+        if (groups.any?)
+          p "adding message to existing group"
+          #throw Exception if groups.size > 1
+          group = groups.first #there shouldn't really be more than a single group!
+          group << message
+          group.group_info["end_time"] = message.sent_at
+
+          message.save
+          group.save
+        end
+      else #there aren't any groups yet, but lets see if we can create one
+        last_message = membership.messages.last
+        if(message.sent_at - last_message.sent_at <= 60 && last_message.sender_id == message.sender_id)
+          p "creating a new message group"
+
+          msg_group = MessageGroup.create()
+          msg_group.group_info["start_time"] = last_message.sent_at
+          msg_group.group_info["end_time"] = message.sent_at
+          msg_group.group_info["sender_id"] = message.sender_id
+          msg_group << last_message
+          msg_group << message
+
+          membership.message_groups << msg_group
+
+          #save these
+          msg_group.save
+          message.save
+          last_message.save
+        end
+      end
+    end
+
+  end
+
   def publish_analytics(content, needs_reply, is_reply, last_message_at)
     time = Time.now - last_message_at
     data = {
-      content_id: content.id,
-      is_reply: is_reply,
-      needs_reply: needs_reply,
-      has_subtitle: content.subtitle.present?,
-      receivers_count: (conversation.members.count - 1),
-      seconds_since_last_message: time,
-      conversation: {
-        id: conversation.id,
-        videos_count: conversation.videos.count
-      },
-      new_user: content.user.created_at.today? ? 1 : 0
+        content_id: content.id,
+        is_reply: is_reply,
+        needs_reply: needs_reply,
+        has_subtitle: content.subtitle.present?,
+        receivers_count: (conversation.members.count - 1),
+        seconds_since_last_message: time,
+        conversation: {
+            id: conversation.id,
+            videos_count: conversation.videos.count
+        },
+        new_user: content.user.created_at.today? ? 1 : 0
 
     }
     MetricsPublisher.publish(content.user, "video:create", data)
@@ -115,7 +162,7 @@ class ContentPublisher
 
   def say_level(user)
     begin
-      levels = [5,10,25,50,100,250,500,1000]
+      levels = [5, 10, 25, 50, 100, 250, 500, 1000]
       if level = levels.index(user.videos.count)
         level = level + 1
         Hollerback::BMO.delay.say("#{user.username} has leveled up: #{level}")
