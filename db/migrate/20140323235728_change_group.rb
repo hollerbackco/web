@@ -1,4 +1,4 @@
-class ChangeGroups < ActiveRecord::Migration
+class ChangeGroup < ActiveRecord::Migration
   def change
     update_db
   end
@@ -20,35 +20,38 @@ class ChangeGroups < ActiveRecord::Migration
         messages.each_with_index do |message, index|
 
           #case when a group has already been created
-          if(message_group != nil)
-            if(message.sent_at -  message_group.group_info[:start_time] <= 60 && message.sender_id == message_group.group_info[:sender_id])
-              message.group_id = message_group.id
+          unless message_group.nil?
+
+            if( !message.sent_at.blank? &&  (message.sent_at -  Time.parse(message_group.group_info["end_time"])) <= 60 && (message.sender_id.to_s == message_group.group_info["sender_id"]))
+              message_group.messages << message
+              message_group.group_info["end_time"] = message.sent_at
               message.save
+              message_group.save
               next
             end
             message_group = nil
           end
-          next_message = messages[index + 1]
 
-          if(next_message != nil) #there's potential for a group to be created
+          next_message = messages[index + 1]
+          if(!next_message.nil? && !next_message.sent_at.nil?) #there's potential for a group to be created
+            next if next_message.sent_at.nil? || message.sent_at.nil?
+
             if(next_message.sent_at - message.sent_at <= 60 && message.sender_id == next_message.sender_id)
               #create a group because the messages are only less than a minute apart
-              group_info = { :start_time => message.sent_at, :sender_id => message.sender_id}
+              group_info = { "start_time" => message.sent_at, "end_time" => message.sent_at,"sender_id" => message.sender_id }
               message_group = MessageGroup.create(:group_info => group_info)
 
-              group_id = message_group.id
-              message.group_id = group_id
+              message_group.messages << message
               message.save
 
+              p "created group with id"
               #create a group
               membership.message_groups << message_group
+              message_group.save
             end
           end
-
-        end
-
-      end
-
-    end
-  end
-end
+        end    #messages.do
+      end      #membership.do
+    end        #users.do
+  end          #update_db
+end            #class
