@@ -92,7 +92,7 @@ class ContentPublisher
 
 
     #make sure that the last message was sent from the same user, otherwise, don't group
-    if (membership.messages.any? && membership.messages.last.sender_id == message.sender_id)
+    if (membership.messages.any? && membership.messages.order(:sent_at).last.sender_id == message.sender_id)
 
       #check to see if any group exists
       if (membership.message_groups.any?)
@@ -109,7 +109,7 @@ class ContentPublisher
           group.save
         end
       else #there aren't any groups yet, but lets see if we can create one
-        last_message = membership.messages.last
+        last_message = membership.messages.order(:sent_at).last
         if(message.sent_at - last_message.sent_at <= 60 && last_message.sender_id == message.sender_id)
           p "creating a new message group"
 
