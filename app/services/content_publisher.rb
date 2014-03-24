@@ -117,8 +117,8 @@ class ContentPublisher
           msg_group.group_info["start_time"] = last_message.sent_at
           msg_group.group_info["end_time"] = message.sent_at
           msg_group.group_info["sender_id"] = message.sender_id
-          msg_group << last_message
-          msg_group << message
+          msg_group.messages << last_message
+          msg_group.messages << message
 
           membership.message_groups << msg_group
 
