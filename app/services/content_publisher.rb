@@ -95,7 +95,7 @@ class ContentPublisher
     if (membership.messages.any? && membership.messages.last.sender_id == message.sender_id)
 
       #check to see if any group exists
-      if (membership.groups.any?)
+      if (membership.message_groups.any?)
 
         groups = membership.message_groups.where("membership_id = :membership_id AND group_info->'end_time' between :start_time AND :end_time and group_info->'sender_id' = :sender_id", {:membership_id => membership.id, :start_time => message.sent_at, :end_time => message.sent_at - 60})
         if (groups.any?)
