@@ -97,7 +97,7 @@ class ContentPublisher
       #check to see if any group exists
       if (membership.message_groups.any?)
 
-        groups = membership.message_groups.where("membership_id = :membership_id AND group_info->'end_time' between :start_time AND :end_time and group_info->'sender_id' = :sender_id", {:membership_id => membership.id, :start_time => message.sent_at, :end_time => message.sent_at - 60})
+        groups = membership.message_groups.where("membership_id = :membership_id AND group_info->'end_time' between :start_time AND :end_time and group_info->'sender_id' = :sender_id", {:membership_id => membership.id, :start_time => message.sent_at, :end_time => message.sent_at - 60, :sender_id => message.sender_id.to_s})
         if (groups.any?)
           p "adding message to existing group"
           #throw Exception if groups.size > 1
