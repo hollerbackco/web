@@ -93,7 +93,7 @@ class ContentPublisher
 
     return if membership.messages.size <= 1
 
-    messages = membership.messages.order(sent_at: :desc)
+    messages = membership.messages.order("sent_at DESC")
     this_message = messages.first
     last_message = messages[1]
 
