@@ -3,7 +3,7 @@ class CreateMessageGroups < ActiveRecord::Migration
     drop_table :message_groups
 
     create_table :message_groups do |t|
-   gs   t.integer     :membership_id
+      t.integer     :membership_id
       t.string      :group_type
       t.hstore      :group_info
       t.timestamps
