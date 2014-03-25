@@ -1,5 +1,8 @@
 class CreateMessageGroups < ActiveRecord::Migration
   def up
+    #remove the drop table later
+    drop_table :message_groups
+
     create_table :message_groups do |t|
       t.integer     :membership_id
       t.string      :group_type
