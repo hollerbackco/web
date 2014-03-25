@@ -93,7 +93,7 @@ class ContentPublisher
 
     #make sure that the last message was sent from the same user, otherwise, don't group
     if (membership.messages.any? && membership.messages.order(:sent_at).last.sender_id == message.sender_id)
-
+      logger.debug "sajjad: grouping"
       #check to see if any group exists
       if (membership.message_groups.any?)
 
@@ -128,6 +128,8 @@ class ContentPublisher
           last_message.save
         end
       end
+    else
+      logger.debug "sajjad: not grouping"
     end
 
   end
