@@ -93,7 +93,7 @@ class ContentPublisher
 
     #make sure that the last message was sent from the same user, otherwise, don't group
     if (membership.messages.any? && membership.messages.order(:sent_at).last.sender_id == message.sender_id)
-      HollerbackApp::BaseApp.logger.info "sajjad: grouping"
+      SQSLogger.logger.info "sajjad: grouping"
       #check to see if any group exists
       if (membership.message_groups.any?)
 
@@ -102,7 +102,7 @@ class ContentPublisher
 
           #throw Exception if groups.size > 1
           group = groups.first #there shouldn't really be more than a single group!
-          HollerbackApp::BaseApp.logger.info "sajjad: using an existing group with id #{group.id}"
+          SQSLogger.logger.info "sajjad: using an existing group with id #{group.id}"
           group << message
           group.group_info["end_time"] = message.sent_at
 
@@ -112,7 +112,7 @@ class ContentPublisher
       else #there aren't any groups yet, but lets see if we can create one
         last_message = membership.messages.order(:sent_at).last
         if(message.sent_at - last_message.sent_at <= 60 && last_message.sender_id == message.sender_id)
-          HollerbackApp::BaseApp.logger.info "sajjad: creating a new message group: lid: #{last_message.sent_at} cid: #{message.sender_id}"
+          SQSLogger.logger.info "sajjad: creating a new message group: lid: #{last_message.sent_at} cid: #{message.sender_id}"
 
           msg_group = MessageGroup.create()
           msg_group.group_info["start_time"] = last_message.sent_at
@@ -130,7 +130,7 @@ class ContentPublisher
         end
       end
     else
-      HollerbackApp::BaseApp.logger.info "sajjad: not grouping"
+      SQSLogger.logger.info "sajjad: not grouping"
     end
 
   end
