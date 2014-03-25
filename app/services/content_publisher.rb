@@ -73,7 +73,7 @@ class ContentPublisher
       message = Message.create(obj)
     end
 
-    add_to_group(membership, message)
+    add_to_group(membership)
 
     message
   end
@@ -88,45 +88,53 @@ class ContentPublisher
     Hollerback::NotifyRecipients.new(messages).run
   end
 
-  def add_to_group(membership, message)
+  def add_to_group(membership)
 
+
+    return if membership.messages.size <= 1
+
+    messages = membership.messages.order(sent_at: :desc)
+    this_message = messages.first
+    last_message = messages[1]
 
     #make sure that the last message was sent from the same user, otherwise, don't group
-    if (membership.messages.any? && membership.messages.order(:sent_at).last.sender_id == message.sender_id)
-      SQSLogger.logger.info "sajjad: grouping"
-      #check to see if any group exists
+    if ( this_message.sender_id == last_message.sender_id) #there should be at least 2 messages for grouping and the message and the one before that needs to have the same sender
 
-      groups = []
-      groups = membership.message_groups.where("membership_id = :membership_id AND group_info->'end_time' between :start_time AND :end_time and group_info->'sender_id' = :sender_id", {:membership_id => membership.id, :start_time => message.sent_at, :end_time => message.sent_at - 60, :sender_id => message.sender_id.to_s}) if (membership.message_groups.any?)
-      if (groups.any?)
+      SQSLogger.logger.info "sajjad: consider grouping"
+
+
+      groups = [] #check to see if any group exists
+      groups = membership.message_groups.where("membership_id = :membership_id AND group_info->'end_time' between :start_time AND :end_time and group_info->'sender_id' = :sender_id", {:membership_id => membership.id, :start_time => this_message.sent_at, :end_time => this_message.sent_at - 60, :sender_id => this_message.sender_id.to_s}) if (membership.message_groups.any?)
+      if (groups.any?) #any groups meet the criteria?
 
         #throw Exception if groups.size > 1
         group = groups.first #there shouldn't really be more than a single group!
-        SQSLogger.logger.info "sajjad: using an existing group with id #{group.id}"
-        group << message
-        group.group_info["end_time"] = message.sent_at
+        group << this_message
+        group.group_info["end_time"] = this_message.sent_at
 
-        message.save
+        this_message.save
         group.save
+
+        SQSLogger.logger.info "sajjad: using an existing group with id #{group.id}"
+
       else
         #there aren't any groups but lets see if we can create one
-        last_message = membership.messages.order(:sent_at).last
-        SQSLogger.logger.info "sajjad: last message info: lsent: #{last_message.sent_at}, msent: #{message.sent_at}  cid: #{message.sender_id}"
-        if ((message.sent_at - last_message.sent_at) <= 60 && last_message.sender_id == message.sender_id)
-          SQSLogger.logger.info "sajjad: new message group creation: lid: #{last_message.sent_at} cid: #{message.sender_id}"
+        SQSLogger.logger.info "sajjad: no groups, but should we create one?"
+        if ((this_message.sent_at - last_message.sent_at) <= 60 && last_message.sender_id == this_message.sender_id)
+          SQSLogger.logger.info "sajjad: new message group creation: lid: #{last_message.sent_at} cid: #{this_message.sender_id}"
 
           msg_group = MessageGroup.create()
           msg_group.group_info["start_time"] = last_message.sent_at
-          msg_group.group_info["end_time"] = message.sent_at
-          msg_group.group_info["sender_id"] = message.sender_id
+          msg_group.group_info["end_time"] = this_message.sent_at
+          msg_group.group_info["sender_id"] = this_message.sender_id
           msg_group.messages << last_message
-          msg_group.messages << message
+          msg_group.messages << this_message
 
           membership.message_groups << msg_group
 
           #save these
           msg_group.save
-          message.save
+          this_message.save
           last_message.save
         end
       end
