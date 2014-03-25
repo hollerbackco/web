@@ -111,8 +111,9 @@ class ContentPublisher
         end
       else #there aren't any groups yet, but lets see if we can create one
         last_message = membership.messages.order(:sent_at).last
-        if(message.sent_at - last_message.sent_at <= 60 && last_message.sender_id == message.sender_id)
-          SQSLogger.logger.info "sajjad: creating a new message group: lid: #{last_message.sent_at} cid: #{message.sender_id}"
+        SQSLogger.logger.info "sajjad: last message info: lsent: #{last_message.sent_at}, msent: #{message.sent_at}  cid: #{message.sender_id}"
+        if( (message.sent_at - last_message.sent_at) <= 60 && last_message.sender_id == message.sender_id)
+          SQSLogger.logger.info "sajjad: new message group creation: lid: #{last_message.sent_at} cid: #{message.sender_id}"
 
           msg_group = MessageGroup.create()
           msg_group.group_info["start_time"] = last_message.sent_at
