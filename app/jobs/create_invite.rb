@@ -9,7 +9,7 @@ class CreateInvite
 
     return unless user
 
-    if (invites.any?)
+    if (phones.any?)
       create_phone_invites(user, phones)
     elsif (emails.any?)
       create_email_invites(user, emails)
