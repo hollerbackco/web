@@ -73,8 +73,6 @@ class ContentPublisher
       message = Message.create(obj)
     end
 
-    #add_to_group(membership)
-
     message
   end
 
@@ -86,54 +84,6 @@ class ContentPublisher
 
   def notify_recipients(messages)
     Hollerback::NotifyRecipients.new(messages).run
-  end
-
-  def add_to_group(membership)
-
-    messages = membership.messages.order("sent_at DESC")
-
-    if (messages.size == 1) #only a single message
-
-      message = messages.first
-
-      #create a group
-      group = MessageGroup.create()
-      group.group_info = {"start_time" => message.sent_at, "end_time" => message.sent_at, "sender_id" => message.sender_id}
-      group.messages << messages
-      membership.message_groups << group
-      group.save
-      message.save
-
-      return
-    end
-
-
-    message = messages.first
-    last_message = messages[1]
-
-    last_group = last_message.message_group
-
-    #make sure that the last message was sent from the same user, otherwise, don't group
-    if (message.sender_id == last_group["sender_id"] && (message.sent_at - last_group["end_time"]) <= 60)
-
-      #the last group can be used
-      last_group << message
-      last_group.group_info["end_time"] = message.sent_at
-      last_group.save
-      message.save
-
-      SQSLogger.logger.info "sajjad: using an existing group with id #{last_group.id}"
-
-    else
-      group = MessageGroup.create()
-      group.group_info = {"start_time" => message.sent_at, "end_time" => message.sent_at, "sender_id" => message.sender_id}
-      group.messages << message
-      membership.message_groups << group
-      group.save
-      message.save
-      SQSLogger.logger.info "sajjad: creating a new group with id #{group.id}"
-    end
-
   end
 
   def publish_analytics(content, needs_reply, is_reply, last_message_at)
