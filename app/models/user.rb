@@ -18,6 +18,8 @@ class User < ActiveRecord::Base
     :foreign_key => :inviter_id,
     :class_name => "Invite"
 
+  has_many :email_invites, :foreign_key => :inviter_id, :class_name => "EmailInvite"
+
   has_many :friendships
   has_many :friends, :through => :friendships
   has_many :inverse_friendships, :class_name => "Friendship", :foreign_key => "friend_id"
