@@ -9,32 +9,32 @@ module HollerbackApp
 
     route :get, :post, '/contacts/check' do
       contacts = if params.key? "numbers"
-        numbers = params["numbers"]
-        if numbers.is_a? String
-          numbers = numbers.split(",")
-        end
-        contacts =  Hollerback::ContactChecker.new.find_by_phone(numbers)
-      else
-        unless ensure_params(:c)
-          return error_json 400, msg: "missing required params"
-        end
+                   numbers = params["numbers"]
+                   if numbers.is_a? String
+                     numbers = numbers.split(",")
+                   end
+                   contacts = Hollerback::ContactChecker.new.find_by_phone(numbers)
+                 else
+                   unless ensure_params(:c)
+                     return error_json 400, msg: "missing required params"
+                   end
 
-        if params.key? "access_token"
-          login(:api_token)
-          contacts = prepare_contacts(params["c"])
-          hashed_numbers = prepare_only_hashed_numbers(params["c"])
+                   if params.key? "access_token"
+                     login(:api_token)
+                     contacts = prepare_contacts(params["c"])
+                     hashed_numbers = prepare_only_hashed_numbers(params["c"])
 
-          #UpdateContactBook.perform_async(current_user.id, contacts)
-          contact_book = Hollerback::ContactBook.new(current_user)
-          contact_book.update(contacts)
-          contacts = contact_book.contacts_on_hollerback
-        else
-          hashed_numbers = prepare_only_hashed_numbers(params["c"])
-          contacts =  Hollerback::ContactChecker.new.find_by_hashed_phone(hashed_numbers)
-        end
+                     #UpdateContactBook.perform_async(current_user.id, contacts)
+                     contact_book = Hollerback::ContactBook.new(current_user)
+                     contact_book.update(contacts)
+                     contacts = contact_book.contacts_on_hollerback
+                   else
+                     hashed_numbers = prepare_only_hashed_numbers(params["c"])
+                     contacts = Hollerback::ContactChecker.new.find_by_hashed_phone(hashed_numbers)
+                   end
 
-        contacts
-      end
+                   contacts
+                 end
 
       success_json data: contacts.as_json
     end
@@ -48,15 +48,28 @@ module HollerbackApp
 
       invites = params[:invites]
 
-      if(invites.is_a?(String))
+      if (invites.is_a?(String))
         invites = invites.split(",")
       end
 
+      #split phones & emails
+      phones = []
+      emails = []
+      invites.each do |invite|
+        if (invite.include?('@'))
+          emails << invite
+        else
+          phones << invite
+        end
+      end
+
       #cleanse the phones
-      invites = parse_phones(invites, current_user.phone_country_code, current_user.phone_area_code)
+      phones = parse_phones(phones, current_user.phone_country_code, current_user.phone_area_code)
+
       logger.debug invites
+
       #kick off a sidekiq task and just return to the user immediately
-      CreateInvite.perform_async(current_user.id, invites)
+      CreateInvite.perform_async(current_user.id, phones, emails)
 
       success_json();
 
@@ -64,6 +77,7 @@ module HollerbackApp
 
 
     helpers do
+
       def prepare_only_hashed_numbers(contact_params)
         contact_params.map { |c| c["p"].split(",") }.flatten
       end
