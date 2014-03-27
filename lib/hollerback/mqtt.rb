@@ -2,12 +2,7 @@ module Hollerback
   class MQTT
 
     def self.client_options=(options)
-      begin
-      @client = ::MQTT::Client.connect(options)
-      rescue MQTT::ProtocolException => e
-        p e.message
-        p "error caught"
-      end
+        @client = ::MQTT::Client.connect(options)
     end
 
     def self.client
