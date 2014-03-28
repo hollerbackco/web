@@ -17,6 +17,7 @@ class CreateInvite
   end
 
   def create_email_invites(user, emails)
+    p "email invites"
     #reduce the emails to remove existing ones
     emails = emails.reduce([]) do |filtered_emails, email|
 
