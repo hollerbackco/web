@@ -40,7 +40,7 @@ module HollerbackApp
     end
 
     #the invite endpoint
-    post '/me/invite' do
+    post '/me/invites' do
 
       if !ensure_params(:invites)
         return error_json 400, msg: "missing required invites param"
