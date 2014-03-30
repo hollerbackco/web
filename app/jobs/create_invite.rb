@@ -17,9 +17,19 @@ class CreateInvite
   end
 
   def create_email_invites(user, emails)
-    p "email invites"
-    #reduce the emails to remove existing ones
-    emails = emails.reduce([]) do |filtered_emails, email|
+
+    return if emails.blank?
+
+    #create an email invite
+    emails.each do |email|
+      if User.find_by_email(email).blank? # create an invite only if the user doesn't exist
+        user.email_invites.create(:email => email, :accepted => false)
+      end
+    end
+
+
+    #for tracking purposes, don't count invites already pending
+    filtered_emails = emails.reduce([]) do |filtered_emails, email|
 
       #make sure that the email doesn't belong to an already registered user
       if User.find_by_email(email).blank? && EmailInvite.find_by_email(email).blank?
@@ -29,14 +39,13 @@ class CreateInvite
       filtered_emails
     end
 
-    return if emails.blank?
+    already_invited = emails - filtered_emails
 
-    #great we now have a list of fitlered emails
-    emails.each do |email|
-      user.email_invites.create(:email => email, :accepted => false)
-    end
-
-    data = { invites: emails }
+    #track that an invite was made, but not necessarily one where it's a new invite
+    data = {
+          invites: filtered_emails,
+          already_invited: already_invited
+    } #don't count any email that is already registered
     MetricsPublisher.publish(user, "users:invite:explicit", data)
   end
 
@@ -67,16 +76,21 @@ class CreateInvite
     User.transaction do
       actual_invites = []
       invites.each do |invited_phone|
+
+        if(Invite.where(:phone => invited_phone).blank?) #make sure that we only count invites that aren't already invited
+          actual_invites << invited_phone
+        end
+
+        #create the invite only if the user hasn't already invited this person
         unless user.invites.where(:phone => invited_phone).any?
           user.invites.create(:inviter => user, :phone => invited_phone)
-          actual_invites << invited_phone
         end
       end
 
-      return if actual_invites.blank?
-
+      #if the user has already been invited, don't track it as a new invitation
       data = {
-          invites: actual_invites
+          invites: actual_invites,
+          already_invited: invites - actual_invites
       }
       MetricsPublisher.publish(user, "users:invite:explicit", data)
     end
