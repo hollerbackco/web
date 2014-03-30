@@ -62,7 +62,10 @@ module HollerbackApp
         device = user.device_for(params['device_token'], params['platform'])
       end
 
+      #accept all invites
       Invite.accept_all!(device.user)
+      EmailInvite.accept_all!(device.user)
+
       registrar = UserRegister.new
       registrar.perform(device.user.id)
 

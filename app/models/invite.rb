@@ -36,7 +36,7 @@ class Invite < ActiveRecord::Base
       save!
     end
 
-    MetricsPublisher.publish(user, "invite:accept", {invite_id: self.id})
+    MetricsPublisher.publish(user, "invite:accept", {invite_id: self.id, invite_type: 'phone'})
   end
 
   def also_known_as(obj={})
