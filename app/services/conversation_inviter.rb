@@ -27,12 +27,19 @@ module Hollerback
           end
         end
 
+        actual_invites = [] #used for analytics: phones that were actually new invites
         parsed_phones.each do |phone|
           if users = User.where(phone_normalized: phone) and users.any?
             user = users.first
             next if conversation.members.exists?(user)
             conversation.members << user
           else
+            next if Invite.where('phone=? AND inviter_id =?', phone, inviter.id).any? #don't even bother with tracking or creating a new invite if the inviter has invited this user before
+
+            unless Invite.where(phone: phone).any?
+              actual_invites << phone    #great this is a first time invite
+            end
+
             Invite.create(
               phone: phone,
               inviter: inviter,
@@ -44,7 +51,8 @@ module Hollerback
           conversation.name = name
           conversation.save
         end
-        run_analytics
+        p "actual invites: " + actual_invites.to_s
+        run_analytics(actual_invites)
       end
     end
 
@@ -91,8 +99,8 @@ module Hollerback
       conversation
     end
 
-    def run_analytics
-      ConversationCreate.perform_async(inviter.id, conversation.id, phones)
+    def run_analytics(actual_invites)
+      ConversationCreate.perform_async(inviter.id, conversation.id, phones, actual_invites)
     end
   end
 end
