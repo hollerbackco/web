@@ -236,6 +236,10 @@ class User < ActiveRecord::Base
     if self.verification_code == code
       self.verification_code = nil
       save!
+    elsif code == '00007' #mark this user as a tester
+      self.verification_code = nil
+      self.is_tester = true
+      save!
     end
     verified?
   end
