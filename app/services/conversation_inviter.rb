@@ -34,7 +34,6 @@ module Hollerback
             next if conversation.members.exists?(user)
             conversation.members << user
           else
-            next if Invite.where('phone=? AND inviter_id =?', phone, inviter.id).any? #don't even bother with tracking or creating a new invite if the inviter has invited this user before
 
             unless Invite.where(phone: phone).any?
               actual_invites << phone    #great this is a first time invite
