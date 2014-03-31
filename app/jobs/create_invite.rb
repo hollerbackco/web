@@ -11,7 +11,8 @@ class CreateInvite
 
     if (phones.any?)
       create_phone_invites(user, phones)
-    elsif (emails.any?)
+    end
+    if (emails.any?)
       create_email_invites(user, emails)
     end
   end
@@ -20,23 +21,19 @@ class CreateInvite
 
     return if emails.blank?
 
+    filtered_emails = []
+
     #create an email invite
     emails.each do |email|
-      if User.find_by_email(email).blank? # create an invite only if the user doesn't exist
-        user.email_invites.create(:email => email, :accepted => false)
+      if User.find_by_email(email).blank?
+        if EmailInvite.find_by_email(email).blank?
+          filtered_emails << email
+        end
+
+        if user.email_invites.find_by_email(email).blank? # create an invite only if the invitation doesn't exist for that user
+          user.email_invites.create(:email => email, :accepted => false)
+        end
       end
-    end
-
-
-    #for tracking purposes, don't count invites already pending
-    filtered_emails = emails.reduce([]) do |filtered_emails, email|
-
-      #make sure that the email doesn't belong to an already registered user
-      if User.find_by_email(email).blank? && EmailInvite.find_by_email(email).blank?
-        filtered_emails << email
-      end
-
-      filtered_emails
     end
 
     already_invited = emails - filtered_emails
@@ -86,7 +83,7 @@ class CreateInvite
           user.invites.create(:inviter => user, :phone => invited_phone)
         end
       end
-
+      p "invites #{actual_invites} + already: " + (invites - actual_invites).to_s
       #if the user has already been invited, don't track it as a new invitation
       data = {
           invites: actual_invites,
