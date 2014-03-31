@@ -38,7 +38,7 @@ class ConversationCreate
     p "publish metric: users:invite:implicit with data: #{data}"
 
     if actual_invites.any?
-      Hollerback::BMO.say("#{user.username} just implicitly invited #{actual_invites.count} people")
+      Hollerback::BMO.say("#{user.username} implicitly invited #{actual_invites.count} people")
     end
   end
 end

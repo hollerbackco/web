@@ -91,7 +91,7 @@ class CreateInvite
       }
       MetricsPublisher.publish(user, "users:invite:explicit", data)
       if(actual_invites.any?)
-        Hollerback::BMO.say("#{user.username} just explicitly invited #{actual_invites.count} people")
+        Hollerback::BMO.say("#{user.username} explicitly invited #{actual_invites.count} people")
       end
     end
   end
