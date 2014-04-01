@@ -46,6 +46,33 @@ module HollerbackApp
         return error_json 400, msg: "missing required invites param"
       end
 
+       phones, emails = filter_invites()
+
+
+        #kick off a sidekiq task and just return to the user immediately
+        CreateInvite.perform_async(current_user.id, phones, emails)
+
+
+
+
+      success_json();
+
+    end
+
+    post '/me/invites/confirm' do
+
+      if !ensure_params(:invites)
+        return error_json 400, msg: "missing required invites param"
+      end
+
+      phones, emails = filter_invites()
+
+      TrackInvites.perform_async(current_user.id, phones)
+
+      success_json();
+    end
+
+    def filter_invites()
       invites = params[:invites]
 
       if (invites.is_a?(String))
@@ -68,16 +95,9 @@ module HollerbackApp
 
       logger.debug invites
 
-      if(params[:sent].blank?)
-        #kick off a sidekiq task and just return to the user immediately
-        CreateInvite.perform_async(current_user.id, phones, emails)
-      else #track invites that were already created but we waited for the confirmation
-        TrackInvites.perform_async(current_user.id, invites)
-      end
-
-      success_json();
-
+      return phones, emails
     end
+
 
 
     helpers do
