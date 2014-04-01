@@ -1,5 +1,5 @@
 class Invite < ActiveRecord::Base
-  attr_accessible :phone, :inviter, :conversation, :accepted
+  attr_accessible :phone, :inviter, :conversation, :accepted, :tracked
 
   belongs_to :inviter, class_name: "User"
   belongs_to :conversation

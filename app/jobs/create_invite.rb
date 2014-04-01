@@ -74,13 +74,15 @@ class CreateInvite
       actual_invites = []
       invites.each do |invited_phone|
 
-        if(Invite.where(:phone => invited_phone).blank?) #make sure that we only count invites that aren't already invited
+        if(Invite.where(:phone => invited_phone, tracked: true).blank?) #make sure that we only count invites that aren't already invited
           actual_invites << invited_phone
+          #update all that had tracked set to false
+          Invite.where(:phone => invited_phone, :tracked => false).update_all(:tracked => true)
         end
 
         #create the invite only if the user hasn't already invited this person
         unless user.invites.where(:phone => invited_phone).any?
-          user.invites.create(:inviter => user, :phone => invited_phone)
+          user.invites.create(:inviter => user, :phone => invited_phone, :tracked => true)
         end
       end
       p "invites #{actual_invites} + already: " + (invites - actual_invites).to_s
