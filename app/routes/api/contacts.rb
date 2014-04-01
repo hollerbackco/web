@@ -39,7 +39,8 @@ module HollerbackApp
       success_json data: contacts.as_json
     end
 
-    #the invite endpoint
+    #the invite endpoint where explicit invites that were sent are posted
+    #this endpoint creates the invites too
     post '/me/invites' do
 
       if !ensure_params(:invites)
@@ -52,13 +53,12 @@ module HollerbackApp
         #kick off a sidekiq task and just return to the user immediately
         CreateInvite.perform_async(current_user.id, phones, emails)
 
-
-
-
       success_json();
 
     end
 
+    #the invite confirm endpoint that confirms that implicit invites were confirmed
+    #this invite only confirms that the invites were made and sent by the user for tracking purposes
     post '/me/invites/confirm' do
 
       if !ensure_params(:invites)
