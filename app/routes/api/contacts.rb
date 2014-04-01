@@ -68,8 +68,12 @@ module HollerbackApp
 
       logger.debug invites
 
-      #kick off a sidekiq task and just return to the user immediately
-      CreateInvite.perform_async(current_user.id, phones, emails)
+      if(params[:sent].blank?)
+        #kick off a sidekiq task and just return to the user immediately
+        CreateInvite.perform_async(current_user.id, phones, emails)
+      else #track invites that were already created but we waited for the confirmation
+        TrackInvites.perform_async(current_user.id, invites)
+      end
 
       success_json();
 

@@ -14,6 +14,7 @@ class ConversationCreate
     }
     MetricsPublisher.publish(user, "conversations:create", data)
 
+    #don't publish the metrics until it's been confirmed by the client
     publish_invited(user, invites, actual_invites)
   end
 
@@ -29,16 +30,16 @@ class ConversationCreate
     end
 
 
-    data = {
-        invites: actual_invites,
-        already_invited: (invites - actual_invites)
-    }
-    MetricsPublisher.publish(user, "users:invite:implicit", data)
-
-    p "publish metric: users:invite:implicit with data: #{data}"
-
-    if actual_invites.any?
-      Hollerback::BMO.say("#{user.username} implicitly invited #{actual_invites.count} people")
-    end
+    #data = {
+    #    invites: actual_invites,
+    #    already_invited: (invites - actual_invites)
+    #}
+    #MetricsPublisher.publish(user, "users:invite:implicit", data)
+    #
+    #p "publish metric: users:invite:implicit with data: #{data}"
+    #
+    #if actual_invites.any?
+    #  Hollerback::BMO.say("#{user.username} implicitly invited #{actual_invites.count} people")
+    #end
   end
 end
