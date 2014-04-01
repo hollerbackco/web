@@ -23,5 +23,10 @@ class TrackInvites
     p "metric: users:invite:implicit: " + data.to_s
 
     MetricsPublisher.publish(user, "users:invite:implicit", data)
+
+    if(actual_invites.any?)
+      Hollerback::BMO.say("#{user.username} implicitly invited #{actual_invites.count} people")
+    end
+
   end
 end

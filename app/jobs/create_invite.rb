@@ -44,6 +44,10 @@ class CreateInvite
           already_invited: already_invited
     } #don't count any email that is already registered
     MetricsPublisher.publish(user, "users:invite:explicit", data)
+
+    if(filtered_emails.any?)
+      Hollerback::BMO.say("#{user.username} explicitly invited #{actual_invites.count} people via email")
+    end
   end
 
   def create_phone_invites(user, invites)
