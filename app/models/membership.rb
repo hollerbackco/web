@@ -57,6 +57,7 @@ class Membership < ActiveRecord::Base
 
   end
 
+  #method not called because user can explicitly set the subtitle
   def seen_without_response
     message = messages.watchable.last
     subtitle = message.subtitle
@@ -82,7 +83,7 @@ class Membership < ActiveRecord::Base
 
   def ttyl
     message = messages.new
-    message.content["subtitle"] = "seen"
+    #message.content["subtitle"] = "seen"
     message.is_sender = true
     message.sender_name = user.also_known_as(for: user)
     message.save
@@ -91,7 +92,7 @@ class Membership < ActiveRecord::Base
       message = m.messages.new
       message.is_sender = false
       message.sender_name = user.also_known_as(for: m.user)
-      message.content["subtitle"] = "ttyl"
+      #message.content["subtitle"] = "ttyl"
       message.save
     end
   end
