@@ -33,7 +33,7 @@ module HollerbackApp
       counts = messages.group(:membership_id).count
       memberships.each do |membership|
         # iterate through the memberships and set the unread_count
-        membership[:sync][:unread_count] = counts[membership[:sync][:id].to_sym]
+        membership[:sync][:unread_count] = counts[membership[:sync][:id]]
       end
       [].concat(memberships).concat(messages.map(&:to_sync))
     end
