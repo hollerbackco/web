@@ -42,32 +42,10 @@ class Message < ActiveRecord::Base
   end
 
   def self.sync_objects(opts={})
-    raise ArgumentError if opts[:user].blank?
-    options = {
-        :since => nil,
-        :before => nil,
-        :membership_ids => []
-    }.merge(opts)
-
-    collection = options[:user].messages.watchable
-
-    collection = if options[:since]
-                   collection.updated_since_within_memberships(options[:since], options[:membership_ids])
-                 elsif options[:before]
-                   collection.before_last_message_at(options[:before], options[:membership_ids])
-                 else               #how much of an improvement will one query be? Quite a bit!
-                   collection.unseen_within_memberships(options[:membership_ids])
-                 end
-    begin
-      Message.set_message_display_info(collection)
-    rescue Exception => e
-      logger.error e
-    end
-
-    collection.map(&:to_sync)
+    get_messages_collection(opts).map(&:to_sync)
   end
 
-  def self.get_objects(opts={})
+  def self.get_messages_collection(opts={})
     raise ArgumentError if opts[:user].blank?
     options = {
         :since => nil,
