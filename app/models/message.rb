@@ -67,6 +67,33 @@ class Message < ActiveRecord::Base
     collection.map(&:to_sync)
   end
 
+  def self.get_objects(opts={})
+    raise ArgumentError if opts[:user].blank?
+    options = {
+        :since => nil,
+        :before => nil,
+        :membership_ids => []
+    }.merge(opts)
+
+    collection = options[:user].messages.watchable
+
+    collection = if options[:since]
+                   collection.updated_since_within_memberships(options[:since], options[:membership_ids])
+                 elsif options[:before]
+                   collection.before_last_message_at(options[:before], options[:membership_ids])
+                 else               #how much of an improvement will one query be? Quite a bit!
+                   collection.unseen_within_memberships(options[:membership_ids])
+                 end
+    begin
+      Message.set_message_display_info(collection)
+    rescue Exception => e
+      logger.error e
+    end
+
+    collection
+  end
+
+
   def user
     {
         name: sender_name,
@@ -141,9 +168,7 @@ class Message < ActiveRecord::Base
   def to_sync
     {
         type: "message",
-        sync: as_json({
-                          :methods => [:guid, :url, :thumb_url, :gif_url, :conversation_id, :sender_id, :user, :is_deleted, :subtitle, :display]
-                      })
+        sync: as_json
     }
   end
 

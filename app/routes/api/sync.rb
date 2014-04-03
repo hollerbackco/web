@@ -8,14 +8,12 @@ module HollerbackApp
       user_agent = Hollerback::UserAgent.new(request.user_agent)
       count = params[:count] #HollerbackApp::IOS_MAX_SYNC_OBJECTS if user_agent.ios? && @app_version &&  GEM::RUBY_VERSION.new(@app_version) >  GEM::RUBY_VERSION.new('1.1.5')
 
-      sync_objects = []
-
       #get the memberships
       memberships, ids = Membership.sync_objects(user: current_user, since: updated_at, before: before_last_message_at, count: count)
-      sync_objects = sync_objects.concat(memberships);
-
       #get the messages associated with these memberships
-      sync_objects = sync_objects.concat(Message.sync_objects(user: current_user, since: updated_at, before: before_last_message_at, membership_ids: ids))
+      messages = Message.get_objects(user: current_user, since: updated_at, before: before_last_message_at, membership_ids: ids)
+      
+      sync_objects = count_membership_ids_and_set_unread(messages, memberships)
 
       #the following operation is a very long running query
       ConversationRead.perform_async(current_user.id)
@@ -27,6 +25,17 @@ module HollerbackApp
         data: sync_objects.as_json
       )
       data
+    end
+
+    private
+
+    def count_membership_ids_and_set_unread(messages, memberships)
+      counts = messages.group(:membership_id).count
+      memberships.each do |membership|
+        # iterate through the memberships and set the unread_count
+        membership[:sync][:unread_count] = counts[membership[:sync][:id].to_sym]
+      end
+      [].concat(memberships).concat(messages.map(&:to_sync))
     end
   end
 end
