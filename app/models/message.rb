@@ -42,10 +42,10 @@ class Message < ActiveRecord::Base
   end
 
   def self.sync_objects(opts={})
-    get_messages_collection(opts).map(&:to_sync)
+    get_objects(opts).map(&:to_sync)
   end
 
-  def self.get_messages_collection(opts={})
+  def self.get_objects(opts={})
     raise ArgumentError if opts[:user].blank?
     options = {
         :since => nil,

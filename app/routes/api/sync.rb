@@ -11,7 +11,7 @@ module HollerbackApp
       #get the memberships
       memberships, ids = Membership.sync_objects(user: current_user, since: updated_at, before: before_last_message_at, count: count)
       #get the messages associated with these memberships
-      messages = Message.get_messages_collection(user: current_user, since: updated_at, before: before_last_message_at, membership_ids: ids)
+      messages = Message.get_objects(user: current_user, since: updated_at, before: before_last_message_at, membership_ids: ids)
       
       sync_objects = count_membership_ids_and_set_unread(messages, memberships)
 
