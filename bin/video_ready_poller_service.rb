@@ -16,11 +16,21 @@ module SQSLogger
   end
 end
 
-queue_name = if Sinatra::Base.production?
+queue_name = if ENV["RACK_ENV"] == "production"
   "video-stitch-ready"
-else
+elsif ENV["RACK_ENV"] == "staging"
   "video-stitch-ready-dev"
+else
+  AWS.config(
+      :use_ssl => false,
+      :sqs_endpoint => "localhost",
+      :sqs_port => 4568,
+      :access_key_id =>  ENV["AWS_ACCESS_KEY_ID"],
+      :secret_access_key => ENV["AWS_SECRET_ACCESS_KEY"]
+  )
+  "video-stitch-ready-local"
 end
+
 
 SQSLogger.logger.info " -- Preparing \"#{queue_name}\" SQS Queue"
 queue = AWS::SQS.new.queues.create(queue_name)
