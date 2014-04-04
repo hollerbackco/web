@@ -12,7 +12,7 @@ class WelcomeUser
     begin
       notify_friend_join
     rescue Exception => e
-      logger.error e.to_s
+       p "notify_friend_join failed: " + e.to_s
     end
   end
 
