@@ -77,6 +77,9 @@ GEM
       multi_json (~> 1.0)
     factory_girl (4.2.0)
       activesupport (>= 3.0.0)
+    fake_sqs (0.1.0)
+      builder
+      sinatra
     ffaker (1.16.1)
     ffi (1.8.1)
     flay (2.3.0)
@@ -316,6 +319,7 @@ DEPENDENCIES
   em-http-request (~> 1.0)
   em-rspec
   factory_girl
+  fake_sqs
   ffaker
   flay
   gcm

@@ -9,8 +9,8 @@ class VideoCompletePoller
   end
 
   def run
-    SQSLogger.logger.info " -- Started Video Ready Polling Service"
-    queue.poll do |message|
+    SQSLogger.logger.info " -- Started Video Ready Polling Service: #{@queue.to_s}"
+    queue.poll() do |message|
       SQSLogger.logger.info "Message body: #{message.body}"
       data = JSON.parse(message.body)
       process_message(data)

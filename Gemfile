@@ -34,6 +34,9 @@ gem 'warden'
 #storage
 gem 'aws-sdk'
 
+#fake sqs for local testing
+gem 'fake_sqs'
+
 #messaging
 gem 'phone'
 gem 'twilio-ruby'
