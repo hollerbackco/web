@@ -80,7 +80,7 @@ GEM
       activesupport (>= 3.0.0)
     fake_sqs (0.1.0)
       builder
-      sinatra
+      sinatra (= 1.4.2)
     ffaker (1.16.1)
     ffi (1.8.1)
     flay (2.3.0)
