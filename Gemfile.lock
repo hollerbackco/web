@@ -61,6 +61,7 @@ GEM
     dalli (2.6.4)
     database_cleaner (0.9.1)
     diff-lcs (1.2.4)
+    dotenv (0.10.0)
     em-http-request (1.0.3)
       addressable (>= 2.2.3)
       cookiejar
@@ -77,6 +78,9 @@ GEM
       multi_json (~> 1.0)
     factory_girl (4.2.0)
       activesupport (>= 3.0.0)
+    fake_sqs (0.1.0)
+      builder
+      sinatra (= 1.4.2)
     ffaker (1.16.1)
     ffi (1.8.1)
     flay (2.3.0)
@@ -313,9 +317,11 @@ DEPENDENCIES
   compass
   dalli
   database_cleaner
+  dotenv
   em-http-request (~> 1.0)
   em-rspec
   factory_girl
+  fake_sqs
   ffaker
   flay
   gcm

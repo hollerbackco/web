@@ -1,6 +1,7 @@
 .DS_STORE
 *.swp
 *.rbc
+*.env
 *.sass-cache
 .idea
 *.orig

@@ -36,10 +36,25 @@ class VideoStitchRequest
 
 
   def queue
-    @queue ||= if Sinatra::Base.production?
+    @queue ||= if ENV["RACK_ENV"] == 'production'
       AWS::SQS.new.queues.create("video-stitch")
-    else
+    elsif ENV["RACK_ENV"] == 'staging'
       AWS::SQS.new.queues.create("video-stitch-dev")
+    elsif ENV["RACK_ENV"] == 'local' || ENV["RACK_ENV"] == 'test'
+      AWS.config(
+          :use_ssl => false,
+          :sqs_endpoint => "localhost",
+          :sqs_port => ENV["LOCAL_SQS_PORT"],
+          :access_key_id =>  ENV["AWS_ACCESS_KEY_ID"],
+          :secret_access_key => ENV["AWS_SECRET_ACCESS_KEY"]
+      )
+      begin
+        return AWS::SQS.new.queues.named("video-stitch-local")
+      rescue Exception => e
+        return AWS::SQS.new.queues.create("video-stitch-local")
+      end
+    else
+      raise "What environment are you working in? Needs to be one of ('production', 'staging', 'local', 'test')"
     end
   end
 

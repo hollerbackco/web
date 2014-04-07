@@ -1,12 +1,5 @@
 require File.expand_path('../boot', __FILE__)
 
-# setup local ENV
-env_file = File.join('config', 'local_env.yml')
-
-if File.exists?(env_file)
-  YAML.load(File.open(env_file)).each do |key, value|
-    ENV[key.to_s] ||= value
-  end
-end
+Dotenv.load('./local.env') unless (ENV['LOCAL_ENV_SETUP'] == 'true')
 
 require File.expand_path('../application', __FILE__)

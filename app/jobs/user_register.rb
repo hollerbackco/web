@@ -11,8 +11,8 @@ class UserRegister
       memberships: user.memberships.count
     }
     MetricsPublisher.publish(user, "users:new", data)
-    WelcomeUser.new(user).run
-    #Welcome.perform_in(5.minute, user.id)
+    #WelcomeUser.new(user).run
+    Welcome.perform_in(24.hours, user.id)
 
     Hollerback::BMO.say("#{user.username} just signed up")
   end
