@@ -86,6 +86,7 @@ group :development do
   gem 'reek'
   gem 'flay'
   gem 'thin'
+  gem 'pry-remote'
 end
 
 group :test do

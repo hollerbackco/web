@@ -1,3 +1,5 @@
+require 'pry-remote'
+
 module HollerbackApp
   class ApiApp < BaseApp
     get '/me/sync' do
@@ -13,7 +15,7 @@ module HollerbackApp
       #get the messages associated with these memberships
       messages = Message.get_objects(user: current_user, since: updated_at, before: before_last_message_at, membership_ids: ids)
       
-      sync_objects = count_membership_ids_and_set_unread(messages, memberships)
+      sync_objects = count_by_membership_id_and_set_unread(messages, memberships)
 
       #the following operation is a very long running query
       ConversationRead.perform_async(current_user.id)
@@ -29,11 +31,14 @@ module HollerbackApp
 
     private
 
-    def count_membership_ids_and_set_unread(messages, memberships)
-      counts = messages.group(:membership_id).count
-      memberships.each do |membership|
-        # iterate through the memberships and set the unread_count
-        membership[:sync][:unread_count] = counts[membership[:sync][:id]]
+    def count_by_membership_id_and_set_unread(messages, memberships)
+      logger.debug "***** DEBUG COUNTING IDS *********"
+      unless messages.empty?
+        counts = messages.group(:membership_id).count
+        memberships.each do |membership|
+          # iterate through the memberships and set the unread_count
+          membership[:sync][:unread_count] = counts[membership[:sync][:id]]
+        end
       end
       [].concat(memberships).concat(messages.map(&:to_sync))
     end
