@@ -42,6 +42,10 @@ class Message < ActiveRecord::Base
   end
 
   def self.sync_objects(opts={})
+    get_objects(opts).map(&:to_sync)
+  end
+
+  def self.get_objects(opts={})
     raise ArgumentError if opts[:user].blank?
     options = {
         :since => nil,
@@ -64,8 +68,9 @@ class Message < ActiveRecord::Base
       logger.error e
     end
 
-    collection.map(&:to_sync)
+    collection
   end
+
 
   def user
     {
@@ -141,9 +146,7 @@ class Message < ActiveRecord::Base
   def to_sync
     {
         type: "message",
-        sync: as_json({
-                          :methods => [:guid, :url, :thumb_url, :gif_url, :conversation_id, :sender_id, :user, :is_deleted, :subtitle, :display]
-                      })
+        sync: as_json
     }
   end
 

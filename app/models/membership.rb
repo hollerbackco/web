@@ -48,11 +48,6 @@ class Membership < ActiveRecord::Base
 
     end
 
-    collection = collection
-    .joins("LEFT OUTER JOIN messages ON memberships.id = messages.membership_id AND messages.seen_at is null AND messages.content ? 'guid'")
-    .group("memberships.id")
-    .select('memberships.*, count(messages) as unseen_count')
-
     return collection.map(&:to_sync), collection.map { |membership| membership.id }
 
   end
@@ -181,14 +176,14 @@ class Membership < ActiveRecord::Base
 
   def as_json(opts={})
     options = {}
-    options = options.merge(methods: [:name, :unread_count, :is_deleted])
+    options = options.merge(methods: [:name, :is_deleted])
     options = options.merge(except: [:updated_at, :conversation_id])
     options = options.merge(opts)
     obj = super(options)
 
     # TODO cleanup updated_at [hacky][ios]
     # override updated_at timestamp to allow for correct sorting on older versions of the ios app
-    obj.merge({updated_at: last_message_at})
+    obj.merge({updated_at: last_message_at, unread_count: 0})
   end
 
   def to_sync

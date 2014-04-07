@@ -165,6 +165,9 @@ GEM
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.4)
+    pry-remote (0.1.8)
+      pry (~> 0.9)
+      slop (~> 3.0)
     rack (1.5.2)
     rack-parser (0.4.0)
       rack
@@ -341,6 +344,7 @@ DEPENDENCIES
   newrelic_rpm
   pg
   phone
+  pry-remote
   rack-parser
   rack-reverse-proxy
   rake
