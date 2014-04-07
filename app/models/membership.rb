@@ -18,7 +18,6 @@ class Membership < ActiveRecord::Base
   scope :before_last_message_at, lambda { |before_message_at| where("memberships.updated_at < ?", before_message_at) }
 
   def self.sync_objects(opts={})
-    logger.debug "***** SYNCING MEMBERSHIPS *********"
     raise ArgumentError if opts[:user].blank? and !opts[:user].is_a? User
     options = {
         :since => nil,
@@ -49,7 +48,6 @@ class Membership < ActiveRecord::Base
 
     end
 
-    logger.debug "***** RETURNING MEMBERSHIPS *********"
     return collection.map(&:to_sync), collection.map { |membership| membership.id }
 
   end

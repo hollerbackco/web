@@ -1,5 +1,3 @@
-require 'pry-remote'
-
 module HollerbackApp
   class ApiApp < BaseApp
     get '/me/sync' do
