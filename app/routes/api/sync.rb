@@ -32,12 +32,11 @@ module HollerbackApp
     private
 
     def count_by_membership_id_and_set_unread(messages, memberships)
-      logger.debug "***** DEBUG COUNTING IDS *********"
       unless messages.empty?
-        counts = messages.group(:membership_id).count
+        groups = messages.group_by(&:membership_id)
         memberships.each do |membership|
           # iterate through the memberships and set the unread_count
-          membership[:sync][:unread_count] = counts[membership[:sync][:id]]
+          membership[:sync]["unread_count"] = groups[membership[:sync]["id"]].count
         end
       end
       [].concat(memberships).concat(messages.map(&:to_sync))
