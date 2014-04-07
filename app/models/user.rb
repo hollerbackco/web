@@ -244,8 +244,8 @@ class User < ActiveRecord::Base
     verified?
   end
 
-  def new?
-    memberships.reload.empty?
+  def new? #TODO FIX
+    false #memberships.reload.empty?
   end
   alias_method :is_new, :new?
 

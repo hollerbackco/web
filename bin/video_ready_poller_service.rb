@@ -20,15 +20,17 @@ queue_name = if ENV["RACK_ENV"] == "production"
   "video-stitch-ready"
 elsif ENV["RACK_ENV"] == "staging"
   "video-stitch-ready-dev"
-else
+elsif ENV["RACK_ENV"] == "local" || ENV["RACK_ENV"] == "test"
   AWS.config(
       :use_ssl => false,
       :sqs_endpoint => "localhost",
-      :sqs_port => 4568,
+      :sqs_port => ENV["LOCAL_SQS_PORT"],
       :access_key_id =>  ENV["AWS_ACCESS_KEY_ID"],
       :secret_access_key => ENV["AWS_SECRET_ACCESS_KEY"]
   )
   "video-stitch-ready-local"
+else
+  raise "What environment are you working in? Needs to be one of ('production', 'staging', 'local', 'test')"
 end
 
 

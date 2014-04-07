@@ -20,6 +20,9 @@ gem 'redis'
 gem 'dalli'
 gem 'upsert'
 
+#environment
+gem 'dotenv'
+
 #model
 gem 'awesome_nested_set'
 gem 'will_paginate'
