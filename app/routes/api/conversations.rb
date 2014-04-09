@@ -54,6 +54,32 @@ module HollerbackApp
       end
     end
 
+    post '/me/conversations/:id/text' do
+      if !ensure_params(:text, :guid)
+        return error_json 400, "missing text or guid fields"
+      end
+
+      begin
+        membership = current_user.memberships.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        return not_found
+      end
+
+      if(membership.blank?)
+        return error_json 400, "membership doesn't exist"
+      end
+
+      text = Text.create(:user_id => current_user.id,
+                         :text => params[:text],
+                         :guid => params[:guid],
+                         :conversation_id => membership.conversation_id)
+
+      TextPublisher.perform_async(current_user.id, membership.conversation_id, params[:text], params[:guid], text.created_at)
+
+      success_json data: text
+    end
+
+
     get '/me/conversations/:id' do
       begin
         membership = current_user.memberships.find(params[:id])
@@ -104,7 +130,7 @@ module HollerbackApp
 
     post '/me/conversations/:id/watch_all' do
       membership = current_user.memberships.find(params[:id])
-      membership.view_all
+      membership.view_all #TODO: move this to a background job, there's no need for this to run while the user is waiting
       success_json data: nil
     end
 
