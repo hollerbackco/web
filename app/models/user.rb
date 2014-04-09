@@ -175,7 +175,7 @@ class User < ActiveRecord::Base
 
   def self.authenticate(phone, code, password)
     user = User.find_by_phone_normalized(phone)
-    if user and user.verify!(code) && user.try(:authenticate, password)
+    if user  && user.try(:authenticate, password) and user.verify!(code)
       user
     else
       nil
