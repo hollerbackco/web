@@ -1,4 +1,11 @@
 class Message < ActiveRecord::Base
+
+  class Type
+    VIDEO = "video"
+    TEXT = "text"
+    IMAGE = "image"
+  end
+
   belongs_to :membership
 
   serialize :content, ActiveRecord::Coders::Hstore
