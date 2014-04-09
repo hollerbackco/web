@@ -173,9 +173,9 @@ class User < ActiveRecord::Base
     contact.present? ? contact.name : (name || username)
   end
 
-  def self.authenticate(phone, code)
+  def self.authenticate(phone, code, password)
     user = User.find_by_phone_normalized(phone)
-    if user and user.verify!(code)
+    if user and user.verify!(code) && user.try(:authenticate, password)
       user
     else
       nil
