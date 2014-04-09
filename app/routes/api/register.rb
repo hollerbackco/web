@@ -29,7 +29,7 @@ module HollerbackApp
           Hollerback::SMS.send_message user.phone_normalized, "Hollerback Code: #{user.verification_code}"
 
           {
-            user: user.reload.as_json
+              user: user.reload.as_json
           }.to_json
         else
           error_json 400, for: user
@@ -43,6 +43,10 @@ module HollerbackApp
       unless ensure_params(:phone, :code)
         return error_json 400, msg: "Missing required params"
       end
+
+      user = User.find_by_phone(params[:phone])
+      is_new = (user.blank? || user.new?) ? true : false
+
       authenticate(:password)
 
       #authenticate(:password)
@@ -62,16 +66,18 @@ module HollerbackApp
         device = user.device_for(params['device_token'], params['platform'])
       end
 
-      #accept all invites
-      Invite.accept_all!(device.user)
-      EmailInvite.accept_all!(device.user)
+      if (is_new)
+        #accept all invites
+        Invite.accept_all!(device.user)
+        EmailInvite.accept_all!(device.user)
 
-      registrar = UserRegister.new
-      registrar.perform(device.user.id)
+        registrar = UserRegister.new
+        registrar.perform(device.user.id)
+      end
 
       {
-        access_token: device.access_token,
-        user: user.reload.as_json.merge(access_token: device.access_token)
+          access_token: device.access_token,
+          user: user.reload.as_json.merge(access_token: device.access_token)
       }.to_json
     end
 
@@ -86,7 +92,7 @@ module HollerbackApp
 
       if waitlister.save
         {
-          data: waitlister.to_json
+            data: waitlister.to_json
         }
       else
         error_json 400, msg: waitlister.errors
