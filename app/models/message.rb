@@ -14,7 +14,7 @@ class Message < ActiveRecord::Base
 
   scope :seen, where("seen_at is not null")
   scope :unseen, where(:seen_at => nil)
-  scope :unseen_within_memberships, lambda {|ids| where("messages.seen_at is null AND messages.membership_id IN (?)", ids)}
+  scope :unseen_within_memberships, lambda { |ids| where("messages.seen_at is null AND messages.membership_id IN (?)", ids) }
   scope :received, where("is_sender IS NOT TRUE")
   scope :sent, where("is_sender IS TRUE")
   scope :updated_since, lambda { |updated_at| where("messages.updated_at > ? ", updated_at) }
@@ -56,22 +56,71 @@ class Message < ActiveRecord::Base
         :membership_ids => []
     }.merge(opts)
 
-    collection = options[:user].messages.watchable
+    api_version = opts[:api_version]
+
+    collection = []
+
+    if (api_version.blank?)
+      collection = options[:user].messages.watchable.where("message_type != ?", Type::TEXT)
+    else
+      collection = options[:user].messages.watchable
+    end
 
     collection = if options[:since]
                    collection.updated_since_within_memberships(options[:since], options[:membership_ids])
                  elsif options[:before]
                    collection.before_last_message_at(options[:before], options[:membership_ids])
-                 else               #how much of an improvement will one query be? Quite a bit!
+                 else #how much of an improvement will one query be? Quite a bit!
                    collection.unseen_within_memberships(options[:membership_ids])
                  end
     begin
-      Message.set_message_display_info(collection)
+      Message.set_message_display_info(collection, api_version)
     rescue Exception => e
       logger.error e
     end
+    if (api_version.blank?)
+      collection.map(&:to_sync)
+    else
+      collection.map(&:to_sync_v1)
+    end
+  end
 
-    collection.map(&:to_sync)
+  #Deprecated
+  def to_sync(opts={})
+    {#TODO: deprecate this clause and delete once we get all clients
+     type: "message",
+     sync: as_json({
+                       :methods => [:guid, :url, :thumb_url, :gif_url, :conversation_id, :sender_id, :user, :is_deleted, :subtitle, :display]
+                   })
+    }
+  end
+
+  #Deprecated
+  def as_json(opts={})
+    options = {}
+    #options = options.merge(:methods => [:guid, :url, :thumb_url, :gif_url, :conversation_id, :user, :is_deleted, :subtitle, :display])
+    options = options.merge(opts)
+    options = options.merge(:only => [:created_at, :sender_name, :sent_at, :needs_reply])
+    super(options).merge({isRead: !unseen?, id: guid})
+  end
+
+  def to_sync_v1
+
+    payload = ""
+    if(message_type == Type::TEXT)
+      payload = :text
+    else
+      payload = :video
+    end
+
+    object = {
+        :methods => [:type, :conversation_id, :sender_id, :user, :is_deleted, :display, payload]
+    }
+
+    {
+        type: "message",
+        sync: as_json(object)
+    }
   end
 
   def user
@@ -104,6 +153,18 @@ class Message < ActiveRecord::Base
     content["guid"]
   end
 
+  def text_content
+    content["text"]
+  end
+
+  def text
+    {:guid => guid, :text => text_content}
+  end
+
+  def video
+    {:guid => guid, :url => url, :thumb_url => thumb_url, :gif_url => gif_url, :subtitle => subtitle}
+  end
+
   def video_guid=(str)
     content["guid"] = str
   end
@@ -128,6 +189,10 @@ class Message < ActiveRecord::Base
     end
   end
 
+  def type
+    message_type
+  end
+
   def delete!
     self.class.transaction do
       self.deleted_at = Time.now
@@ -145,36 +210,26 @@ class Message < ActiveRecord::Base
     membership_id
   end
 
-  def to_sync
-    {
-        type: "message",
-        sync: as_json({
-                          :methods => [:guid, :url, :thumb_url, :gif_url, :conversation_id, :sender_id, :user, :is_deleted, :subtitle, :display]
-                      })
-    }
-  end
 
-  def as_json(opts={})
-    options = {}
-    options = options.merge(:methods => [:guid, :url, :thumb_url, :gif_url, :conversation_id, :user, :is_deleted, :subtitle, :display])
-    options = options.merge(:only => [:created_at, :sender_name, :sent_at, :needs_reply])
-    options = options.merge(opts)
-    super(options).merge({isRead: !unseen?, id: guid})
-  end
+  def self.set_message_display_info(messages, api_version)
 
-  def self.set_message_display_info(messages)
-
-    video_rules = HollerbackApp::ClientDisplayManager.get_rules_by_name('video_cell_display_rules')
+    rules = {}
+    if (api_version)
+      rules = HollerbackApp::ClientDisplayManager.get_rules_by_name('content_cell_display_rules')
+    else
+      rules = HollerbackApp::ClientDisplayManager.get_rules_by_name('video_cell_display_rules')
+    end
 
     #user display info
-    user_display = video_rules['user']
+    user_display = rules['user']
 
     #other display info
-    other_display = video_rules['others']
+    other_display = rules['others']
 
     #for each message add it's display info
     messages.each do |message|
       message.is_sender? ? message.display = user_display : message.display = other_display
     end
+
   end
 end

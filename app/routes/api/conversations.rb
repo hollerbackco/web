@@ -62,10 +62,6 @@ module HollerbackApp
       begin
         membership = current_user.memberships.find(params[:id])
       rescue ActiveRecord::RecordNotFound
-        return not_found
-      end
-
-      if(membership.blank?)
         return error_json 400, "membership doesn't exist"
       end
 
