@@ -31,7 +31,7 @@ class CreateInvite
         end
 
         if user.email_invites.find_by_email(email).blank? # create an invite only if the invitation doesn't exist for that user
-          user.email_invites.create(:email => email, :accepted => false)
+          user.email_invites.create(:email => email, :accepted => false, :cohort => user.cohort)
         end
       end
     end
@@ -86,7 +86,7 @@ class CreateInvite
 
         #create the invite only if the user hasn't already invited this person
         unless user.invites.where(:phone => invited_phone).any?
-          user.invites.create(:inviter => user, :phone => invited_phone, :tracked => true)
+          user.invites.create(:inviter => user, :phone => invited_phone, :tracked => true, :cohort => user.cohort)
         end
       end
       p "invites #{actual_invites} + already: " + (invites - actual_invites).to_s
