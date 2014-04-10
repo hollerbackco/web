@@ -14,7 +14,7 @@ class UserRegister
     }
     MetricsPublisher.publish(user, "users:new", data)
     #WelcomeUser.new(user).run
-    Welcome.perform_in(24.hours, user.id)
+    #Welcome.perform_in(24.hours, user.id)
 
     begin
       notify_friend_join(user)
