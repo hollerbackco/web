@@ -68,6 +68,9 @@ module HollerbackApp
       end
 
       if (is_new)
+
+        #if cohort is not set, set it
+
         #accept all invites
         Invite.accept_all!(device.user)
         EmailInvite.accept_all!(device.user)
