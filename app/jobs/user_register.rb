@@ -6,6 +6,10 @@ class UserRegister
   def perform(user_id)
     user = User.find(user_id)
 
+    set_cohort(user)
+
+    accept_invites(user)
+
     create_messages(user)
     update_conversation_names(user)
 
@@ -23,6 +27,7 @@ class UserRegister
     end
 
     Hollerback::BMO.say("#{user.username} just signed up")
+
   end
 
   private
@@ -43,6 +48,31 @@ class UserRegister
     Membership.where(:conversation_id => user.conversations.map(&:id)).each do |membership|
       membership.update_conversation_name
     end
+  end
+
+  def set_cohort(user)
+    begin
+      #if cohort is not set, set it
+      if (user.cohort.blank?)
+        cohorts = Invite.where("phone = ? AND cohort is not null", user.phone_normalized).pluck(:cohort)
+        cohorts.concat(EmailInvite.where("email = ? AND cohort is not null", user.email).pluck(:cohort))
+        if (cohorts.any?)
+          user.cohort = cohorts.last #just pick the last one
+          user.save
+        end
+
+      end
+    rescue Exception => ex
+      HollerbackApp::BaseApp::logger.error "there was a problem extracting the cohort from the invites"
+      Honeybadger.notify(ex)
+    end
+
+  end
+
+  def accept_invites(user)
+    #accept all invites
+    Invite.accept_all!(user)
+    EmailInvite.accept_all!(user)
   end
 
   def notify_friend_join(user)
