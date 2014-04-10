@@ -23,7 +23,21 @@ module HollerbackApp
         user.phone_hashed = params[:phone_hashed]
         user.username = params[:username]
         user.set_verification_code
-        user.cohort = params[:cohort] unless params[:cohort].blank?
+
+        #extract cohort info if any
+        unless params[:cohort].blank?
+          #the cohort comes as a url parse it
+          cohort = params[:cohort]
+          begin
+            cohort = URI(cohort).path.split('/').last
+            if (cohort != "download")
+              user.cohort = cohort
+            end
+          rescue Exception => ex
+            logger.error ("couldn't extract cohort: #{cohort}")
+            Honeybadger.notify(ex)
+          end
+        end
 
         if user.save
           # send a verification code
