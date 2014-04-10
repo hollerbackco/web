@@ -24,6 +24,9 @@ class Membership < ActiveRecord::Base
         :before => nil,
         :count => nil,
     }.merge(opts)
+
+    api_version = opts[:api_version]
+
     collection = self.where(user_id: options[:user].id)
 
     if options[:since]
@@ -48,8 +51,16 @@ class Membership < ActiveRecord::Base
 
     end
 
+    join_clause = ""
+    if(api_version)
+      join_clause = "LEFT OUTER JOIN messages ON memberships.id = messages.membership_id AND messages.seen_at is null AND messages.content ? 'guid'"
+    else
+      join_clause = "LEFT OUTER JOIN messages ON memberships.id = messages.membership_id AND messages.seen_at is null AND messages.content ? 'guid' and messages.message_type not like 'text'"
+    end
+
+
     collection = collection
-    .joins("LEFT OUTER JOIN messages ON memberships.id = messages.membership_id AND messages.seen_at is null AND messages.content ? 'guid'")
+    .joins(join_clause)
     .group("memberships.id")
     .select('memberships.*, count(messages) as unseen_count')
 

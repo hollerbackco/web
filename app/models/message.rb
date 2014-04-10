@@ -61,7 +61,7 @@ class Message < ActiveRecord::Base
     collection = []
 
     if (api_version.blank?)
-      collection = options[:user].messages.watchable.where("message_type != ?", Type::TEXT)
+      collection = options[:user].messages.watchable.where("message_type not like ?", Type::TEXT)
     else
       collection = options[:user].messages.watchable
     end
