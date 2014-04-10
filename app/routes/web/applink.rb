@@ -3,7 +3,7 @@ module HollerbackApp
 
     APP_DOWNLOAD_LINK = "http://appstore.com/hollerback"
     ENTERPRISE_APP_DOWNLOAD_LINK = "http://www.hollerback.co/beta/test/master"
-    ALLOWED_LOCALES = ["AU", "NZ"]
+    ALLOWED_LOCALES = ["AU", "NZ", "CA"]
 
     helpers do
       def sms_download_notification(name)
