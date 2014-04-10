@@ -27,7 +27,11 @@ module HollerbackApp
       redirect "hollerback://"
     end
 
-    ['/download', '/invite', '/v/:token', '/usc'].each do |location|
+    get '/invite/:cohort' do
+      redirect "/beta/test/#{params[:cohort]}"
+    end
+
+    ['/download','/invite', '/v/:token', '/usc'].each do |location|
       get location do
         if android?
           redirect '/beta'
