@@ -23,6 +23,7 @@ module HollerbackApp
         user.phone_hashed = params[:phone_hashed]
         user.username = params[:username]
         user.set_verification_code
+        user.cohort = params[:cohort] unless params[:cohort].blank?
 
         if user.save
           # send a verification code
@@ -67,6 +68,9 @@ module HollerbackApp
       end
 
       if (is_new)
+
+        #if cohort is not set, set it
+
         #accept all invites
         Invite.accept_all!(device.user)
         EmailInvite.accept_all!(device.user)
