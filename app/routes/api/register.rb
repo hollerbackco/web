@@ -23,6 +23,7 @@ module HollerbackApp
         user.phone_hashed = params[:phone_hashed]
         user.username = params[:username]
         user.set_verification_code
+        user.cohort = params[:cohort] unless params[:cohort].blank?
 
         if user.save
           # send a verification code
