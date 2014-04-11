@@ -95,7 +95,7 @@ module HollerbackApp
         end
 
         success_json({
-                         data: messages.as_json,
+                         data: messages.as_json({}, api_version=1),
                          meta: {
                              last_page: last_page
                          }
