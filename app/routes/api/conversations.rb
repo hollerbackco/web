@@ -89,7 +89,7 @@ module HollerbackApp
         end
 
         success_json({
-                         data: messages.map {|m| m.as_json({}, api_version=1)},
+                         data: messages.map {|m| m.as_json({}, @api_version)},
                          meta: {
                              last_page: last_page
                          }

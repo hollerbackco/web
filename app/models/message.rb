@@ -60,7 +60,7 @@ class Message < ActiveRecord::Base
 
     collection = []
 
-    if (api_version.blank?)
+    unless api_version == HollerbackApp::ApiVersion::V1
       collection = options[:user].messages.watchable.where("message_type not like ?", Type::TEXT)
     else
       collection = options[:user].messages.watchable
@@ -78,7 +78,8 @@ class Message < ActiveRecord::Base
     rescue Exception => e
       logger.error e
     end
-    if (api_version.blank?)
+    logger.info ("constant: #{HollerbackApp::ApiVersion::V1} api version: #{api_version} #{api_version == HollerbackApp::ApiVersion::V1}")
+    unless api_version == HollerbackApp::ApiVersion::V1
       collection.map(&:to_sync)
     else
       collection.map(&:to_sync_v1)
@@ -93,10 +94,9 @@ class Message < ActiveRecord::Base
     }
   end
 
-  #Deprecated
   def as_json(opts={}, api_version=nil)
     options = {}
-    unless api_version
+    unless api_version == HollerbackApp::ApiVersion::V1
       options = options.merge({ :methods => [:guid, :url, :thumb_url, :gif_url, :conversation_id, :sender_id, :user, :is_deleted, :subtitle, :display] })
     else
       payload = ""
@@ -110,7 +110,7 @@ class Message < ActiveRecord::Base
     #options = options.merge(:methods => [:guid, :url, :thumb_url, :gif_url, :conversation_id, :user, :is_deleted, :subtitle, :display])
     options = options.merge(opts)
     options = options.merge(:only => [:created_at, :sender_name, :sent_at, :needs_reply])
-    super(options).merge( api_version == nil ? {isRead: !unseen?, id: guid} : {is_read: !unseen?})
+    super(options).merge( api_version != HollerbackApp::ApiVersion::V1 ? {isRead: !unseen?, id: guid} : {is_read: !unseen?})
   end
 
   #after text support
@@ -118,7 +118,7 @@ class Message < ActiveRecord::Base
 
     {
         type: "message",
-        sync: as_json({}, api_version=1)
+        sync: as_json({}, HollerbackApp::ApiVersion::V1)
     }
   end
 
@@ -213,7 +213,7 @@ class Message < ActiveRecord::Base
   def self.set_message_display_info(messages, api_version)
 
     rules = {}
-    if (api_version)
+    if (api_version == HollerbackApp::ApiVersion::V1)
       rules = HollerbackApp::ClientDisplayManager.get_rules_by_name('content_cell_display_rules')
     else
       rules = HollerbackApp::ClientDisplayManager.get_rules_by_name('video_cell_display_rules')
