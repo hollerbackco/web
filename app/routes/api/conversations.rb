@@ -76,6 +76,36 @@ module HollerbackApp
     end
 
 
+    get '/me/conversations/:conversation_id/messages' do
+      begin
+        ConversationRead.perform_async(current_user.id)
+        membership = current_user.memberships.find(params[:conversation_id])
+
+        messages = membership.messages.watchable.seen.order("created_at DESC").scoped
+
+        if params[:page]
+          messages = messages.paginate(:page => params[:page], :per_page => (params[:perPage] || 10))
+          last_page = messages.current_page == messages.total_pages
+        end
+
+        begin
+          Message.set_message_display_info(messages)
+        rescue Exception => e
+          logger.error e
+        end
+
+        success_json({
+                         data: messages.as_json,
+                         meta: {
+                             last_page: last_page
+                         }
+                     })
+      rescue ActiveRecord::RecordNotFound
+        not_found
+      end
+    end
+
+
     get '/me/conversations/:id' do
       begin
         membership = current_user.memberships.find(params[:id])
