@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   #has_secure_password
   attr_accessible :name, :email, :phone, :phone_hashed, :username,
     :password, :password_confirmation, :phone_normalized,
-    :device_token, :last_app_version
+    :device_token, :last_app_version, :cohort
 
   has_many :devices, autosave: true, :dependent => :destroy
   has_many :memberships, :dependent => :destroy
@@ -267,7 +267,8 @@ class User < ActiveRecord::Base
       name: username,
       username: username,
       phone: phone_normalized,
-      videos_sent: videos.count
+      videos_sent: videos.count,
+      cohort: cohort
     }
   end
 
