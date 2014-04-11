@@ -89,38 +89,36 @@ class Message < ActiveRecord::Base
   def to_sync(opts={})
     {#TODO: deprecate this clause and delete once we get all clients
      type: "message",
-     sync: as_json({
-                       :methods => [:guid, :url, :thumb_url, :gif_url, :conversation_id, :sender_id, :user, :is_deleted, :subtitle, :display]
-                   })
+     sync: as_json()
     }
   end
 
   #Deprecated
   def as_json(opts={}, api_version=nil)
     options = {}
+    unless api_version
+      options = options.merge({ :methods => [:guid, :url, :thumb_url, :gif_url, :conversation_id, :sender_id, :user, :is_deleted, :subtitle, :display] })
+    else
+      payload = ""
+      if(message_type == Type::TEXT)
+        payload = :text
+      else
+        payload = :video
+      end
+      options = options.merge({ :methods => [:type, :conversation_id, :sender_id, :user, :is_deleted, payload]})
+    end
     #options = options.merge(:methods => [:guid, :url, :thumb_url, :gif_url, :conversation_id, :user, :is_deleted, :subtitle, :display])
     options = options.merge(opts)
     options = options.merge(:only => [:created_at, :sender_name, :sent_at, :needs_reply])
-    super(options).merge( api_version == nil ? {isRead: !unseen?, id: guid} : {is_read: !unseen?, :guid => guid})
+    super(options).merge( api_version == nil ? {isRead: !unseen?, id: guid} : {is_read: !unseen?})
   end
 
   #after text support
   def to_sync_v1
 
-    payload = ""
-    if(message_type == Type::TEXT)
-      payload = :text
-    else
-      payload = :video
-    end
-
-    object = {
-        :methods => [:type, :conversation_id, :sender_id, :user, :is_deleted, payload]
-    }
-
     {
         type: "message",
-        sync: as_json(object, api_version=1)
+        sync: as_json({}, api_version=1)
     }
   end
 

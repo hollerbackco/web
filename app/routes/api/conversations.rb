@@ -88,14 +88,8 @@ module HollerbackApp
           last_page = messages.current_page == messages.total_pages
         end
 
-        begin
-          Message.set_message_display_info(messages)
-        rescue Exception => e
-          logger.error e
-        end
-
         success_json({
-                         data: messages.as_json({}, api_version=1),
+                         data: messages.map {|m| m.as_json({}, api_version=1)},
                          meta: {
                              last_page: last_page
                          }
