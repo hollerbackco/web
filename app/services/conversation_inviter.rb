@@ -43,7 +43,7 @@ module Hollerback
               phone: phone,
               inviter: inviter,
               conversation: conversation,
-              cohort: user.cohort
+              cohort: inviter.cohort
             )
           end
         end
