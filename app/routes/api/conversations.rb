@@ -56,13 +56,13 @@ module HollerbackApp
 
     post '/me/conversations/:id/text' do
       if !ensure_params(:text, :guid)
-        return error_json 400, "missing text or guid fields"
+        return error_json 400, msg: "missing text or guid fields"
       end
 
       begin
         membership = current_user.memberships.find(params[:id])
       rescue ActiveRecord::RecordNotFound
-        return error_json 400, "membership doesn't exist"
+        return error_json 400, msg: "membership doesn't exist"
       end
 
       text = Text.create(:user_id => current_user.id,
