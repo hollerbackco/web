@@ -44,14 +44,26 @@ module Hollerback
         data: {uuid: SecureRandom.uuid, conversation_id: membership.id}
       }.to_json)
 
-      person.devices.android.each do |device|
-        res = Hollerback::GcmWrapper.send_notification([device.token],                     #tokens
-                                                       Hollerback::GcmWrapper::TYPE::SYNC, #type
-                                                       nil,                                #payload
-                                                       collapse_key: "new_message")        #options
+      if(message.message_type == Message::Type::TEXT)
+        person.devices.android.each do |device|
+          res = Hollerback::GcmWrapper.send_notification([device.token],                     #tokens
+                                                         Hollerback::GcmWrapper::TYPE::NOTIFICATION, #type
+                                                         {:message => alert_msg},                                #payload
+                                                         collapse_key: "new_message")        #options
 
-        puts res
+          puts res
+        end
+      else
+        person.devices.android.each do |device|
+          res = Hollerback::GcmWrapper.send_notification([device.token],                     #tokens
+                                                         Hollerback::GcmWrapper::TYPE::SYNC, #type
+                                                         nil,                                #payload
+                                                         collapse_key: "new_message")        #options
+
+          puts res
+        end
       end
+
     end
   end
 end
