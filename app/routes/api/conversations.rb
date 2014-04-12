@@ -43,7 +43,7 @@ module HollerbackApp
       if inviter.invite
         conversation = inviter.conversation
 
-        urls = params.select {|key,value| ["parts", "part_urls", "urls"].include? key }
+        urls = params.select { |key, value| ["parts", "part_urls", "urls"].include? key }
         unless urls.blank?
           video = conversation.videos.create(user: current_user, guid: params[:guid])
           VideoStitchRequest.perform_async(video.id, urls)
@@ -89,7 +89,7 @@ module HollerbackApp
         end
 
         success_json({
-                         data: messages.map {|m| m.as_json({}, @api_version)},
+                         data: messages.map { |m| m.as_json({}, @api_version) },
                          meta: {
                              last_page: last_page
                          }
@@ -133,7 +133,7 @@ module HollerbackApp
       end
 
       MetricsPublisher.publish(current_user, "conversations:ttyl", {
-        conversation_id: membership.conversation_id
+          conversation_id: membership.conversation_id
       })
       success_json data: nil
     end
@@ -149,9 +149,35 @@ module HollerbackApp
     end
 
     post '/me/conversations/:id/watch_all' do
-      membership = current_user.memberships.find(params[:id])
-      membership.view_all #TODO: move this to a background job, there's no need for this to run while the user is waiting
-      success_json data: nil
+      if (@api_version == HollerbackApp::ApiVersion::V1)
+        if (!ensure_params(:message_types))
+          return error_json 400, msg: "missing required parameter: message_types"
+        end
+      end
+
+      begin
+
+        #ensure type array is one or more of "image, video, text"
+        message_types = params[:message_types]
+
+        if(message_types != nil)
+          if(!message_types.is_a?(Array))
+            return error_json 400, msg: "message_types must be an array"
+          end
+
+          unless message_types.all? {|type| type.match(Message::Type::QUALIFIED_TYPE_REGEX) }
+            return error_json 400, msg: "message_types must be an array containing at least one of 'text', 'video', 'image'"
+          end
+
+        end
+
+        membership = current_user.memberships.find(params[:id])
+        membership.view_all(message_types) #TODO: move this to a background job, there's no need for this to run while the user is waiting
+
+        success_json data: nil
+      rescue ActiveRecord::RecordNotFound
+        not_found
+      end
     end
 
     get '/me/conversations/:id/invites' do

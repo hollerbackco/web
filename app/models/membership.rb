@@ -52,7 +52,7 @@ class Membership < ActiveRecord::Base
     end
 
     join_clause = ""
-    if(api_version == HollerbackApp::ApiVersion::V1)
+    if (api_version == HollerbackApp::ApiVersion::V1)
       join_clause = "LEFT OUTER JOIN messages ON memberships.id = messages.membership_id AND messages.seen_at is null AND messages.content ? 'guid'"
     else
       join_clause = "LEFT OUTER JOIN messages ON memberships.id = messages.membership_id AND messages.seen_at is null AND messages.content ? 'guid' and messages.message_type not like 'text'"
@@ -158,8 +158,12 @@ class Membership < ActiveRecord::Base
     messages.watchable.unseen.present?
   end
 
-  def view_all
-    messages.unseen.each { |m| m.seen! }
+  def view_all(message_types)
+    if (message_types == nil)
+      messages.unseen.each { |m| m.seen! }
+    else
+      messages.unseen.where("message_type in (?)", message_types).each { |m| m.seen! }
+    end
   end
 
   def group?

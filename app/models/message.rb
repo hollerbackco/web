@@ -4,6 +4,8 @@ class Message < ActiveRecord::Base
     VIDEO = "video"
     TEXT = "text"
     IMAGE = "image"
+
+    QUALIFIED_TYPE_REGEX = '(video\Z|text\Z|image\Z)'
   end
 
   belongs_to :membership
