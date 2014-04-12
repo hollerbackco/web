@@ -35,10 +35,7 @@ class TextPublisher
       Message.create(obj)
     end
 
-    #for each message other than the sender, notify
-    messages.each do |message|
-      logger.info "user: #{message.sender_id} text: #{message.content["text"]}"
-    end
+    Hollerback::NotifyRecipients.new(messages).run
 
   end
 

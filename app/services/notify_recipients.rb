@@ -1,9 +1,10 @@
 module Hollerback
   class NotifyRecipients
-    attr_accessor :messages
+    attr_accessor :messages, :api_version
 
-    def initialize(messages)
+    def initialize(messages, opts={})
       @messages = messages
+      @api_version = opts[:api_version]
     end
 
     def run
@@ -28,8 +29,15 @@ module Hollerback
       membership = message.membership
       badge_count = person.unseen_memberships_count
 
+      if(message.message_type == Message::Type::TEXT)
+        alert_msg = "#{message.sender_name}: #{message.content["text"]}"
+      else
+        alert_msg = "#{message.sender_name}"
+      end
+
+
       Hollerback::Push.delay.send(person.id, {  #are we sending it to apple anyways?
-        alert: message.sender_name,
+        alert: alert_msg,
         badge: badge_count,
         sound: "default",
         content_available: true,
