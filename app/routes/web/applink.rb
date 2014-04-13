@@ -30,8 +30,9 @@ module HollerbackApp
 
     get '/invite/:cohort' do
       cohort = params[:cohort]
+      source = params[:src]
       if(INVITE_COHORTS.include?(cohort))
-        MetricsPublisher.delay.publish_delay("invite:click", {:cohort => cohort})
+        MetricsPublisher.delay.publish_delay("invite:click", {:cohort => cohort, :source => source})
         redirect "/beta/test/#{cohort}"
       else
         redirect "/beta/test/download"
