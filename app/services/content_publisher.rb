@@ -68,6 +68,7 @@ class ContentPublisher
           content: content.content_hash,
           seen_at: seen_at,
           sent_at: content.created_at,
+          message_type: Message::Type::VIDEO,
           needs_reply: needs_reply
       }
       message = Message.create(obj)
