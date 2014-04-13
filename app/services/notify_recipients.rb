@@ -21,7 +21,12 @@ module Hollerback
 
     def notify_mqtt(message, person)
       channel = "user/#{person.id}/sync"
-      data = [message.to_sync, message.membership.to_sync].as_json
+      if(@api_version == Hollerback::ApiVersion::V1)
+        data = [message.to_sync_v1, message.membership.to_sync].as_json
+      else
+        data = [message.to_sync, message.membership.to_sync].as_json
+      end
+
       Hollerback::MQTT.delay.publish(channel, data)
     end
 
