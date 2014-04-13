@@ -20,6 +20,8 @@ module Hollerback
     private
 
     def notify_mqtt(message, person)
+      return if person.last_app_version.include?(';') #android doesn't use mqtt
+
       channel = "user/#{person.id}/sync"
       if(Gem::Version.new(person.last_app_version) > Gem::Version.new('1.5.0')) #need to do this based on app version of the person
         data = [message.to_sync_v1, message.membership.to_sync].as_json
