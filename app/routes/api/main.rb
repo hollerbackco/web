@@ -1,10 +1,12 @@
 module HollerbackApp
   class ApiApp < BaseApp
 
-    attr_accessor :app_version
+    attr_accessor :app_version, :api_version
 
     before '/me*' do
       authenticate(:api_token)
+
+      @api_version = request.accept[0].to_s
 
       logger.info("[user: #{current_user.id}]")
 

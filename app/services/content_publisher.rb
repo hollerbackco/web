@@ -1,3 +1,4 @@
+#Video Content Publisher
 class ContentPublisher
   include Sinatra::CoreHelpers
 
