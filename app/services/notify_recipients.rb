@@ -1,10 +1,9 @@
 module Hollerback
   class NotifyRecipients
-    attr_accessor :messages, :api_version
+    attr_accessor :messages
 
     def initialize(messages, opts={})
       @messages = messages
-      @api_version = opts[:api_version]
     end
 
     def run
