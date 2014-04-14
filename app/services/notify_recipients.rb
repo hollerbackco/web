@@ -27,12 +27,11 @@ module Hollerback
       membership = message.membership
       badge_count = person.unseen_memberships_count
 
-      if(message.message_type == Message::Type::TEXT)
-        alert_msg = "#{message.sender_name}: #{message.content["text"]}"
-      else
-        alert_msg = "#{message.sender_name}"
-      end
-
+      # if(message.message_type == Message::Type::TEXT)
+      #   alert_msg = "#{message.sender_name}: #{message.content["text"]}"
+      # else
+      alert_msg = "#{message.sender_name} sent you a message"
+      #end
 
       Hollerback::Push.delay.send(person.id, {  #are we sending it to apple anyways?
         alert: alert_msg,
@@ -43,6 +42,7 @@ module Hollerback
       }.to_json)
 
       if(message.message_type == Message::Type::TEXT)
+        alert_msg = "#{message.sender_name}: #{message.content["text"]}"
         person.devices.android.each do |device|
           res = Hollerback::GcmWrapper.send_notification([device.token],                     #tokens
                                                          Hollerback::GcmWrapper::TYPE::NOTIFICATION, #type
