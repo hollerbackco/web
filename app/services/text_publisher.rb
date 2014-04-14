@@ -14,6 +14,11 @@ class TextPublisher
 
   def publish
 
+    if Message.where("content -> 'guid' = ?", @guid).any?
+      HollerbackApp::BaseApp::logger.error "message with guid: #{@guid} already exists"
+      return
+    end
+
     #for each membership create a new message
     messages = @conversation.memberships.map do |membership|
       logger.info "membership username: #{membership.user.name}"
