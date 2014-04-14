@@ -13,7 +13,7 @@ module HollerbackApp
         end
 
         begin
-          Message.set_message_display_info(messages)
+          Message.set_message_display_info(messages, @api_version)
         rescue Exception => e
           logger.error e
         end
@@ -43,7 +43,7 @@ module HollerbackApp
         end
 
         begin
-          Message.set_message_display_info(messages)
+          Message.set_message_display_info(messages, @api_version)
         rescue Exception => e
           logger.error e
         end
