@@ -20,7 +20,7 @@ module Hollerback
 
     def notify_mqtt(message, person)
       channel = "user/#{person.id}/sync"
-      Hollerback::MQTT.delay.publish(channel, data)
+      Hollerback::MQTT.delay.publish(channel, {})
     end
 
     def notify_push(message, person)
