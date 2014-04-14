@@ -29,7 +29,7 @@ class Message < ActiveRecord::Base
     m = record.membership
     m.deleted_at = nil
     m.last_message_at = record.sent_at || record.created_at
-    if !record.sender? or m.most_recent_thumb_url.blank?
+    if (!record.sender? or m.most_recent_thumb_url.blank?) &&  (m.message_type != Type::TEXT)
       if !record.ttyl?
         m.most_recent_thumb_url = record.thumb_url
       end
