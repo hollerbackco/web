@@ -58,7 +58,7 @@ module HollerbackApp
 
     after '/me/*' do
       if(current_user)
-        IntercomPublisher.perform_async(current_user.id, IntercomPublisher::Method::UPDATE, request.user_agent )
+        IntercomPublisher.perform_async(current_user.id, IntercomPublisher::Method::UPDATE, request.user_agent, request.ip)
       end
     end
 
