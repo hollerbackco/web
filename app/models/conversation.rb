@@ -5,6 +5,7 @@ class Conversation < ActiveRecord::Base
   has_many :memberships, :dependent => :destroy
   has_many :members, through: :memberships, source: :user, class_name: "User"
   has_many :invites, conditions: {accepted: false}
+  has_many :texts, order: "texts.created_at DESC", :dependent => :destroy
 
   belongs_to :creator, class_name: "User"
 

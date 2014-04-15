@@ -1,10 +1,12 @@
 module HollerbackApp
   class ApiApp < BaseApp
 
-    attr_accessor :app_version
+    attr_accessor :app_version, :api_version
 
     before '/me*' do
       authenticate(:api_token)
+
+      @api_version = request.accept[0].to_s
 
       logger.info("[user: #{current_user.id}]")
 
@@ -13,13 +15,13 @@ module HollerbackApp
 
       unless current_user.reactivation.blank?
 
-        if(!current_user.reactivation.track.blank?)
-            data ={
-                track: current_user.reactivation.track,
-                track_level: current_user.reactivation.track_level
-            }
+        if (!current_user.reactivation.track.blank?)
+          data ={
+              track: current_user.reactivation.track,
+              track_level: current_user.reactivation.track_level
+          }
 
-            MetricsPublisher.publish(current_user, "user:reactivated", data)
+          MetricsPublisher.delay.publish_with_delay(current_user.id, "user:reactivated", data)
 
 
           current_user.reactivation.track = nil
@@ -86,11 +88,17 @@ module HollerbackApp
 
 
       #current_version =  REDIS.get("app:current:version")
-      name = logged_in? ? current_user.username : "update"
+      if (logged_in?)
+        name = current_user.username
+        #publish the metric
+        MetricsPublisher.delay.publish_with_delay(current_user.id, "app:open")
+      else
+        name = "update"
+      end
 
 
       #ensure that the version matches
-      if(user_version.match(/1\.2\.7/))
+      if (user_version.match(/1\.2\.7/))
         data = {
             "message" => "We've updated the app, please download the latest.",
             "button-text" => "Get it!",
@@ -103,7 +111,7 @@ module HollerbackApp
         target_ios_version = REDIS.get("app:copy:min_beta_ios_version_for_force_upgrade")
         return if target_ios_version.blank?
 
-        if(Gem::Version.new(user_version) >= Gem::Version.new(target_ios_version))
+        if (Gem::Version.new(user_version) >= Gem::Version.new(target_ios_version))
           #{"message" => "app up to date"}.to_json
           return
         else

@@ -3,7 +3,7 @@ class UserRegister
 
 
 
-  def perform(user_id)
+  def perform(user_id, user_agent)
     user = User.find(user_id)
 
     set_cohort(user)
@@ -27,6 +27,10 @@ class UserRegister
     end
 
     Hollerback::BMO.say("#{user.username} just signed up")
+
+    #create the intercom user
+    IntercomPublisher.perform_async(user_id, IntercomPublisher::Method::CREATE, user_agent)
+
 
   end
 

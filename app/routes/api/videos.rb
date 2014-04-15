@@ -5,7 +5,7 @@ module HollerbackApp
         ConversationRead.perform_async(current_user.id)
         membership = current_user.memberships.find(params[:conversation_id])
 
-        messages = membership.messages.watchable.seen.order("created_at DESC").scoped
+        messages = membership.messages.watchable.seen.where(:message_type => Message::Type::VIDEO).order("created_at DESC").scoped
 
         if params[:page]
           messages = messages.paginate(:page => params[:page], :per_page => (params[:perPage] || 10))
@@ -13,7 +13,7 @@ module HollerbackApp
         end
 
         begin
-          Message.set_message_display_info(messages)
+          Message.set_message_display_info(messages, @api_version)
         rescue Exception => e
           logger.error e
         end
@@ -35,7 +35,7 @@ module HollerbackApp
         ConversationRead.perform_async(current_user.id)
         membership = current_user.memberships.find(params[:conversation_id])
 
-        messages = membership.messages.seen.scoped
+        messages = membership.messages.seen.where(:message_type => Message::Type::VIDEO).scoped
 
         if params[:page]
           messages = messages.paginate(:page => params[:page], :per_page => (params[:perPage] || 10))
@@ -43,7 +43,7 @@ module HollerbackApp
         end
 
         begin
-          Message.set_message_display_info(messages)
+          Message.set_message_display_info(messages, @api_version)
         rescue Exception => e
           logger.error e
         end
