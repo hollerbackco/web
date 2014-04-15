@@ -83,7 +83,7 @@ module HollerbackApp
 
       if (is_new)
         registrar = UserRegister.new
-        registrar.perform(device.user.id)
+        registrar.perform(device.user.id, request.user_agent)
       end
 
       {

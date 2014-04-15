@@ -3,7 +3,7 @@ class UserRegister
 
 
 
-  def perform(user_id)
+  def perform(user_id, user_agent)
     user = User.find(user_id)
 
     set_cohort(user)
@@ -21,12 +21,16 @@ class UserRegister
     #Welcome.perform_in(24.hours, user.id)
 
     begin
-      notify_friend_join(user)
+      notify_friend_join(user) #this can be done in the background
     rescue Exception => e
       Honeybadger.notify(e, {:error_message => "notify friend join failed"})
     end
 
     Hollerback::BMO.say("#{user.username} just signed up")
+
+    #create the intercom user
+    IntercomPublisher.perform_async(user_id, IntercomPublisher::Method::CREATE, user_agent)
+
 
   end
 

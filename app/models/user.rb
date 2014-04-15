@@ -271,6 +271,7 @@ class User < ActiveRecord::Base
     }
   end
 
+
   def device_names
     devices.map(&:description).compact.join(",")
   end
