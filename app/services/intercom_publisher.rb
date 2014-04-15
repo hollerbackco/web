@@ -25,15 +25,9 @@ class IntercomPublisher
   end
 
   def update_user(user, user_agent)
-<<<<<<< HEAD
     payload = get_user_payload(user, user_agent)
     Intercom::User.create(payload)
     impression(user, user_agent)
-=======
-    impression(user, user_agent)
-    payload = get_user_payload(user, user_agent)
-    Intercom::User.create(payload)
->>>>>>> bb8b8e3... intercom support
   end
 
   def impression(user, user_agent)
