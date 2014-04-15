@@ -129,6 +129,8 @@ GEM
       multi_json (~> 1.0)
       multi_xml (>= 0.5.2)
     i18n (0.6.4)
+    intercom (0.2.3)
+      json
     json (1.8.0)
     jwt (0.1.8)
       multi_json (>= 1.5)
@@ -333,6 +335,7 @@ DEPENDENCIES
   honeybadger
   houston
   i18n
+  intercom
   keen
   mail
   mini_magick

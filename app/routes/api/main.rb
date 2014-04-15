@@ -58,6 +58,12 @@ module HollerbackApp
       end
     end
 
+    after '/me/*' do
+      if(current_user)
+        IntercomPublisher.perform_async(current_user.id, IntercomPublisher::Method::UPDATE, request.user_agent )
+      end
+    end
+
     not_found do
       error_json 404, msg: "not found"
     end

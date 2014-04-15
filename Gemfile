@@ -58,6 +58,7 @@ gem 'i18n'
 gem 'em-http-request', '~> 1.0'
 gem 'celluloid'
 gem 'heroku'
+gem 'intercom'
 
 #background
 gem 'slim'
