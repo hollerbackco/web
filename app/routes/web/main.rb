@@ -29,6 +29,11 @@ module HollerbackApp
       haml "android/beta".to_sym
     end
 
+    get '/activate_intercom' do
+      File.read(File.join('public, activate_intercom.html'))
+    end
+
+
     #TODO deprecate, replaced by v/:token
     get '/from/:username/:id' do
       video = Video.find_by_code(params[:id])
