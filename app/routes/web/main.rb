@@ -30,7 +30,7 @@ module HollerbackApp
     end
 
     get '/activate_intercom' do
-      File.read(File.join('public, activate_intercom.html'))
+      File.read(File.join('public', 'activate_intercom.html'))
     end
 
 
