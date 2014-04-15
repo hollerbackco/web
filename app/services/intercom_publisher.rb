@@ -43,7 +43,7 @@ class IntercomPublisher
         :last_seen_ip => user_ip,
         :custom_data => {
             :video_count => user.videos.count,
-            :text_count => user.texts.count,
+            :text_count => (user.respond_to?('texts') ? user.texts.count : 0),
             :invite_count => user.invites.count,
             :cohort => user.cohort,
             :last_app_version => user.last_app_version
