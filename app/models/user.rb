@@ -268,6 +268,7 @@ class User < ActiveRecord::Base
       username: username,
       phone: phone_normalized,
       videos_sent: videos.count,
+      texts_sent: texts.count,
       cohort: cohort
     }
   end
