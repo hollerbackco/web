@@ -21,7 +21,7 @@ class TextPublisher
 
     #for each membership create a new message
     messages = @conversation.memberships.map do |membership|
-      logger.info "membership username: #{membership.user.name}"
+      # logger.info "membership username: #{membership.user.name}"
       is_sender = (membership.user == @sender) ? true : false
       needs_reply = (membership.user == @sender) ? false : true
       seen_at = Time.now if (membership.user == @sender)
