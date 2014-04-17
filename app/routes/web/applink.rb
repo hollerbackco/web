@@ -28,6 +28,20 @@ module HollerbackApp
       redirect "hollerback://"
     end
 
+    get '/install' do
+      redirect_url = ""
+      if(android?)
+        redirect_url = '/beta'
+      elsif(ios?)
+        url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-#{params[:branch]}.plist")
+        redirect_url = "itms-services://?action=download-manifest&url=#{url}"
+      else
+        redirect_url = "/waitlist"
+      end
+
+      redirect redirect_url
+    end
+
     get '/invite/:cohort' do
       cohort = params[:cohort]
       source = params[:src]
