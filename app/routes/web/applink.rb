@@ -33,7 +33,7 @@ module HollerbackApp
       if(android?)
         redirect_url = '/beta'
       elsif(ios?)
-        url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-#{params[:branch]}.plist")
+        url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-download.plist")
         redirect_url = "itms-services://?action=download-manifest&url=#{url}"
       else
         redirect_url = "/waitlist"
