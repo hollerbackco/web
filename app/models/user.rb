@@ -151,14 +151,15 @@ class User < ActiveRecord::Base
     "user/#{id}-#{memcache_id}"
   end
 
-  def device_for(token, platform)
+  def device_for(token, platform, platform_version=nil)
     if token.blank? and platform.blank?
       gen = devices.general.first
       return gen if gen.present?
     end
     devices.where({
       :platform => (platform || "ios"),
-      :token => token
+      :token => token,
+      :platform_version => platform_version
     }).first_or_create
   end
 
