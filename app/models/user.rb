@@ -41,7 +41,7 @@ class User < ActiveRecord::Base
   validates :email,
     presence: true,
     uniqueness: true,
-    format: { with: VALID_EMAIL_REGEX, :message => "email must be valid"}
+    format: { with: VALID_EMAIL_REGEX, :message => "must be valid"}
   validates :username,
       presence: true,
       uniqueness: true,
