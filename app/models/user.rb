@@ -5,6 +5,8 @@ class User < ActiveRecord::Base
   # array of blocked users
   serialize :muted, Array
 
+  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(?:\.[a-z\d\-]+)*\.[a-z]+\z/i
+
   #has_secure_password
   attr_accessible :name, :email, :phone, :phone_hashed, :username,
     :password, :password_confirmation, :phone_normalized,
@@ -38,7 +40,8 @@ class User < ActiveRecord::Base
 
   validates :email,
     presence: true,
-    uniqueness: true
+    uniqueness: true,
+    format: { with: VALID_EMAIL_REGEX, :message => "email must be valid"}
   validates :username,
       presence: true,
       uniqueness: true,
