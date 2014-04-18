@@ -84,8 +84,6 @@ module HollerbackApp
 
       return if user_version.blank?
 
-      p "user version is set"
-
       beta = (params[:beta].nil? ? false : params[:beta]) #use the beta flag if present, or false otherwise
 
       if(params[:access_token])
