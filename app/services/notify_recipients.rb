@@ -30,7 +30,12 @@ module Hollerback
       # if(message.message_type == Message::Type::TEXT)
       #   alert_msg = "#{message.sender_name}: #{message.content["text"]}"
       # else
-      alert_msg = "#{message.sender_name} sent you a message"
+      if(membership.conversation.members.count > 2)
+        alert_msg = "#{message.sender_name} sent a message"
+      else
+        alert_msg = "#{message.sender_name} sent you a message"
+      end
+
       #end
 
       Hollerback::Push.delay.send(person.id, {  #are we sending it to apple anyways?
