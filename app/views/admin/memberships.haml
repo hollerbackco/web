@@ -29,7 +29,8 @@
     - @messages.each do |message|
       %tr
         %td= message.id
-        %td= message.sender_name
+        %td
+          %a{href: "/madmin/users/#{message.sender_id}"}= message.sender_name
         %td
           %a{href: message.url}= message.url
         %td

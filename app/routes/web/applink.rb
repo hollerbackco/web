@@ -4,7 +4,7 @@ module HollerbackApp
     APP_DOWNLOAD_LINK = "http://appstore.com/hollerback"
     ENTERPRISE_APP_DOWNLOAD_LINK = "http://www.hollerback.co/beta/test/master"
     ALLOWED_LOCALES = ["AU", "NZ", "CA"]
-    INVITE_COHORTS = ["psiu", "vip", "friendsvip", "vipnyc", "nycvip", "usc"]
+    INVITE_COHORTS = ["psiu", "vip", "friendsvip", "vipnyc", "nycvip", "usc", "wes"]
 
     helpers do
       def sms_download_notification(name)
@@ -26,6 +26,20 @@ module HollerbackApp
 
     get '/app' do
       redirect "hollerback://"
+    end
+
+    get '/install' do
+      redirect_url = ""
+      if(android?)
+        redirect_url = '/beta'
+      elsif(ios?)
+        url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-download.plist")
+        redirect_url = "itms-services://?action=download-manifest&url=#{url}"
+      else
+        redirect_url = "/waitlist"
+      end
+
+      redirect redirect_url
     end
 
     get '/invite/:cohort' do

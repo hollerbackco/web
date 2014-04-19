@@ -14,13 +14,10 @@ class TextPublisher
 
   def publish
 
-    if Message.where("content -> 'guid' = ?", @guid).any?
-      HollerbackApp::BaseApp::logger.error "message with guid: #{@guid} already exists"
-      return
-    end
-
     #for each membership create a new message
     messages = @conversation.memberships.map do |membership|
+
+      next if(membership.messages.find_by_guid(@guid))
       # logger.info "membership username: #{membership.user.name}"
       is_sender = (membership.user == @sender) ? true : false
       needs_reply = (membership.user == @sender) ? false : true
@@ -40,7 +37,9 @@ class TextPublisher
       Message.create(obj)
     end
 
-    Hollerback::NotifyRecipients.new(messages).run
+    Hollerback::NotifyRecipients.new(messages.compact).run
+
+    MetricsPublisher.publish(@sender, "text:create")
 
   end
 

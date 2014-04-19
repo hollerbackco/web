@@ -86,12 +86,13 @@ module HollerbackApp
 
       beta = (params[:beta].nil? ? false : params[:beta]) #use the beta flag if present, or false otherwise
 
+      if(params[:access_token])
+        TrackUserActive.perform_async(params[:access_token])
+      end
 
       #current_version =  REDIS.get("app:current:version")
       if (logged_in?)
         name = current_user.username
-        #publish the metric
-        MetricsPublisher.delay.publish_with_delay(current_user.id, "app:open")
       else
         name = "update"
       end
