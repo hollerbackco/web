@@ -13,6 +13,9 @@ class Reactivator
     def start_track
     end
 
+    def get_initial_level
+    end
+
     #must be overriden
     def users_meeting_track_criteria
     end
@@ -23,9 +26,9 @@ class Reactivator
 
     def eligible_for_next_level?(user)
       current_level = @level_info[user.reactivation.track_level]
-      next_level = @level_info[current_level[:next_level]]
+      next_level_key = current_level[:next_level]
 
-      is_eligible = (user.reactivation.last_reactivation < Level.get_target_date(next_level))
+      is_eligible = (user.reactivation.last_reactivation < Level.get_target_date(next_level_key))
       p "is user eligible: " + is_eligible.to_s
 
       is_eligible
@@ -38,6 +41,12 @@ class Reactivator
       user.reactivation.track_level = next_level
       user.reactivation.last_reactivation = Time.now
       user.save
+    end
+
+
+    #This method will chose all the eligible users passed in that are eligible for the track and return an array of users
+    #Subclasses must override this method
+    def get_users_eligible_for_track(users)
     end
 
     def get_level_message
@@ -86,7 +95,13 @@ class Reactivator
       @level_info = LEVEL_INFO
     end
 
-    def users_meeting_track_criteria
+    def get_users_eligible_for_track(users)
+      #ensure that the unread isn't from will from hollerback
+      users.joins(:memberships => :messages).where("messages.seen_at is null AND content ? 'guid' AND is_sender IS NOT TRUE AND sender_id != 889").uniq_by { |u| u.id }
+    end
+
+    def get_initial_level_key
+      Track::Level::INACTIVE_DAY_1
     end
 
 
@@ -104,9 +119,18 @@ class Reactivator
 
     def initialize
       @name = NAME
+      @level_info = LEVEL_INFO
     end
 
-    def users_meeting_track_criteria
+    #note: not checking for the watched state which is incorrect. But since we'll be only passing in users that
+    # as a precondition have been filtered by other tracks, then there's no need
+    def get_users_eligible_for_track(users)
+      #select users that have not sent
+      users.joins("left outer join messages on users.id = messages.sender_id").where("messages.sender_id is null")
+    end
+
+    def get_initial_level_key
+      Track::Level::INACTIVE_DAY_1
     end
 
 
@@ -126,9 +150,15 @@ class Reactivator
       @level_info = LEVEL_INFO
     end
 
-    def users_meeting_track_criteria
+    #get users who haven't created a group
+    def get_users_eligible_for_track(users)
+      #not that easy to do..hmm?
+      []
     end
 
+    def get_initial_level_key
+      Track::Level::INACTIVE_DAY_2
+    end
 
   end
 
@@ -147,7 +177,13 @@ class Reactivator
       @level_info = LEVEL_INFO
     end
 
-    def users_meeting_track_criteria
+    def get_users_eligible_for_track(users)
+      #not that easy to do..hmm?
+      []
+    end
+
+    def get_initial_level_key
+      Track::Level::INACTIVE_DAY_1
     end
 
   end
@@ -155,9 +191,9 @@ class Reactivator
   class WatchedSentBothTrack < Track
     NAME = "watched_sent_both"
     LEVEL_INFO = {
-        Track::Level::INACTIVE_DAY_7 => {:message => "Come back"},
-        Track::Level::INACTIVE_DAY_14 => {:message => "Come back"},
-        Track::Level::INACTIVE_DAY_21 => {:message => "Come back"},
+        Track::Level::INACTIVE_DAY_7 => {:message => "Come back", :next_level => Track::Level::INACTIVE_DAY_14},
+        Track::Level::INACTIVE_DAY_14 => {:message => "Come back", :next_level => Track::Level::INACTIVE_DAY_21},
+        Track::Level::INACTIVE_DAY_21 => {:message => "Come back", :next_level => Track::Level::INACTIVE_DAY_21},
     }
 
     def initialize
@@ -165,7 +201,12 @@ class Reactivator
       @level_info = LEVEL_INFO
     end
 
-    def users_meeting_track_criteria
+    def get_users_eligible_for_track(users)
+      users #just return the remaining users
+    end
+
+    def get_initial_level_key
+      Track::Level::INACTIVE_DAY_7
     end
 
   end
@@ -174,17 +215,16 @@ class Reactivator
   def perform(dry_run)
     begin #don't crash production
       @dry_run = dry_run
-      @tracks = [Track::VideoTrack.new, Track::WatchedNotSentTrack.new, WatchedSentNoGroupTrack.new, WatchedSentGroupNoSoloTrack.new, WatchedSentBothTrack.new]
+      @tracks = [VideoTrack.new, WatchedNotSentTrack.new, WatchedSentNoGroupTrack.new, WatchedSentGroupNoSoloTrack.new, WatchedSentBothTrack.new]
 
       #get all users on a track and put them on a track_level
       update_user_track()
 
-
-      #The following will process users that aren't on a track
-
       #get all the users that haven't been active for over 24hrs that don't have a reactivation track
       users_not_on_a_track = User.where("users.last_active_at is not null AND users.last_active_at < :target_date AND users.id not in (select user_id from reactivations)", {:target_date => (DateTime.now - 1.5)})
+      p "eligible users not on a track: #{users_not_on_a_track.count}"
       put_on_track(users_not_on_a_track)
+
     rescue Exception => e
       puts e.message
       puts e.backtrace.inspect
@@ -214,165 +254,48 @@ class Reactivator
   end
 
   def push(eligible_group)
-
-  end
-
-  def get_next_video_track(current_track)
-
-    index = @tracks.video_track.index(@tracks.video_track.detect { |track| track.has_key?(current_track) })
-
-    if (index + 1 < @tracks.video_track.size)
-      @tracks.video_track[index + 1]
-    else
-      @tracks.video_track[index]
-    end
-  end
-
-  def get_next_engagement_track(current_track)
-
-    index = @tracks.engagement_track.index(@tracks.engagement_track.detect { |track| track.has_key?(current_track) })
-
-    if (index + 1 < @tracks.engagement_track.size)
-      @tracks.engagement_track[index + 1]
-    else
-      @tracks.engagement_track[index]
-    end
-  end
-
-  def update_enagement_track(users)
-
-    return [] unless users.any?
-
-    users.reduce([]) do |push_users, user|
-
-      next_track = get_next_engagement_track(user.reactivation.track_level)
-      if (user.reactivation.last_reactivation <= next_track[next_track.keys[0]][:target_date])
-
-        user.reactivation.last_reactivation = Time.now
-        user.reactivation.track_level = next_track.keys[0] #next_track.keys[0] is one of VIDEO_DAY_1, ..
-        user.reactivation.save
-
-        push_users << user
-      end
-
-      push_users
-    end
-  end
-
-  def update_video_track(users)
-
-    return [] unless users.any?
-
-    users.reduce([]) do |push_users, user|
-
-      next_track = get_next_video_track(user.reactivation.track_level)
-      if (user.reactivation.last_reactivation <= next_track[next_track.keys[0]][:target_date])
-
-        user.reactivation.last_reactivation = Time.now
-        user.reactivation.track_level = next_track.keys[0] #next_track.keys[0] is one of VIDEO_DAY_1, ..
-        user.reactivation.save
-
-        push_users << user
-      end
-
-      push_users
-    end
+    #todo fill in with push stuff
   end
 
   #put the users on a track
   def put_on_track(users)
-    #split the users to see what track we should put them on, video or engagement track
-    #SQL: SELECT "users".* FROM "users" INNER JOIN "memberships" ON "memberships"."user_id" = "users"."id" INNER JOIN "messages" ON "messages"."membership_id" = "memberships"."id" WHERE (messages.seen_at is null)
-    video_track_users = users.joins(:memberships => :messages).where("messages.seen_at is null AND content ? 'guid' AND is_sender IS NOT TRUE").uniq_by { |u| u.id }
-    engagement_track_users = users - video_track_users
 
+    #for each of the existing tracks find the appropriate track for these users
+    track_groups = @tracks.map do |track|
 
-    put_on_video_track(video_track_users)
-    put_on_engagement_track(engagement_track_users)
+      eligible = track.get_users_eligible_for_track(users)
+      p "processing batch #{track.name} with #{eligible.count} users"
+      eligible.each do |user|
 
-    push_to_users(prepare_push(video_track_users.concat(engagement_track_users)))
-  end
-
-  def put_on_video_track(users)
-    Reactivation.transaction do
-      users.each do |user|
-        if (user.reactivation.nil?)
-          user.reactivation = Reactivation.create(:track => Tracks::VIDEO_TRACK, :track_level => Tracks::VIDEO_DAY_1)
-        else
-          user.reactivation.track = Tracks::VIDEO_TRACK
-          user.reactivation.track_level = Tracks::VIDEO_DAY_1
-        end
-        user.reactivation.last_reactivation = Time.now
-        user.reactivation.save
+        reactivation = Reactivation.where(:user_id => user.id).first_or_create
+        reactivation.track = track.name
+        reactivation.track_level = track.get_initial_level_key
+        reactivation.last_reactivation = DateTime.now
+        reactivation.save
       end
-    end
-  end
-
-  def put_on_engagement_track(users)
-    Reactivation.transaction do
-      users.each do |user|
-        if (user.reactivation.nil?)
-          user.reactivation = Reactivation.create(:track => Tracks::ENGAGEMENT_TRACK, :track_level => Tracks::ENGAGEMENT_DAY_3)
-        else
-          user.reactivation.track = Tracks::ENGAGEMENT_TRACK
-          user.reactivation.track_level = Tracks::ENGAGEMENT_DAY_3
-        end
-        user.reactivation.last_reactivation = Time.now
-        user.reactivation.save
-
+      unless eligible.blank?
+        users = users.where("users.id not in (?)", eligible.map {|user| user.id}) #subtract this group for the next group
       end
+      {track: track, users: eligible}
     end
+
+    push_to_users(prepare_push(track_groups))
   end
+
 
   #prepare users for push by bundling users with the appropriate message
-  def prepare_push(users)
-    users.reduce([]) do |push_list, user|
-      #get the user reactivation
-      reactivation = user.reactivation
+  def prepare_push(track_groups)
 
-      track = {}
-      if (reactivation)
-        if (reactivation.track == Tracks::VIDEO_TRACK)
-          track = @tracks.video_track.detect { |track| track.has_key?(reactivation.track_level) }
-        else
-          track = @tracks.engagement_track.detect { |track| track.has_key?(reactivation.track_level) }
-        end
-
-        track_detail = track[reactivation.track_level]
-
-        message = track_detail[:message]
-        has_params = track_detail[:has_params]
-        if (has_params)
-          num_params = track_detail[:num_params]
-
-          params = []
-          for i in 1..num_params
-
-            param_type_key = "param#{i}_type"
-            param_type = track_detail[param_type_key.to_sym]
-
-            case param_type
-              when 'video_sender' # this is way way too slow; need to find an alternative
-                unseen = user.unseen_messages
-                if (unseen.any?)
-                  sender_name = unseen.first.sender_name
-                  params << sender_name
-                else
-                  params << "a friend"
-                end
-            end
-
-          end
-
-          message = message % params
-          p message
-        end
-
-        push_list << {:user => user, :message => message}
+    push_list = []
+    track_groups.each do |group|
+      p group
+      track = group[:track]
+      users = group[:users]
+      users.each do |user|
+        push_list << {:user => user, :message => track.level_info[user.reactivation.track_level][:message]}
       end
-      p message
-      push_list
     end
+    push_list
   end
 
   def push_to_users(push_payload)
