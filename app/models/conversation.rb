@@ -37,7 +37,7 @@ class Conversation < ActiveRecord::Base
 
   # all conversations with a name that is set.
   def group?
-    members.count > 2 or self[:name].present?
+    members.count > 2
   end
   alias_method :is_group, :group?
 
