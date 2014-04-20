@@ -52,6 +52,29 @@ module HollerbackApp
       haml "admin/index".to_sym, layout: "layouts/admin".to_sym
     end
 
+    get '/madmin/exceptions' do
+      @entries = Keen.extraction("app:exceptions", :timeframe => "today")
+      #create a map of the entries
+      entry_map = []
+      @entries.each do |entry|
+        item = entry_map.detect {|item| item["exception"] == entry["exception"]}
+        if item
+          item["count"] = item["count"] + 1
+          unless item["app_version"].detect {|saved_version| saved_version == entry["app_ver"]}
+            item["app_version"] << entry["app_ver"]
+          end
+
+          unless item["user_id"].detect{|saved_id| saved_id == entry["user_id"]}
+            item["user_id"] << entry["user_id"]
+          end
+        else
+          entry_map << {"exception" => entry["exception"], "count" => 1, "app_version" => [entry["app_ver"]], "user_id" => [entry["user_id"]]}
+        end
+      end
+      @entries = entry_map
+      haml "admin/ios_app_exceptions".to_sym, layout: "layouts/admin".to_sym
+    end
+
     get '/madmin/conversations/:id' do
       @conversation = Conversation.find(params[:id])
       @members = @conversation.members
