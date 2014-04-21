@@ -152,8 +152,9 @@ class Reactivator
 
     #get users who haven't created a group
     def get_users_eligible_for_track(users)
-      #not that easy to do..hmm?
-      []
+      group_convos = Conversation.select("conversations.*, count(*)").joins("left outer join memberships on conversations.id = memberships.conversation_id").group("conversations.id").having("count(*) > 2").uniq_by{|c| c.creator_id}
+      user_ids_who_created_group = group_convos.map {|c| c.creator_id}
+      users.where("id not in (?)", user_ids_who_created_group)
     end
 
     def get_initial_level_key
@@ -178,8 +179,9 @@ class Reactivator
     end
 
     def get_users_eligible_for_track(users)
-      #not that easy to do..hmm?
-      []
+      individual_convos = Conversation.select("conversations.*, count(*)").joins("left outer join memberships on conversations.id = memberships.conversation_id").group("conversations.id").having("count(*) < 3").uniq_by{|c| c.creator_id}
+      user_ids_with_no_solo = individual_convos.map {|c| c.creator_id}
+      users.where("id not in (?)", user_ids_with_no_solo)
     end
 
     def get_initial_level_key
