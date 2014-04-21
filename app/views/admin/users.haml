@@ -2,6 +2,11 @@
 %p
   %a{href: "/madmin/users"} All
   %a{href: "/madmin/users?android"} Android
+  %form{ :action => "/madmin/users/find", :method => "get"}
+    %fieldset
+      %label{:for => :username_or_email} Username or Email:
+      %input{:type => "text", :name => :username_or_email, :class => "text"}
+      %input{:type => "submit", :value => "Search", :class => "button"}
 %table.table.table-bordered
   %thead
     %tr
