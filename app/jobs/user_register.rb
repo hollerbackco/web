@@ -18,8 +18,8 @@ class UserRegister
     }
     MetricsPublisher.publish_with_delay(user.id, "users:new", data)
     MetricsPublisher.publish_with_delay(user.id, "user:active")
-    WelcomeUser.new(user).run
-    #Welcome.perform_in(24.hours, user.id)
+    #WelcomeUser.new(user).run
+    Welcome.perform_in(24.hours, user.id)
 
     begin
       notify_friend_join(user) #this can be done in the background
