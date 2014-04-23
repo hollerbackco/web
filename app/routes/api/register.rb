@@ -95,8 +95,9 @@ module HollerbackApp
     end
 
     post '/email/available' do
+      email = params[:email]
+      return error_json 400, "invalid" if email.blank? || !email.match(User::VALID_EMAIL_REGEX)
       free = User.find_by_email(params[:email]).blank?
-
       success_json data: free
     end
 
