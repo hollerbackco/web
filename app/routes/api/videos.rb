@@ -69,6 +69,49 @@ module HollerbackApp
       success_json data: messages.first.as_json
     end
 
+    post '/me/conversations/:id/videos/incoming' do
+      if(!ensure_params(params[:guid]))
+        return error_json 400, msg: "missing required parameter guid"
+      end
+
+      convo_id = params[:id]
+      guid = params[:guid]
+
+      #ensure that the conversation exists
+      begin
+        membership = current_user.memberships.find(convo_id)
+      rescue ActiveRecord::RecordNotFound => ex
+        return error_json 400, msg: "conversation id not found"
+      end
+
+      payload = {
+                  guid: guid,
+                  sender_id: current_user.id,
+                  convo_id: convo_id,
+                  processed: false
+                }
+      #store this information into cache for about 30 minutes
+      key = CheckIncomingVideo.get_cache_key(convo_id, guid)
+      REDIS.set key, payload.to_json
+      REDIS.expire(key, 30 * 60) #expire in half an hour
+
+      CheckIncomingVideo.perform_in(10.minutes, convo_id, guid)
+
+      success_json data: nil
+    end
+
+    def mark_incoming_video_as_processed(convo_id, guid)
+      # if a cache key exists for an incoming video, then mark the video as processed
+      key = CheckIncomingVideo.get_cache_key(convo_id, guid)
+      payload = REDIS.get(key)
+      unless payload.nil?
+        logger.info "marking video #{guid} as processed"
+        payload = JSON.parse(payload)
+        payload["processed"] = true
+        REDIS.set(key, payload.to_json)
+      end
+    end
+
     post '/me/conversations/:id/videos/parts' do
       logger.debug params
 
@@ -76,6 +119,9 @@ module HollerbackApp
         if !params.key?("parts") and !params.key?("part_urls") and !params.key?("urls")
           return error_json 400, msg: "missing parts param"
         end
+
+        mark_incoming_video_as_processed(params[:id], params[:guid])
+
         membership = current_user.memberships.find(params[:id])
 
         # mark messages as read
