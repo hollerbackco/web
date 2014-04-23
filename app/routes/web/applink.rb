@@ -4,7 +4,7 @@ module HollerbackApp
     APP_DOWNLOAD_LINK = "http://appstore.com/hollerback"
     ENTERPRISE_APP_DOWNLOAD_LINK = "http://www.hollerback.co/beta/test/master"
     ALLOWED_LOCALES = ["AU", "NZ", "CA"]
-    INVITE_COHORTS = ["psiu", "vip", "friendsvip", "vipnyc", "nycvip", "usc", "wes", "wesley"]
+    INVITE_COHORTS = ["psiu", "vip", "friendsvip", "vipnyc", "nycvip", "usc", "wes", "wesley", "socialsignin"]
 
     helpers do
       def sms_download_notification(name)
