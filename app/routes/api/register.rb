@@ -95,18 +95,26 @@ module HollerbackApp
     end
 
     post '/email/available' do
-      email = params[:email]
-      free = true
 
-      if email.blank? || !email.match(User::VALID_EMAIL_REGEX)
-        msg = "invalid email"
-        free = false
-      elsif !User.find_by_email(params[:email]).blank?
-        msg = "email taken"
-        free = false
+      api_version = request.accept[0].to_s
+      if (api_version == HollerbackApp::ApiVersion::V1)
+        email = params[:email]
+        free = true
+
+        if email.blank? || !email.match(User::VALID_EMAIL_REGEX)
+          msg = "invalid email"
+          free = false
+        elsif !User.find_by_email(params[:email]).blank?
+          msg = "email taken"
+          free = false
+        end
+
+        return success_json data: {:free => free, :message => msg}
       end
 
-      return success_json data: {:free => free, :message => msg}
+      free = User.find_by_email(params[:email]).blank?
+
+      return success_json data: free
     end
 
     post '/waitlist' do
