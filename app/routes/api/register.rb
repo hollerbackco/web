@@ -101,7 +101,7 @@ module HollerbackApp
       if email.blank? || !email.match(User::VALID_EMAIL_REGEX)
         msg = "invalid email"
         free = false
-      elsif User.find_by_email(params[:email]).blank?
+      elsif !User.find_by_email(params[:email]).blank?
         msg = "email taken"
         free = false
       end
