@@ -7,7 +7,12 @@ class CheckIncomingVideo
 
   def perform(convo_id, guid, dry_run=false)
     #look up redis
-    payload = JSON.parse(REDIS.get(get_cache_key(convo_id, guid)))
+
+    key = CheckIncomingVideo.get_cache_key(convo_id, guid)
+    payload = REDIS.get(key)
+
+    return if payload.nil?
+    payload = JSON.parse(payload)
 
     p payload.to_s
     if(payload["processed"] == false)
