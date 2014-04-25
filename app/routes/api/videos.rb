@@ -95,7 +95,7 @@ module HollerbackApp
       REDIS.set key, payload.to_json
       REDIS.expire(key, 30 * 60) #expire in half an hour
 
-      CheckIncomingVideo.perform_in(1.minutes, convo_id, guid)
+      CheckIncomingVideo.perform_in(10.minutes, convo_id, guid)
 
       success_json data: nil
     end

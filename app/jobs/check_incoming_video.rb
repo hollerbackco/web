@@ -19,7 +19,7 @@ class CheckIncomingVideo
       p "incoming video has not been processed"
       #notify user
       if(!dry_run)
-        Hollerback::Push.send(nil, payload["sender_id"], {:alert => "Failed to upload video", :sound => "default"}.to_json)
+        Hollerback::Push.send(nil, payload["sender_id"], {:alert => "Message send failed. Please retry.", :sound => "default"}.to_json)
       else
         p "dry run push on incoming"
       end
