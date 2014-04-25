@@ -28,7 +28,7 @@
             %td= video.filename
             %td
               %span.date{"data-time" => (video.created_at.to_i * 1000)}= video.created_at
-%h1 Videos
+%h1 Messages
 %table.table.table-bordered
   %thead
     %tr
@@ -36,33 +36,31 @@
       %td Sender
       %td Group Name
       %td Members
-      %td Filename
+      %td Content
       %td Created At
       %td Subtitle
   %tbody
-    - @videos.each do |video|
-      - if video.user.blank?
+    - @contents.each do |content|
+      - if content.user.blank?
         %tr
           %td blank user
       - else
         %tr
-          %td= video.id
+          %td= content.id
           %td
-            %a{href: "/madmin/users/#{video.user.id}"}
-              = video.user.username
-          %td= video.conversation.name
+            %a{href: "/madmin/users/#{content.user.id}"}
+              = content.user.username
+          %td= content.conversation.name
           %td
-            %a{href: "/madmin/conversations/#{video.conversation_id}"}
-              = video.conversation.member_names
-              = "(#{video.conversation_id})"
-          %td= video.filename
+            %a{href: "/madmin/conversations/#{content.conversation_id}"}
+              = content.conversation.member_names
+              = "(#{content.conversation_id})"
+          %td= content.filename
           %td
-            %span.date{"data-time" => (video.created_at.to_i * 1000)}= video.created_at
+            %span.date{"data-time" => (content.created_at.to_i * 1000)}= content.created_at
           %td
             %span.subtitle
-              - if video.subtitle.present?
-                Y
-= will_paginate(@videos)
+= will_paginate(@contents)
 
 :javascript
   $(document).ready(function() {
