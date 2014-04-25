@@ -35,8 +35,8 @@
           - if message.type == 'video'
             %a{href: message.url}= message.url
           - if message.type == 'text'
-            %a{onclick: "toggle_visibility('message');"} Show Message
-            %div{id: "message",  style: "display: none;"}= message.text_content
+            %a{onclick: "toggle_visibility(#{message.id});"} Show Message
+            %div{id: message.id,  style: "display: none;"}= message.text_content
         %td
           %span.date{"data-time" => (message.created_at.to_i * 1000)}= message.created_at
         %td
