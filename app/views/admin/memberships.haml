@@ -22,7 +22,7 @@
     %tr
       %td Id
       %td Sender
-      %td URL
+      %td Content
       %td Created At
       %td TTYL
   %tbody
@@ -32,10 +32,22 @@
         %td
           %a{href: "/madmin/users/#{message.sender_id}"}= message.sender_name
         %td
-          %a{href: message.url}= message.url
+          - if message.type == 'video'
+            %a{href: message.url}= message.url
+          - if message.type == 'text'
+            %a{onclick: "toggle_visibility('message');"} Show Message
+            %div{id: "message",  style: "display: none;"}= message.text_content
         %td
           %span.date{"data-time" => (message.created_at.to_i * 1000)}= message.created_at
         %td
           %span.subtitle
             - if message.subtitle.present? and message.subtitle == "ttyl"
               Y
+:javascript
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       if(e.style.display == 'block')
+          e.style.display = 'none';
+       else
+          e.style.display = 'block';
+    }
