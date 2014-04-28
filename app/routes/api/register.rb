@@ -62,7 +62,13 @@ module HollerbackApp
       user = User.find_by_phone(params[:phone])
       is_new = (user.blank? || user.new?) ? true : false
 
-      authenticate(:password)
+      if(params['password'])
+        authenticate(:phone_password_code)
+      else
+        #TODO: Deprecate this ASAP
+        authenticate(:phone_code)
+      end
+
 
       #authenticate(:password)
       # remove all devices with device_token that is not blank

@@ -5,7 +5,7 @@ Warden::Manager.before_failure do |env,opts|
   env['REQUEST_METHOD'] = 'POST'
 end
 
-Warden::Strategies.add(:password) do
+Warden::Strategies.add(:phone_password_code) do
   def valid?
     params['phone'] && params['code'] && params['password']
   end
@@ -19,6 +19,22 @@ Warden::Strategies.add(:password) do
     user.nil? ? fail!('Could not log in') : success!(user, 'Successfully logged in')
   end
 end
+
+#TODO: Deprecate this ASAP
+Warden::Strategies.add(:phone_code) do
+  def valid?
+    params['phone'] && params['code']
+  end
+
+  def authenticate!
+    user = User.authenticate_with_code(
+        params['phone'],
+        params['code'],
+    )
+    user.nil? ? fail!('Could not log in') : success!(user, 'Successfully logged in')
+  end
+end
+
 
 Warden::Strategies.add(:email) do
   def valid?

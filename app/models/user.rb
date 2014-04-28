@@ -187,6 +187,15 @@ class User < ActiveRecord::Base
     end
   end
 
+  def self.authenticate_with_code(phone, code)
+    user = User.find_by_phone_normalized(phone)
+    if user && user.verify!(code)
+      user
+    else
+      nil
+    end
+  end
+
   def self.authenticate_with_email(matcher, password)
     user = User.find_by_email(matcher)
     unless user
