@@ -28,7 +28,7 @@
             %td= video.filename
             %td
               %span.date{"data-time" => (video.created_at.to_i * 1000)}= video.created_at
-%h1 Videos
+%h1 Messages
 %table.table.table-bordered
   %thead
     %tr
@@ -55,7 +55,12 @@
             %a{href: "/madmin/conversations/#{content.conversation_id}"}
               = content.conversation.member_names
               = "(#{content.conversation_id})"
-          %td= content.filename
+          -if content.type == "Video"
+            %td= content.filename
+          -if content.type == "Text"
+            %td
+              %a{onclick: "toggle_visibility(#{content.id});"} Show Message
+              %div{id: content.id,  style: "display: none;"}= content.filename
           %td
             %span.date{"data-time" => (content.created_at.to_i * 1000)}= content.created_at
           %td
@@ -74,3 +79,11 @@
       $(this).html(date.toLocaleString());
     })
   })
+
+  function toggle_visibility(id) {
+         var e = document.getElementById(id);
+         if(e.style.display == 'block')
+            e.style.display = 'none';
+         else
+            e.style.display = 'block';
+      }
