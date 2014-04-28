@@ -9,5 +9,13 @@
             "thumb_gravity": "left",
             "thumb_style": "round"
         }
+    },
+    "content_cell_display_rules":{
+        "user":{
+            "gravity": "right"
+        },
+        "others":{
+            "gravity": "left"
+        }
     }
 }

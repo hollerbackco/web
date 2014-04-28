@@ -24,6 +24,21 @@ module HollerbackApp
         user.username = params[:username]
         user.set_verification_code
 
+        #extract cohort info if any
+        unless params[:cohort].blank?
+          #the cohort comes as a url parse it
+          cohort = params[:cohort]
+          begin
+            cohort = URI(cohort).path.split('/').last
+            if (cohort != "download")
+              user.cohort = cohort
+            end
+          rescue Exception => ex
+            logger.error ("couldn't extract cohort: #{cohort}")
+            Honeybadger.notify(ex)
+          end
+        end
+
         if user.save
           # send a verification code
           Hollerback::SMS.send_message user.phone_normalized, "Hollerback Code: #{user.verification_code}"
@@ -67,12 +82,10 @@ module HollerbackApp
       end
 
       if (is_new)
-        #accept all invites
-        Invite.accept_all!(device.user)
-        EmailInvite.accept_all!(device.user)
-
         registrar = UserRegister.new
         registrar.perform(device.user.id)
+        #create the intercom user
+        IntercomPublisher.perform_async(user.id, IntercomPublisher::Method::CREATE, request.user_agent, request.ip)
       end
 
       {
@@ -82,9 +95,26 @@ module HollerbackApp
     end
 
     post '/email/available' do
+
+      api_version = request.accept[0].to_s
+      if (api_version == HollerbackApp::ApiVersion::V1)
+        email = params[:email]
+        free = true
+
+        if email.blank? || !email.match(User::VALID_EMAIL_REGEX)
+          msg = "invalid email"
+          free = false
+        elsif !User.find_by_email(params[:email]).blank?
+          msg = "email taken"
+          free = false
+        end
+
+        return success_json data: {:free => free, :message => msg}
+      end
+
       free = User.find_by_email(params[:email]).blank?
 
-      success_json data: free
+      return success_json data: free
     end
 
     post '/waitlist' do

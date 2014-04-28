@@ -1,8 +1,8 @@
 module HollerbackApp
   class WebApp < BaseApp
     def http_authorized?
-      @auth ||=  Rack::Auth::Basic::Request.new(request.env)
-      @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [ENV["ADMIN_USERNAME"],ENV["ADMIN_PASSWORD"]]
+      @auth ||= Rack::Auth::Basic::Request.new(request.env)
+      @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == [ENV["ADMIN_USERNAME"], ENV["ADMIN_PASSWORD"]]
     end
 
     def http_protected
@@ -34,7 +34,7 @@ module HollerbackApp
 
     post '/madmin/settings' do
       if params.any?
-        params.each do |key,value|
+        params.each do |key, value|
           REDIS.set("app:copy:#{key}", value)
         end
       end
@@ -43,13 +43,36 @@ module HollerbackApp
 
     get '/madmin' do
       @broken = Video.where(:filename => nil)
-      @videos = Video.paginate(:page => params[:page], :per_page => 20)
+      @contents = Video.paginate(:page => params[:page], :per_page => 20)
       haml "admin/index".to_sym, layout: "layouts/admin".to_sym
     end
 
     get '/madmin/videos' do
       @videos = Video.paginate(:page => params[:page], :per_page => 20)
       haml "admin/index".to_sym, layout: "layouts/admin".to_sym
+    end
+
+    get '/madmin/exceptions' do
+      @entries = Keen.extraction("app:exceptions", :timeframe => "today")
+      #create a map of the entries
+      entry_map = []
+      @entries.each do |entry|
+        item = entry_map.detect { |item| item["exception"] == entry["exception"] }
+        if item
+          item["count"] = item["count"] + 1
+          unless item["app_version"].detect { |saved_version| saved_version == entry["app_ver"] }
+            item["app_version"] << entry["app_ver"]
+          end
+
+          unless item["user_id"].detect { |saved_id| saved_id == entry["user_id"] }
+            item["user_id"] << entry["user_id"]
+          end
+        else
+          entry_map << {"exception" => entry["exception"], "count" => 1, "app_version" => [entry["app_ver"]], "user_id" => [entry["user_id"]]}
+        end
+      end
+      @entries = entry_map
+      haml "admin/ios_app_exceptions".to_sym, layout: "layouts/admin".to_sym
     end
 
     get '/madmin/conversations/:id' do
@@ -66,10 +89,33 @@ module HollerbackApp
         @users = User.android
       end
       @users = @users.order("created_at DESC").includes(:memberships, :messages, :devices)
-        .paginate(:page => params[:page], :per_page => 50)
+      .paginate(:page => params[:page], :per_page => 50)
 
       haml "admin/users".to_sym, layout: "layouts/admin".to_sym
     end
+
+    get '/madmin/users/find' do
+      user_info = params[:username_or_email]
+      @user = nil
+      begin
+        @user = User.find_by_username!(user_info)
+      rescue
+
+      end
+
+      if @user.blank?
+        begin
+          @user = User.find_by_email!(user_info)
+        rescue
+          return "'#{user_info}' not found!"
+        end
+      end
+
+      @memberships = @user.memberships
+      @messages = @user.messages
+      haml "admin/users/show".to_sym, layout: "layouts/admin".to_sym
+    end
+
 
     get '/madmin/users/:id' do
       @user = User.includes(:memberships, :messages).find(params[:id])
@@ -116,10 +162,10 @@ module HollerbackApp
     get '/madmin/stats' do
       stats = Hollerback::Statistics.new
       {
-        users_count: stats.users_count,
-        conversations_count: stats.conversations_count,
-        videos_count: stats.videos_sent_count,
-        received_count: stats.videos_received_count
+          users_count: stats.users_count,
+          conversations_count: stats.conversations_count,
+          videos_count: stats.videos_sent_count,
+          received_count: stats.videos_received_count
       }.to_json
     end
   end

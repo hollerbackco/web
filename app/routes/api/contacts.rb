@@ -21,6 +21,9 @@ module HollerbackApp
 
                    if params.key? "access_token"
                      login(:api_token)
+
+                     TrackUserActive.perform_async(params[:access_token]) #track user active
+
                      contacts = prepare_contacts(params["c"])
                      hashed_numbers = prepare_only_hashed_numbers(params["c"])
 

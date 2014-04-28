@@ -1,4 +1,6 @@
 class EmailInvite < ActiveRecord::Base
+  attr_accessible :cohort
+
   belongs_to :inviter, class_name: "User"
 
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(?:\.[a-z\d\-]+)*\.[a-z]+\z/i

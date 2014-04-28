@@ -1,5 +1,5 @@
 class Invite < ActiveRecord::Base
-  attr_accessible :phone, :inviter, :conversation, :accepted, :tracked
+  attr_accessible :phone, :inviter, :conversation, :accepted, :tracked, :cohort
 
   belongs_to :inviter, class_name: "User"
   belongs_to :conversation
@@ -29,9 +29,22 @@ class Invite < ActiveRecord::Base
   def accept!(user)
 
     self.transaction do
+
+      invite_type = "explicit"
       if (conversation)
         conversation.members << user
+        invite_type = "implicit"
       end
+
+      if(tracked == false)   #track it, then mark it as tracked
+        tracked = true
+        data = {
+            invites: [] << phone,
+            already_invited: []
+        }
+        MetricsPublisher.publish(user, "users:invite:#{invite_type}", data)
+      end
+
       self.accepted = true
       save!
     end

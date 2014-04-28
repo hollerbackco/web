@@ -5,15 +5,18 @@ class User < ActiveRecord::Base
   # array of blocked users
   serialize :muted, Array
 
+  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(?:\.[a-z\d\-]+)*\.[a-z]+\z/i
+
   #has_secure_password
   attr_accessible :name, :email, :phone, :phone_hashed, :username,
     :password, :password_confirmation, :phone_normalized,
-    :device_token, :last_app_version
+    :device_token, :last_app_version, :cohort
 
   has_many :devices, autosave: true, :dependent => :destroy
   has_many :memberships, :dependent => :destroy
   has_many :messages, through: :memberships, :dependent => :destroy
   has_many :videos
+  has_many :texts
   has_many :invites,
     :foreign_key => :inviter_id,
     :class_name => "Invite"
@@ -37,7 +40,8 @@ class User < ActiveRecord::Base
 
   validates :email,
     presence: true,
-    uniqueness: true
+    uniqueness: true,
+    format: { with: VALID_EMAIL_REGEX, :message => "must be valid"}
   validates :username,
       presence: true,
       uniqueness: true,
@@ -147,14 +151,15 @@ class User < ActiveRecord::Base
     "user/#{id}-#{memcache_id}"
   end
 
-  def device_for(token, platform)
+  def device_for(token, platform, platform_version=nil)
     if token.blank? and platform.blank?
       gen = devices.general.first
       return gen if gen.present?
     end
     devices.where({
       :platform => (platform || "ios"),
-      :token => token
+      :token => token,
+      :platform_version => platform_version
     }).first_or_create
   end
 
@@ -266,9 +271,12 @@ class User < ActiveRecord::Base
       name: username,
       username: username,
       phone: phone_normalized,
-      videos_sent: videos.count
+      videos_sent: videos.count,
+      texts_sent: texts.count,
+      cohort: cohort
     }
   end
+
 
   def device_names
     devices.map(&:description).compact.join(",")

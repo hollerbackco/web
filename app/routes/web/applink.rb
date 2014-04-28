@@ -3,7 +3,8 @@ module HollerbackApp
 
     APP_DOWNLOAD_LINK = "http://appstore.com/hollerback"
     ENTERPRISE_APP_DOWNLOAD_LINK = "http://www.hollerback.co/beta/test/master"
-    ALLOWED_LOCALES = ["AU", "NZ"]
+    ALLOWED_LOCALES = ["AU", "NZ", "CA"]
+    INVITE_COHORTS = ["psiu", "vip", "friendsvip", "vipnyc", "nycvip", "usc", "wes", "wesley", "socialsignin"]
 
     helpers do
       def sms_download_notification(name)
@@ -27,7 +28,32 @@ module HollerbackApp
       redirect "hollerback://"
     end
 
-    ['/download', '/invite', '/v/:token', '/usc'].each do |location|
+    get '/install' do
+      redirect_url = ""
+      if(android?)
+        redirect_url = '/beta'
+      elsif(ios?)
+        url = URI.escape("https://s3.amazonaws.com/hb-distro/HollerbackApp-download.plist")
+        redirect_url = "itms-services://?action=download-manifest&url=#{url}"
+      else
+        redirect_url = "/waitlist"
+      end
+
+      redirect redirect_url
+    end
+
+    get '/invite/:cohort' do
+      cohort = params[:cohort]
+      source = params[:src]
+      if(INVITE_COHORTS.include?(cohort))
+        MetricsPublisher.delay.publish_delay("invite:click", {:cohort => cohort, :source => source})
+        redirect "/beta/test/#{cohort}"
+      else
+        redirect "/beta/test/download"
+      end
+    end
+
+    ['/download','/invite', '/v/:token', '/usc'].each do |location|
       get location do
         if android?
           redirect '/beta'

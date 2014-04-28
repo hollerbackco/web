@@ -42,7 +42,8 @@ module Hollerback
             Invite.create(
               phone: phone,
               inviter: inviter,
-              conversation: conversation
+              conversation: conversation,
+              cohort: inviter.cohort
             )
           end
         end

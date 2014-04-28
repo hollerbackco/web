@@ -22,19 +22,32 @@
     %tr
       %td Id
       %td Sender
-      %td URL
+      %td Content
       %td Created At
       %td TTYL
   %tbody
     - @messages.each do |message|
       %tr
         %td= message.id
-        %td= message.sender_name
         %td
-          %a{href: message.url}= message.url
+          %a{href: "/madmin/users/#{message.sender_id}"}= message.sender_name
+        %td
+          - if message.type == 'video'
+            %a{href: message.url}= message.url
+          - if message.type == 'text'
+            %a{onclick: "toggle_visibility(#{message.id});"} Show Message
+            %div{id: message.id,  style: "display: none;"}= message.text_content
         %td
           %span.date{"data-time" => (message.created_at.to_i * 1000)}= message.created_at
         %td
           %span.subtitle
             - if message.subtitle.present? and message.subtitle == "ttyl"
               Y
+:javascript
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       if(e.style.display == 'block')
+          e.style.display = 'none';
+       else
+          e.style.display = 'block';
+    }
