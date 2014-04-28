@@ -64,7 +64,7 @@ module HollerbackApp
 
           locale = Timeout::timeout(5) { Net::HTTP.get_response(URI.parse('http://api.hostip.info/country.php?ip=' + request.remote_ip )).body } rescue "US"
           available = ALLOWED_LOCALES.detect { |allowed| locale == allowed }
-          if(available)
+          if(true)
             url = APP_DOWNLOAD_LINK
           else
             url = "/waitlist"
