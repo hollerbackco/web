@@ -80,8 +80,12 @@ module HollerbackApp
 
       beta = (params[:beta].nil? ? false : params[:beta]) #use the beta flag if present, or false otherwise
 
-      if(params[:access_token])
+      if (params[:access_token])
         TrackUserActive.perform_async(params[:access_token])
+        user = User.authenticate_with_access_token(params[:access_token])
+        if (user)
+          IntercomPublisher.perform_async(user.id, IntercomPublisher::Method::UPDATE, request.user_agent, request.ip)
+        end
       end
 
       #current_version =  REDIS.get("app:current:version")

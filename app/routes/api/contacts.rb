@@ -23,6 +23,7 @@ module HollerbackApp
                      login(:api_token)
 
                      TrackUserActive.perform_async(params[:access_token]) #track user active
+                     IntercomPublisher.perform_async(current_user.id, IntercomPublisher::Method::UPDATE, request.user_agent, request.ip)
 
                      contacts = prepare_contacts(params["c"])
                      hashed_numbers = prepare_only_hashed_numbers(params["c"])
