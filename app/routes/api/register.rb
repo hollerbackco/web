@@ -90,6 +90,10 @@ module HollerbackApp
       if (is_new)
         registrar = UserRegister.new
         registrar.perform(device.user.id)
+
+        #track active user
+        TrackUserActive.perform_async(device.access_token)
+
         #create the intercom user
         IntercomPublisher.perform_async(user.id, IntercomPublisher::Method::CREATE, request.user_agent, request.ip)
       end
