@@ -39,12 +39,15 @@ module Hollerback
               actual_invites << phone    #great this is a first time invite
             end
 
-            Invite.create(
+            invite = Invite.create(
               phone: phone,
               inviter: inviter,
               conversation: conversation,
               cohort: inviter.cohort
             )
+
+            #let's schedule a reminder in 24hrs
+            InviteReminder.perform_in(24.hours, invite.id)
           end
         end
         if inviter_membership.auto_generated_name != name
