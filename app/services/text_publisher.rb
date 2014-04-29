@@ -18,6 +18,13 @@ class TextPublisher
     messages = @conversation.memberships.map do |membership|
 
       next if(membership.messages.find_by_guid(@guid))
+
+      #if the membership is archived, then set it to false
+      if(membership.archived?)
+        membership.is_archived = false
+        membership.save
+      end
+
       # logger.info "membership username: #{membership.user.name}"
       is_sender = (membership.user == @sender) ? true : false
       needs_reply = (membership.user == @sender) ? false : true

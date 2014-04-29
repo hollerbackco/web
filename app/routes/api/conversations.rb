@@ -148,6 +148,17 @@ module HollerbackApp
       end
     end
 
+    post '/me/conversations/:id/archive' do
+      begin
+        membership = current_user.memberships.find(params[:id])
+        membership.is_archived = true
+        membership.save
+        success_json data: membership.as_json
+      rescue ActiveRecord::RecordNotFound
+        not_found
+      end
+    end
+
     post '/me/conversations/:id/watch_all' do
       if (@api_version == HollerbackApp::ApiVersion::V1)
         if (!ensure_params(:message_types))
@@ -160,12 +171,12 @@ module HollerbackApp
         #ensure type array is one or more of "image, video, text"
         message_types = params[:message_types]
 
-        if(message_types != nil)
-          if(!message_types.is_a?(Array))
+        if (message_types != nil)
+          if (!message_types.is_a?(Array))
             return error_json 400, msg: "message_types must be an array"
           end
 
-          unless message_types.all? {|type| type.match(Message::Type::QUALIFIED_TYPE_REGEX) }
+          unless message_types.all? { |type| type.match(Message::Type::QUALIFIED_TYPE_REGEX) }
             return error_json 400, msg: "message_types must be an array containing at least one of 'text', 'video', 'image'"
           end
 

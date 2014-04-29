@@ -158,6 +158,10 @@ class Membership < ActiveRecord::Base
     messages.watchable.unseen.present?
   end
 
+  def archived?
+    self.is_archived
+  end
+
   def view_all(message_types)
     if (message_types == nil)
       messages.unseen.each { |m| m.seen! }
@@ -196,7 +200,7 @@ class Membership < ActiveRecord::Base
 
   def as_json(opts={})
     options = {}
-    options = options.merge(methods: [:name, :unread_count, :is_deleted])
+    options = options.merge(methods: [:name, :unread_count, :is_deleted, :is_archived])
     options = options.merge(except: [:updated_at, :conversation_id])
     options = options.merge(opts)
     obj = super(options)

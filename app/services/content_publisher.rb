@@ -50,6 +50,12 @@ class ContentPublisher
     # dont send message if the user has been muted
     return nil if member.muted?(sender)
 
+    #if the membership is archived, then set it to false
+    if(membership.archived?)
+      membership.is_archived = false
+      membership.save
+    end
+
     membership.touch
 
     if sender == member
