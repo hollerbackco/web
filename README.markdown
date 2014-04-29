@@ -275,6 +275,17 @@ get info about a conversation
           data: nil
         }
 
+### POST /me/conversations/:id/watch_all
+watch all unread messages of a conversation or specific types of messages (text, video, or image)
+
+    params
+        access_token*     string
+        message_types     array of strings       nil => mark all as watched, mark one or more message types as watched i.e. [text], [text, video]
+
+    response
+       {
+         data: nil
+       }	
 
 ## DEPRECATED
 
