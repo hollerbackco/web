@@ -256,7 +256,7 @@ get info about a conversation
 ### POST /me/conversations/:id/goodbye
 
     params
-        watched_id*       string
+        dwatched_id*       string
       
     response
         {
@@ -286,6 +286,30 @@ watch all unread messages of a conversation or specific types of messages (text,
        {
          data: nil
        }	
+
+### POST /me/conversations/:id/archive
+archive a conversation
+
+     params
+         access_token*    string
+
+     response
+        {
+         data: {
+            created_at: "2014-04-29T12:58:02-04:00",
+            deleted_at: null,
+            id: 7118,
+            is_archived: true,
+            last_message_at: "2014-04-29T12:58:02-04:00",
+            most_recent_subtitle: null,
+            most_recent_thumb_url: null,
+            name: "Tester Baby",
+            user_id: 606,
+            unread_count: 0,
+            is_deleted: false,
+            updated_at: "2014-04-29T12:58:02-04:00"
+         }    
+        }
 
 ## DEPRECATED
 
