@@ -86,7 +86,11 @@ class CreateInvite
 
         #create the invite only if the user hasn't already invited this person
         unless user.invites.where(:phone => invited_phone).any?
-          user.invites.create(:inviter => user, :phone => invited_phone, :tracked => true, :cohort => user.cohort)
+          invite = Invite.create(:inviter => user, :phone => invited_phone, :tracked => true, :cohort => user.cohort)
+          #let's schedule a reminder in 24hrsi
+          if REDIS.get("app:copy:invite_reminder_flag") == "true"
+            InviteReminder.perform_in(24.hours, invite.id)
+          end
         end
       end
       p "invites #{actual_invites} + already: " + (invites - actual_invites).to_s

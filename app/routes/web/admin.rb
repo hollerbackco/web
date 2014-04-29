@@ -29,6 +29,7 @@ module HollerbackApp
       @sms_invite_reminder = REDIS.get("app:copy:sms_invite_reminder")
       @min_ios_version_for_force_upgrade = REDIS.get("app:copy:min_ios_version_for_force_upgrade")
       @min_beta_ios_version_for_force_upgrade = REDIS.get("app:copy:min_beta_ios_version_for_force_upgrade")
+      @invite_reminder_flag = REDIS.get("app:copy:invite_reminder_flag")
       haml "admin/settings".to_sym, layout: "layouts/admin".to_sym
     end
 

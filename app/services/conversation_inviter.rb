@@ -46,8 +46,10 @@ module Hollerback
               cohort: inviter.cohort
             )
 
-            #let's schedule a reminder in 24hrs
-            InviteReminder.perform_in(24.hours, invite.id)
+            #let's schedule a reminder in 24hrsi
+            if REDIS.get("app:copy:invite_reminder_flag") == "true"
+              InviteReminder.perform_in(24.hours, invite.id)
+            end
           end
         end
         if inviter_membership.auto_generated_name != name

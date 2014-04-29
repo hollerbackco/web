@@ -27,6 +27,8 @@ class InviteReminder
           }
           MetricsPublisher.publish_user_metric(inviter, "users:invite:#{invite_type}", data)
         end
+        data = { phone: invite.phone }
+        MetricsPublisher.publish_delay("invite:reminder", data)
       end
     rescue Exception => ex
       Honeybadger.notify(ex)
