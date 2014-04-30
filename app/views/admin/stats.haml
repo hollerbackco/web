@@ -192,7 +192,7 @@
       label: "Texts sent over time"
     });
 
-    var users_who_sent = new Keen.Metric("video:create", {
+    var users_who_sent = new Keen.Series("video:create", {
               analysisType: "count_unique",
               targetProperty: "user.id",
               timeframe: "this_14_days",
