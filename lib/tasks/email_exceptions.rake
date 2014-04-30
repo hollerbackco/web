@@ -28,9 +28,9 @@ namespace "email" do
     }
     puts "#{xm}"
     Mail.deliver do
-      to 'sajjad@hollerback.co'
+      to 'joe@hollerback.co'
       from 'no-reply@hollerback.co'
-      subject "IOS Exception Daily Digest #{DateTime.now}"
+      subject "IOS Exception Daily Digest #{Date.yesterday}"
 
 
       html_part do
