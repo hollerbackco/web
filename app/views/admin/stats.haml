@@ -23,9 +23,15 @@
 %article
   %h2 Videos Sent
   #videos-sent
+
 %article
   %h2 Texts Sent
   #texts-sent
+
+%article
+  %h2 Number of Users who Sent
+  #users-who-sent
+
 
 %article
   %h2 Videos Watched
@@ -182,9 +188,20 @@
           interval: "daily"
         });
 
-        texts.draw(document.getElementById("texts-sent"), {
-          label: "Texts sent over time"
+    texts.draw(document.getElementById("texts-sent"), {
+      label: "Texts sent over time"
+    });
+
+    var series = new Keen.Series("video:create", {
+          analysisType: "count_unique",
+          targetProperty: "user.id"
+          timeframe: "this_14_days",
+          interval: "daily"
         });
+
+    series.draw(document.getElementById("users-who-sent"), {
+      label: "Videos sent over time"
+    });
 
     var watch = new Keen.Series("video:watch", {
       analysisType: "count_unique",
