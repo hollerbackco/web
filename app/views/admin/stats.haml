@@ -192,16 +192,16 @@
       label: "Texts sent over time"
     });
 
-    var series = new Keen.Series("video:create", {
-          analysisType: "count_unique",
-          targetProperty: "user.id"
-          timeframe: "this_14_days",
-          interval: "daily"
-        });
+    var users_who_sent = new Keen.Metric("video:create", {
+              analysisType: "count_unique",
+              targetProperty: "user.id",
+              timeframe: "this_14_days",
+              interval: "daily"
+            });
 
-    series.draw(document.getElementById("users-who-sent"), {
-      label: "Videos sent over time"
-    });
+        users_who_sent.draw(document.getElementById("users-who-sent"), {
+          label: "Unique Users who Sent"
+        });
 
     var watch = new Keen.Series("video:watch", {
       analysisType: "count_unique",
