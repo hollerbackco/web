@@ -547,6 +547,12 @@ footer {
     }
   }
 
+  .splash-body form {
+    padding: 15px 15px 15px;
+    width: 80%;
+    margin: 0 auto;
+  }
+
   body#pledge-splash .participate {
     background: #000;
   }
@@ -600,6 +606,7 @@ footer {
     margin-top: -38%;
   }
 
+
   .page .container {
     width: 100%;
   }
@@ -618,11 +625,24 @@ footer {
     padding: 10px;
     margin: -10px;
   }
+
+  .splash-body form {
+    padding: 15px 15px 15px;
+    width: 80%;
+    margin: 0 auto;
+  }
 }
 
 @media only screen and (max-width: 480px) {
   body {
     min-height: 600px;
+  }
+
+
+  .splash-body form {
+    padding: 15px 15px 15px;
+    width: 80%;
+    margin: 0 auto;
   }
 
   .page .container {
