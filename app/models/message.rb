@@ -216,7 +216,8 @@ class Message < ActiveRecord::Base
 
     rules = {}
     if (api_version == HollerbackApp::ApiVersion::V1)
-      rules = HollerbackApp::ClientDisplayManager.get_rules_by_name('content_cell_display_rules')
+      return
+      #rules = HollerbackApp::ClientDisplayManager.get_rules_by_name('content_cell_display_rules')
     else
       rules = HollerbackApp::ClientDisplayManager.get_rules_by_name('video_cell_display_rules')
     end
