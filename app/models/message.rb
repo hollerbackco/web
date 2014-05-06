@@ -23,7 +23,7 @@ class Message < ActiveRecord::Base
   scope :updated_since_within_memberships, lambda { |updated_at, ids| where("messages.updated_at > ? AND messages.membership_id IN (?)", updated_at, ids) }
   scope :before_last_message_at, lambda { |before_message_time, ids| where("messages.seen_at is null AND messages.updated_at < ? AND messages.membership_id IN (?)", before_message_time, ids) }
   scope :before, lambda { |time| where("messages.sent_at < ?", time) }
-  scope :watchable, where("content ? 'guid'")
+  scope :watchable, where("CAST(content->'guid' as text) is not null")
 
   after_create do |record|
     m = record.membership
