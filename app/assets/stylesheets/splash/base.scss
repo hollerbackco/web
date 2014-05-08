@@ -201,12 +201,12 @@ footer {
 .splash-body {
   background: #b72e38 image-url("landing-bg.jpg");
   background-size: cover;
-  background-position: center bottom;
+  background-position: center;
   bottom: 0;
   text-align: center;
 
   .container {
-    position: fixed;
+    position: absolute;
     width: 100%;
     height: 100%;
   }
@@ -533,6 +533,12 @@ footer {
   margin-left: 0;
 }
 
+@media only screen and (min-width: 1140px) {
+  .splash-body {
+    background-position: center bottom;
+  }
+}
+
 @media only screen and (max-width: 767px) {
   .splash-body #header {
     margin-top: -48%;
@@ -546,7 +552,7 @@ footer {
       height: 2em;
     }
   }
-
+  
   .splash-body form {
     padding: 15px 15px 15px;
     width: 80%;
@@ -602,10 +608,17 @@ footer {
 }
 
 @media only screen and (min-width: 480px) and (max-width: 767px) {
+  body {
+    min-height: 600px;
+  }
+
   .splash-body #header {
     margin-top: -38%;
   }
 
+  .splash-body.container {
+    position: absolute;
+  }
 
   .page .container {
     width: 100%;
@@ -638,11 +651,21 @@ footer {
     min-height: 600px;
   }
 
+  .container {
+    position: fixed;
+  }
+
+  .splash-body {
+    background-position: center bottom;
+  }
 
   .splash-body form {
-    padding: 15px 15px 15px;
+    // padding: 15px 15px 15px;
     width: 80%;
     margin: 0 auto;
+    .primary.button {
+      padding: 15px 0 18px 0;
+    }
   }
 
   .page .container {
