@@ -2,11 +2,11 @@ namespace :email do
   desc "email waitlisters"
   task :waitlisters do |t|
 
-    #Waitlister.all.each do |waitlister|
-
+    Waitlister.all.each do |waitlister|
       begin
+        p "#{waitlister.email}"
         Mail.deliver do
-          to 'sajjad@hollerback.co'
+          to waitlister.email
           from 'no-reply@hollerback.co'
           subject "hello from hollerback"
 
@@ -14,10 +14,9 @@ namespace :email do
 
         end
       rescue Exception => ex
-        p ex
-        #Honeybadger.notify(ex, {:message => "couldn't send email to"})
+        Honeybadger.notify(ex, {:message => "couldn't send email to #{waitlister.email}"})
       end
-    #end
+    end
 
 
   end
