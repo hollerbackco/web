@@ -3,12 +3,9 @@ module HollerbackApp
     get '/' do
       #haml :index, layout: false
       user_agent = Hollerback::UserAgent.new(request.user_agent)
-      if(user_agent.ios?)
-        return redirect "http://appstore.com/hollerback"
-
-      elsif user_agent.android?
+      
+      if user_agent.android?
         return redirect '/beta'
-
       end
 
       File.read(File.join('public', 'index.html'))
