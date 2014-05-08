@@ -16,6 +16,7 @@ h1 {
   letter-spacing: 1px;
   text-transform: uppercase;
   text-shadow: none;
+  text-align: center;  
 }
 h2 {
   margin: 10px 0px;
@@ -184,6 +185,14 @@ p {
   float: none;
   clear: right;
 }
+
+#app-store-badge {
+  content: "";
+  background-image:url('../images/app_store_badge.png');
+  width: 135px;
+  height: 40px;
+}
+
 @media (max-width: 991px) {
   h1 {
     text-shadow: none;
