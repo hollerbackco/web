@@ -10,7 +10,7 @@ namespace :email do
           from 'no-reply@hollerback.co'
           subject "hello from hollerback"
 
-          body "./public/assets/waitlist_email_body.txt"
+          body File.read('public/assets/waitlist_email_body.txt')
 
         end
       rescue Exception => ex
