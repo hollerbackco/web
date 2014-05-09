@@ -27,7 +27,7 @@ class InviteReminder
               already_invited: []
           }
           MetricsPublisher.publish_user_metric(inviter, "users:invite:#{invite_type}", data)
-
+          invite.tracked = true
         end
         invite.save
         data = { phone: invite.phone }
