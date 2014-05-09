@@ -19,6 +19,7 @@ class InviteReminder
 
         Hollerback::SMS.send_message(invite.phone, message)
 
+        invite.notified = true
         unless invite.tracked
 
           data = {
@@ -26,7 +27,9 @@ class InviteReminder
               already_invited: []
           }
           MetricsPublisher.publish_user_metric(inviter, "users:invite:#{invite_type}", data)
+          invite.tracked = true
         end
+        invite.save
         data = { phone: invite.phone }
         MetricsPublisher.publish_delay("invite:reminder", data)
       end
