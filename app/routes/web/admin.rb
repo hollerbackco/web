@@ -25,6 +25,11 @@ module HollerbackApp
       end
     end
 
+    get '/madmin/broken' do
+      @broken = Video.where(:filename => nil)
+      haml "admin/broken_videos".to_sym, layout: "layouts/admin".to_sym
+    end
+
     get '/madmin/settings' do
       @sms_invite_reminder = REDIS.get("app:copy:sms_invite_reminder")
       @min_ios_version_for_force_upgrade = REDIS.get("app:copy:min_ios_version_for_force_upgrade")
