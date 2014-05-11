@@ -5,6 +5,7 @@ namespace :sms do
 
     invites.find_each do |invite|
       InviteReminder.perform_async(invite.id)
+      sleep 5
     end
 
   end
