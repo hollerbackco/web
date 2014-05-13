@@ -2,16 +2,17 @@ namespace :email do
   desc "email waitlisters"
   task :waitlisters do |t|
 
-    Waitlister.all.each do |waitlister|
+    emailed_list = []
+    File.open('public/assets/emailed_list.txt').each do |line|
+      emailed_list << line.strip
+    end
 
-      emailed_list = []
-      File.open('public/assets/emailed_list.txt').each do |line|
-        emailed_list << line.strip
-      end
+    Waitlister.all.each do |waitlister|
 
       if emailed_list.include?(waitlister.email)
         next
       end
+
       begin
         p "#{waitlister.email}"
         Mail.deliver do
