@@ -9,6 +9,8 @@ namespace :email do
 
     User.all.each do |user|
 
+      next if user.email.nil?
+
       if emailed_list.include?(user.email.downcase)
         next
       end
