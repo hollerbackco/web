@@ -3,6 +3,15 @@ namespace :email do
   task :waitlisters do |t|
 
     Waitlister.all.each do |waitlister|
+
+      emailed_list = []
+      File.open('public/assets/emailed_list.txt').each do |line|
+        emailed_list << line.strip
+      end
+
+      if emailed_list.include?(waitlister.email)
+        next
+      end
       begin
         p "#{waitlister.email}"
         Mail.deliver do

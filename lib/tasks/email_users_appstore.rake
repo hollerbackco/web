@@ -2,6 +2,16 @@ namespace :email do
   desc "email existing userbase and let them know that a new beta version is available in the appstore"
   task :users_app_available do |t|
     User.all.each do |user|
+
+      emailed_list = []
+      File.open('public/assets/emailed_list.txt').each do |line|
+        emailed_list << line.strip
+      end
+
+      if emailed_list.include?(waitlister.email)
+        next
+      end
+
       begin
         p "#{user.email}"
         Mail.deliver do
