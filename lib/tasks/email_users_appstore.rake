@@ -4,12 +4,12 @@ namespace :email do
 
     emailed_list = []
     File.open('public/assets/emailed_list.txt').each do |line|
-      emailed_list << line.strip
+      emailed_list << line.strip.downcase
     end
 
     User.all.each do |user|
 
-      if emailed_list.include?(user.email)
+      if emailed_list.include?(user.email.downcase)
         next
       end
 
