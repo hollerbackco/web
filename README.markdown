@@ -355,6 +355,10 @@ mark a video as read
           }
         }
 
+BUGS
+----
+- Need to patch: https://github.com/twilio/twilio-ruby/issues/39 (05/22/2014) 
+
 TODO
 ----
 - install graphite/statsd to start measuring performance and monitor server activity
